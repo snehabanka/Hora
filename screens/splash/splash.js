@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import { View, Text,Image, StyleSheet,Dimensions } from 'react-native';
+import { StatusBar,View, Text,Image, StyleSheet,Dimensions } from 'react-native';
 import styles from './styles';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
@@ -20,7 +20,7 @@ const Splash = ({ navigation }) => {
   const isLoggedin = await AsyncStorage.getItem("isLoggedIn")
   try {
   if(isLoggedin=== "true") {
-    navigation.navigate('Home')
+    navigation.navigate('Login')
   }
   else{
     navigation.navigate('Login')
@@ -35,6 +35,7 @@ catch(error){
  }
   return (
     <View style={styles.container}>
+      <StatusBar translucent backgroundColor="transparent" barStyle="light-content" />
       <Image source={require('../../assets/splash.png')} style={styles.image} />
     </View>
   );

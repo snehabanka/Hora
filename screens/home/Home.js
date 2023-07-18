@@ -3,6 +3,7 @@ import { useEffect } from 'react';
 import { View, Text, StyleSheet, Image, BackHandler, Button } from 'react-native';
 import Login from '../login/Login';
 import styles from '../home/styles';
+import CustomStatusBar from '../../components/CustomStatusBar';
 
 const Home = ({navigation}) => {
 
@@ -23,7 +24,7 @@ const Home = ({navigation}) => {
   
   return (
     <View>
-      
+      <CustomStatusBar/>
     <Text>jnjdncjd</Text>  
      </View>
   )}

@@ -93,7 +93,7 @@ const MyAccount = ({ navigation }) => {
         <Image source={require('../../assets/name.png')} style={{ ...styles.iconImage, marginTop: 28 }} />
       </View>
 
-      <TouchableHighlight style={styles.button} onPress={handleEditAccount} underlayColor="#E56352">
+      <TouchableHighlight style={styles.button} onPress={navigation.navigate('Home')} underlayColor="#E56352">
         <Text style={styles.buttonText}>Edit</Text>
       </TouchableHighlight>
       </View>

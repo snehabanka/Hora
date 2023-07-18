@@ -3,6 +3,7 @@ import { ScrollView,StatusBar,View, Text, TextInput, Image, TouchableOpacity, To
 import styles from './style';
 import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import CustomStatusBar from '../../components/CustomStatusBar';
 
 
 const Login = ({ navigation }) => {
@@ -92,7 +93,7 @@ const Login = ({ navigation }) => {
             if (enteredOtp === fetchedOtp) {
                 setValidOtp(true);
                 setData()
-                navigation.navigate('Home');
+                navigation.navigate('MyAccount');
             } else {
                 setValidOtp(false);
             }
@@ -131,23 +132,31 @@ const Login = ({ navigation }) => {
 
     return (
         <ScrollView style={styles.container}>
+            
             <StatusBar translucent backgroundColor="transparent" barStyle="light-content" />
             <Image source={require('../../assets/login.png')} style={styles.image} />
             <Text style={styles.text1}>Login</Text>
             <Text style={styles.text2}>{isPressed ? 'Verification Code' : 'Mobile Number'}</Text>
-            <Text style={styles.text2}>{isPressed ? `Enter Code sent to (+91) ${mobileNumber}` : null}</Text>
+            <View style={{flexDirection:'row'}}>
+            <Text style={styles.text3}>{isPressed ? `Enter Code sent to` : null}</Text>
+            <Text style={styles.text4}>{isPressed ? `(+91) ${mobileNumber}` : null}</Text>
+            </View>
             {!isPressed ? (
                 <View style={styles.inputContainer}>
-                    <TextInput style={styles.prefix} value="+91 | " editable={false} />
+                    <View style={styles.borderWithOpacity}>
+                    <TextInput style={{...styles.prefix}} value="(+91) | " editable={false} />
                     <TextInput
-                        style={styles.input}
+                        style={{ ...styles.input }}
                         placeholder="000 000 0000"
                         keyboardType="phone-pad"
                         maxLength={10}
+                        textContentType='telephoneNumber'
                         value={mobileNumber}
                         onChangeText={handleMobileNumberChange}
                     />
+                    </View>
                 </View>
+
             ) : null}
             {!isPressed ? (
                 <TouchableHighlight style={styles.button} onPress={handlePress} underlayColor="#E56352">
@@ -175,7 +184,7 @@ const Login = ({ navigation }) => {
                 <View>
                     {timer === 0 ? (
                         <TouchableOpacity style={styles.resendButton} onPress={handleResendOtp}>
-                            <Text style={styles.buttonText}>Resend OTP</Text>
+                            <Text style={styles.buttonText1}>Resend Code</Text>
                         </TouchableOpacity>
                     ) : (
                         <Text style={styles.timerText}>Resend OTP in {timer} seconds</Text>

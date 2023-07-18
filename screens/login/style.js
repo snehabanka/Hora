@@ -2,93 +2,136 @@ import { StyleSheet, Dimensions } from 'react-native';
 
 const styles = StyleSheet.create({
     image: {
-        flex: 0.5,
         alignSelf: 'stretch',
+        height: Dimensions.get('window').width * (19 / 16),
         width: Dimensions.get('window').width,
-        marginBottom: 20
+        marginBottom: 40
     },
     container: {
         flex: 1
     },
     text1: {
-        font: 18,
-        color: '#414141',
+        fontSize: 18,
+        color: '#000',
         marginLeft: 36,
-        marginBottom: 25,
+        marginBottom: 31,
         fontWeight: '700'
     },
     text2: {
-        font: 14,
+        fontSize: 14,
         color: '#414141',
         marginLeft: 36,
-        marginBottom:11,
         fontWeight: '500'
     },
+    text3: {
+        fontSize: 14,
+        color: '#414141',
+        marginLeft: 36,
+        marginTop:2,
+        fontWeight: '400',
+        opacity: 0.6000000238418579
+
+    },
+    text4: {
+        fontSize: 14,
+        color: '#414141',
+        marginLeft:8,
+        marginTop:2,
+        fontWeight: '600',
+        opacity: 0.6000000238418579
+    },
+    
+
     input: {
-        height: 40,
+        fontSize:14,
+        fontWeight:'500',
         justifyContent: 'center'
 
     },
     prefix: {
         fontSize: 14,
         fontWeight: 'bold',
-        color: '#414141'
+        color: '#414141',
+        paddingLeft:10
+    
     },
     inputContainer: {
         flexDirection: 'row',
         alignItems: 'center',
-        height: 42,
-        marginHorizontal: 36,
-        borderColor: '#545454',
-        borderWidth: 1,
-        paddingHorizontal: 10,
-        borderRadius: 8,
-        marginBottom: 10
+        height: 50,
+        marginLeft: 34,
+        marginRight:26,
+        paddingHorizontal: 2,
+        marginTop:-10,
+        marginBottom: 95},
+
+        borderWithOpacity: {
+            flex: 1,
+            flexDirection:'row',
+            borderColor: 'rgba(84, 84, 84, 0.35)', // Set the border color with the desired opacity
+            borderWidth: 1,
+            borderRadius: 8
+          
     },
     button: {
-        height: 42,
+        height: 50,
         borderRadius: 6,
         backgroundColor: '#E56352',
-        marginHorizontal: 36,
-        justifyContent: 'center'
-
-
+        marginLeft: 36,
+        marginRight:26,
+        justifyContent: 'center',
+        alignItems:'center',
     },
+
     buttonText: {
-        textAlign: 'center', // Center the text horizontally
-        color: 'white',
-        fontSize: 14,
-        fontWeight: 'bold',
-
-
-
+        alignItems:'center',
+        justifyContent:'center',
+        color: '#FFF',
+        fontSize: 13,
+        fontWeight: '600',
+    },
+    buttonText1: {
+        justifyContent:'center',
+        color: '#8A8A8A',
+        fontSize: 13,
+        fontWeight: '600',
+        marginLeft: 261,
+        
     },
     
       otpContainer: {
         flexDirection: 'row',
-        marginHorizontal:36,
+        marginLeft:32,
+        marginTop:20,
         marginBottom:10
      
     },
       otpInput: {
-        width: 70,
-        height: 50,
-        borderColor: 'gray',
+        width: 60,
+        height: 42,
+        borderColor: '#545454',
         borderWidth: 1,
-        borderRadius: 5,
+        borderRadius: 6,
         marginHorizontal: 7,
-        fontSize: 24,
-        textAlign: 'center'
+        fontSize: 19,
+        textAlign: 'center',
+        opacity: 0.800000011920929,
+        color:'#292929',
+        fontWeight:'500'
       },
       invalidOtpText:{
         fontSize:14,
         color:'#C61B1B',
-        marginLeft:36
+        marginLeft:38,
+        marginTop:-20,
+        fontWeight:'800',
+        opacity: 0.6000000238418579
       },
       timerText:{
         fontSize:13,
+        fontWeight:'400',
         color:'#8A8A8A',
-        marginEnd:36,
+        marginLeft:210,
         justifyContent: 'flex-end',
 
       }
