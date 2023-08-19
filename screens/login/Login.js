@@ -4,7 +4,7 @@ import styles from './style';
 import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import CustomStatusBar from '../../components/CustomStatusBar';
-
+import { BASE_URL,OTP_GENERATE_END_POINT,API_SUCCESS_CODE } from '../../utils/ApiConstants';
 
 const Login = ({ navigation }) => {
 
@@ -14,7 +14,7 @@ const Login = ({ navigation }) => {
     const inputRefs = useRef([]);
     const [timer, setTimer] = useState(0);
     const [validOtp, setValidOtp] = useState(undefined);
-    let fetchedOtp='1234'
+    const [fetchedOtp,setFetchedOtp]= useState(null)
 
     useEffect(() => {
         const backAction = () => {
@@ -64,18 +64,20 @@ const Login = ({ navigation }) => {
     };
 
     const fetchOtp = async () => {
-        const apiKey = 'YOUR_API_KEY';
         try {
-            const response = await axios.get('https://www.fast2sms.com/dev/bulk', {
-                params: {
-                    authorization: apiKey,
-                    numbers: mobileNumber,
-                },
+            const url= BASE_URL + OTP_GENERATE_END_POINT;
+            const requestData = {
+                phone: mobileNumber,
+                role: 'customer',
+              };
+            const response = await axios.post(url,requestData, {
+                headers: {
+                    'Content-Type': 'application/json',
+                  },
             });
-
-            if (response.data.return === true) {
-                console.log('OTP sent successfully');
-                fetchedOtp = response.data.otp;
+            console.warn(response.data)
+            if (response.data.status === API_SUCCESS_CODE) {
+                setFetchedOtp(response.data.otp);
             } else {
                 console.log('OTP sending failed');
             }
@@ -86,11 +88,14 @@ const Login = ({ navigation }) => {
 
     const setData = async() =>{
         AsyncStorage.setItem("isLoggedIn","true")
+        AsyncStorage.setItem("mobileNumber",mobileNumber)
     }
 
     const validateOtp = (enteredOtp) => {
+        console.warn(enteredOtp)
+        console.warn(fetchedOtp)
         if (fetchedOtp != null) {
-            if (enteredOtp === fetchedOtp) {
+            if (enteredOtp === String(fetchedOtp)) {
                 setValidOtp(true);
                 setData()
                 navigation.navigate('MyAccount');

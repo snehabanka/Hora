@@ -5,7 +5,7 @@ import StackNavigation  from './navigation/StackNavigation'
 import DrawerNavigation from './navigation/DrawerNavigation';
 
 const App = () => {
-  return (
+  return ( 
     <NavigationContainer>
             <StackNavigation/>
     </NavigationContainer>

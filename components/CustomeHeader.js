@@ -1,6 +1,7 @@
 import React from 'react';
 import { View, Text, Pressable, Image, StyleSheet } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
+import LinearGradient from 'react-native-linear-gradient';
 
 
 const CustomHeader = ({ title }) => {
@@ -11,34 +12,39 @@ const CustomHeader = ({ title }) => {
     navigation.goBack();
   };
   return (
-    <View style={styles.headerContainer}>
+    <LinearGradient
+      colors={['#6730B2', '#EE7464']}
+      start={{ x: 0, y: 0 }}
+      end={{ x: 1, y: 0 }}
+      style={styles.headerContainer}
+    >
       <Pressable onPress={handleBackPress}>
-      <Image source={require('../assets/backArrow.png')}  style={styles.image}/>
+      <Image source={require('../assets/back_arrow.png')}  style={styles.image}/>
       </Pressable>
       <Text style={styles.headerTitle}>{title}</Text>
-    </View>
+    </LinearGradient>
   );
 };
 
 const styles = StyleSheet.create({
   headerContainer: {
-    backgroundColor:'#6730B2',
-    flexDirection:'row',
-    height: 114,
+    flexDirection: 'row',
+    alignItems: 'center',
+    height: 70,
   },
   headerTitle: {
-    fontSize: 20,
+    fontSize: 15,
     color: 'white',
-    fontWeight: '600',
-    marginLeft:12,
-    marginVertical:44
+    fontWeight: '500',
+    marginLeft:-5
+    
 
   },
   image:{
-    height:20,
-    width:13,
-    marginLeft:15,
-    marginVertical:46
+    height:60,
+    width:60,
+    marginLeft:8,
+    marginTop:15
   }
 });
 

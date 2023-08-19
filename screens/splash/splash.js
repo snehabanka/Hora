@@ -20,10 +20,10 @@ const Splash = ({ navigation }) => {
   const isLoggedin = await AsyncStorage.getItem("isLoggedIn")
   try {
   if(isLoggedin=== "true") {
-    navigation.navigate('Login')
+    navigation.navigate('ConfirmOrder')
   }
   else{
-    navigation.navigate('Login')
+    navigation.navigate('CreateOrder')
   }
 }
 catch(error){
