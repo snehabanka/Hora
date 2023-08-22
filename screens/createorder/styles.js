@@ -151,7 +151,11 @@ const styles = StyleSheet.create({
       borderRadius: 20,
       marginBottom:15
     },
-
+    order: {height:24,width:24,marginLeft:16},
+    time: {height:24,width:24,marginLeft:24},
+    dish:{height:24,width:24,marginLeft:15},
+    separator1:{height:1,width:70,marginTop:10,marginLeft:5},
+    separator2:{height:1,width:70,marginTop:10,marginStart:-15},
 
 
 
