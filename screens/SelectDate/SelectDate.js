@@ -7,7 +7,7 @@ import { BASE_URL, GET_CUISINE_ENDPOINT, API_SUCCESS_CODE, GET_MEAL_DISH_ENDPOIN
 import DateTimePicker from '@react-native-community/datetimepicker';
 
 
-const SelectDate = ({ route }) => {
+const SelectDate = ({ navigation,route }) => {
 
     const [selectedDate, setSelectedDate] = useState(new Date());
     const [selectedTime, setSelectedTime] = useState(new Date());
@@ -209,6 +209,7 @@ const SelectDate = ({ route }) => {
     };
 
 
+
     const getTotalBurnerCount = () => {
         let totalBurnerCount = 0;
 
@@ -285,6 +286,12 @@ const SelectDate = ({ route }) => {
         }
     };
 
+    const onContinueClick = () => {
+        navigation.navigate("ConfirmDishOrder",{"selectedDate":selectedDate,"selectedTime":selectedTime,"peopleCount":peopleCount,
+        "selectedDishes":data
+    })
+    }
+
     const handleTimeChange = (event, time) => {
         if (time !== undefined) {
             setSelectedTime(time);
@@ -301,9 +308,7 @@ const SelectDate = ({ route }) => {
             setPeopleCount(peopleCount - 1)
         }
     }
-    const onContinueclick = () => {
-        
-    }
+
 
     return (
         <View style={styles.screenContainer}>
@@ -432,7 +437,7 @@ const SelectDate = ({ route }) => {
             </View>
 
             <View style={{paddingHorizontal:16,justifyContent:'space-between'}}>
-            <TouchableHighlight onPress={onContinueclick} style={styles.continueButton} underlayColor="transparent" activeOpacity={1}>
+            <TouchableHighlight onPress={onContinueClick} style={styles.continueButton} underlayColor="transparent" activeOpacity={1}>
             <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center',paddingHorizontal:16 }}>
             <Text style={styles.buttonText1}>Continue</Text>
             <Text style={styles.buttonText1}>{data.length} Items | ₹ {}</Text>
