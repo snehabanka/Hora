@@ -102,41 +102,41 @@ const ConfirmLocation = ({ navigation, route }) => {
     //   }
     // };
 
-    const focusOnCurrentLocation = () => {
-      if (locationPermissionStatus === 'granted') {
-        getCurrentLocation()
-      }
-    };
-
-
-    const getCurrentLocation = () => {
-      Geolocation.getCurrentPosition(
-        (position) => {
-          const { latitude, longitude } = position.coords;
-          const updatedInitialRegion = {
-            latitude,
-            longitude,
-            latitudeDelta: 0.0922,
-            longitudeDelta: 0.0421,
-          };
-          setInitialRegion(updatedInitialRegion); // Update the initialRegion directly
-          Geocoder.from(latitude, longitude)
-            .then((response) => {
-              const address = response.results[0].formatted_address;
-              console.log('Current location address:', address);
-              setCurrentLocation(address);
-            })
-            .catch((error) =>
-              console.warn('Error fetching location address:', error)
-            );
-        },
-        (error) => console.log('Error getting current location:', error),
-        { enableHighAccuracy: true, timeout: 20000, maximumAge: 1000 }
-      );
-    };
-
     checkLocationPermission();
   }, []);
+
+  const focusOnCurrentLocation = () => {
+    if (locationPermissionStatus === 'granted') {
+      getCurrentLocation()
+    }
+  };
+
+
+  const getCurrentLocation = () => {
+    Geolocation.getCurrentPosition(
+      (position) => {
+        const { latitude, longitude } = position.coords;
+        const updatedInitialRegion = {
+          latitude,
+          longitude,
+          latitudeDelta: 0.0922,
+          longitudeDelta: 0.0421,
+        };
+        setInitialRegion(updatedInitialRegion); // Update the initialRegion directly
+        Geocoder.from(latitude, longitude)
+          .then((response) => {
+            const address = response.results[0].formatted_address;
+            console.log('Current location address:', address);
+            setCurrentLocation(address);
+          })
+          .catch((error) =>
+            console.warn('Error fetching location address:', error)
+          );
+      },
+      (error) => console.log('Error getting current location:', error),
+      { enableHighAccuracy: true, timeout: 20000, maximumAge: 1000 }
+    );
+  };
 
   const handleSetLocation = () => {
     bottomSheetRef.current.open();
@@ -223,7 +223,7 @@ const ConfirmLocation = ({ navigation, route }) => {
 
       <TouchableOpacity
         style={styles.focusButton}
-        onPress={{}}
+        onPress={{focusOnCurrentLocation}}
         activeOpacity={1}
       >
         <Image
