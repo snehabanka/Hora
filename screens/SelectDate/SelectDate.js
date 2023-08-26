@@ -7,7 +7,7 @@ import { BASE_URL, GET_CUISINE_ENDPOINT, API_SUCCESS_CODE, GET_MEAL_DISH_ENDPOIN
 import DateTimePicker from '@react-native-community/datetimepicker';
 
 
-const SelectDate = ({ route }) => {
+const SelectDate = ({ navigation,route }) => {
 
     const [selectedDate, setSelectedDate] = useState(new Date());
     const [selectedTime, setSelectedTime] = useState(new Date());
@@ -29,10 +29,13 @@ const SelectDate = ({ route }) => {
 
     const RenderAppliances = ({ item }) => {
         return (
-            <View style={{ borderRadius: 5, borderColor: '#DADADA', borderWidth: 1 }}>
-                <View style={{ paddingLeft: 5, paddingTop: 5, paddingBottom: 7, flexDirection: 'row' }}>
-                <Image source={{ uri: `https://horaservices.com/api/uploads/${item.image}` }} style={{ width: 40, height: 40}} />
-                    <Text>{item.name}</Text>
+            <View style={{ height: 51, paddingEnd: 2, alignItems: 'center', borderRadius: 5, borderColor: '#DADADA', borderWidth: 0.5, flexDirection: 'row', marginRight: 6, marginBottom: 8 }}>
+                <View style={{ marginLeft:5,width: 40, height: 40, backgroundColor: '#F0F0F0', borderRadius: 3, alignItems: 'center', justifyContent: 'center', marginRight: 5 }}>
+                    <Image source={{ uri: `https://horaservices.com/api/uploads/${item.image}` }} style={{ width: 33, height: 34 }} />
+                </View>
+                
+                <View style={{ flexDirection: 'column', marginLeft: 1,width:43}}>
+                    <Text style={{ fontSize: 12, fontWeight: '500', color: '#414141',lineHeight:15 }} numberOfLines={2}>{item.name}</Text>
                 </View>
             </View>
         );
@@ -40,26 +43,34 @@ const SelectDate = ({ route }) => {
 
     const RenderIngredients = ({ item }) => {
         return (
-            <View style={{ borderRadius: 5, borderColor: '#DADADA', borderWidth: 1 }}>
-                <View style={{ paddingLeft: 5, paddingTop: 5, paddingBottom: 7, flexDirection: 'row' }}>
-                <Image source={{ uri: `https://horaservices.com/api/uploads/${item.image}` }} style={{ width: 40, height: 40}} />
-                    <Text>{item.name}</Text>
+            <View style={{ height: 51, paddingEnd: 2, alignItems: 'center', borderRadius: 5, borderColor: '#DADADA', borderWidth: 0.5, flexDirection: 'row', flex: 1, marginRight: 6, marginBottom: 8 }}>
+                <View style={{ marginLeft:5,width: 40, height: 40, backgroundColor: '#F0F0F0', borderRadius: 3, alignItems: 'center', justifyContent: 'center', marginRight: 5 }}>
+                    <Image source={{ uri: `https://horaservices.com/api/uploads/${item.image}` }} style={{ width: 31, height: 24 }} />
+                </View>
+                
+                <View style={{ flexDirection: 'column', marginLeft: 1,width:43}}>
+                    <Text style={{ fontSize: 10, fontWeight: '500', color: '#414141', maxWidth: 120 }} numberOfLines={1}>{item.name}</Text>
+                    <Text style={{ fontSize: 14, fontWeight: '700', color: '#9252AA' }}>{item.qty} KG</Text>
                 </View>
             </View>
         );
     };
-
+    
     const renderPreparationText = ({ items }) => {
         if (showAll) {
             return items.map((item, index) => (
                 <Text key={index} style={styles.item}>{`${index + 1}. ${item}`}</Text>
             ));
         } else {
-            return items.slice(0, 2).map((item, index) => (
-                <Text key={index} style={styles.item}>{`${index + 1}. ${item}`}</Text>
-            ));
+            return items
+                .filter(item => item.length >= 2)
+                .slice(0, 2)
+                .map((item, index) => (
+                    <Text key={index} style={styles.item}>{`${index + 1}. ${item}`}</Text>
+                ));
         }
     };
+    
     
 
     const toggleShowAll = () => {
@@ -68,47 +79,66 @@ const SelectDate = ({ route }) => {
 
     const LeftTabContent = ({ burnerCount, ApplianceList }) => {
         return (
-            <View style={{ flexDirection: 'column', flex: 1 }}>
+            <View style={{ paddingHorizontal:15,flexDirection: 'column',marginLeft:16,marginEnd:20,borderWidth:1,elevation:1,backgroundColor:'white',borderBottomRightRadius:15,borderBottomLeftRadius:15,borderColor:'white'}}>
                 <View style={{ flexDirection: 'column' }}>
-
-                    <Text>Required Burners</Text>
-                    <Text>(Burners would be used at your location)</Text>
+                    <Text style={{color:'#000000',fontSize:13,fontWeight:'600',marginTop:20}}>Required Burners</Text>
+                    <Text style={{color:'#969696',fontSize:11,fontWeight:'500',marginTop:6}}>(Burners would be used at your location)</Text>
 
                 </View>
 
-                <View style={{ flexDirection: 'column' }}>
+                <View style={{ width:90,height:54,flexDirection: 'column' ,borderColor:"#DADADA",borderWidth:0.5,borderRadius:5,marginTop:19}}>
                     <View style={{ flexDirection: 'row' }}>
-                        <Image style={styles.image2} source={require('../../assets/selectDish.png')} />
-                        <Text>{burnerCount}</Text>
+                        <Image style={styles.burner} source={require('../../assets/burner.png')} />
+                        <Text style={{marginStart:12,marginVertical:6,fontSize:26,color:"#9252AA"}}>{burnerCount}</Text>
 
                     </View>
 
                 </View>
+                {ApplianceList.length >0 && (
 
-                <View style={{ flexDirection: 'column' }}>
+                <View style={{ flexDirection: 'column',marginTop:11 }}>
 
                     <View style={{ flexDirection: 'column' }}>
-                        <Text>Requires Special Appliances</Text>
-                        <Text>(Keep these appliances ready at your location)</Text>
+                        <Text style={{color:'#000000',fontSize:13,fontWeight:'600'}}>Requires Special Appliances</Text>
+                        <Text style={{color:'#969696',fontSize:11,fontWeight:'500',marginTop:7}}>(Keep these appliances ready at your location)</Text>
 
                     </View>
 
                 </View>
+                )}
 
-                <View style={{ flexDirection: 'column' }}>
-                    <Image style={{ height: 1, width: Dimensions.get('window').width * .9 }} source={require('../../assets/verticalSeparator.png')}></Image>
+               {ApplianceList.length >0 && (
+                <View style={{ flexDirection: 'row',marginTop:11}}>
+                    <Image style={styles.verticalSeparator} source={require('../../assets/verticalSeparator.png')}></Image>
                 </View>
+               )}
 
-                <View style={{ flexDirection: 'column' }}>
+            
+
+                <View style={{ flexDirection: 'column',marginTop:8}}>
                     <FlatList
                         data={ApplianceList}
                         keyExtractor={item => item.id}
                         renderItem={({ item }) => <RenderAppliances item={item} />}
                         numColumns={3}
-                        contentContainerStyle={styles.gridContainer}
+                
                     />
 
                 </View>
+
+                {preparationTextList.length > 0 && (
+    <View style={{ flexDirection: 'column', backgroundColor: '#F9E9FF', borderRadius: 15, paddingHorizontal: 10 }}>
+        <View style={styles.header}>
+            <Text style={{ color: '#9252AA', fontWeight: '500', fontSize: 10 }}>Readiness Required*</Text>
+            <TouchableOpacity onPress={toggleShowAll}>
+                <Text style={styles.showAllText}>{showAll ? 'Show Less' : 'Show All'}</Text>
+            </TouchableOpacity>
+        </View>
+        <View style={{ flexDirection: 'column' }}>
+            {renderPreparationText(preparationTextList)}
+        </View>
+    </View>
+)}
 
             </View>
         );
@@ -116,24 +146,42 @@ const SelectDate = ({ route }) => {
 
     const RightTabContent = ({ ingredientList }) => {
         return (
+            <ScrollView>
+            <View style={{ paddingHorizontal:15,flexDirection: 'column',marginLeft:16,marginEnd:20,borderWidth:1,elevation:1,backgroundColor:'white',borderBottomRightRadius:15,borderBottomLeftRadius:15,borderColor:'white',paddingBottom:10}}>
             <View style={{ flexDirection: 'column' }}>
-            <View style={{ flexDirection: 'column' }}>
-                <Text>Required Burners</Text>
-                <Text>((Keep these ingredient ready at your location))</Text>
+                <Text style={{color:'#000000',fontSize:13,fontWeight:'600',marginTop:20}}>Required Ingredient</Text>
+                <Text style={{color:'#969696',fontSize:11,fontWeight:'500',marginTop:6}}>(Keep these ingredient ready at your location)</Text>
 
             </View>
 
-            <View style={{ flexDirection: 'column' }}>
+            <View style={{ flexDirection: 'column',marginTop:15}}>
                     <FlatList
                         data={ingredientList}
                         keyExtractor={item => item.id}
                         renderItem={({ item }) => <RenderIngredients item={item} />}
                         numColumns={3}
-                        contentContainerStyle={styles.gridContainer}
+
                     />
 
                 </View>
+        
+                {preparationTextList.length > 0 && (
+    <View style={{ flexDirection: 'column', backgroundColor: '#F9E9FF', borderRadius: 15, paddingHorizontal: 10 }}>
+        <View style={styles.header}>
+            <Text style={{ color: '#9252AA', fontWeight: '500', fontSize: 10 }}>Readiness Required*</Text>
+            <TouchableOpacity onPress={toggleShowAll}>
+                <Text style={styles.showAllText}>{showAll ? 'Show Less' : 'Show All'}</Text>
+            </TouchableOpacity>
+        </View>
+        <View style={{ flexDirection: 'column' }}>
+            {renderPreparationText(preparationTextList)}
+        </View>
+    </View>
+)}
+
+               
             </View>
+            </ScrollView>
 
         );
     };
@@ -161,6 +209,7 @@ const SelectDate = ({ route }) => {
     };
 
 
+
     const getTotalBurnerCount = () => {
         let totalBurnerCount = 0;
 
@@ -185,10 +234,10 @@ const SelectDate = ({ route }) => {
         }
         const totalHours = Math.floor(totalCookingMinutes / 60);
         const remainingMinutes = totalCookingMinutes % 60;
-
-        return `${totalHours} hours ${remainingMinutes} minutes`;
+        const totalTime = totalHours + remainingMinutes/60;
+        return totalTime.toFixed(1); // Convert to string with one decimal place
     };
-
+    
 
 
     const getPreparationTextList = () => {
@@ -202,7 +251,10 @@ const SelectDate = ({ route }) => {
         return preparationTextList;
     };
 
-    const preparationTextList = getPreparationTextList()
+    const preparationTextArray = getPreparationTextList()
+    const preparationTextList = {
+        items: preparationTextArray
+    };
     console.warn(preparationTextList)
 
     
@@ -234,6 +286,12 @@ const SelectDate = ({ route }) => {
         }
     };
 
+    const onContinueClick = () => {
+        navigation.navigate("ConfirmDishOrder",{"selectedDate":selectedDate,"selectedTime":selectedTime,"peopleCount":peopleCount,
+        "selectedDishes":data
+    })
+    }
+
     const handleTimeChange = (event, time) => {
         if (time !== undefined) {
             setSelectedTime(time);
@@ -251,6 +309,7 @@ const SelectDate = ({ route }) => {
         }
     }
 
+
     return (
         <View style={styles.screenContainer}>
             <View style={styles.view1}>
@@ -258,23 +317,35 @@ const SelectDate = ({ route }) => {
                 <Text style={styles.text1}>Bill value depends upon Dish selected + Number of people</Text>
             </View>
             <View style={styles.view2}>
-                <Image style={styles.image2} source={require('../../assets/selectDish.png')} />
-                <Image style={styles.image3} source={require('../../assets/separator.png')} />
-                <Image style={styles.image2} source={require('../../assets/SelectDateAndTime.png')} />
-                <Image style={styles.image3} source={require('../../assets/separator.png')} />
-                <Image style={styles.image2} source={require('../../assets/selectDish.png')} />
+                <View>
+                <Image style={styles.dish} source={require('../../assets/SelectDishUnselected.png')} />
+                <Text style={{fontSize:10,fontFamily:'600',color:'#F46C5B'}}>Select Dishes</Text>
+                </View>
+                <Image style={styles.separator1} source={require('../../assets/horizontalSeparator.png')} />
+                <View>
+                <Image style={styles.time} source={require('../../assets/SelectDateAndTimeSelected.png')} />
+                <Text style={{fontSize:10,fontFamily:'600',color:'#F46C5B'}}>Select Date & Time</Text>
+                </View>
+                <Image style={styles.separator2} source={require('../../assets/horizontalSeparator.png')} />
+                <View>  
+                <Image style={styles.order} source={require('../../assets/ConfirmOrderUnselected.png')} />
+                <Text style={{fontSize:10,fontFamily:'600',color:'#827F84'}}>Confirm Order</Text>
+                </View>
 
             </View>
 
-            <View style={{ justifyContent: 'space-between', marginTop: 17, paddingTop: 28, paddingBottom: 9, backgroundColor: '#FFFFFF', width: Dimensions.get("window").width, borderRadius: 10, height: 170, elevation: 2 }}>
-                <View style={{ paddingLeft: 9, paddingEnd: 16, justifyContent: 'space-between', flexDirection: 'row' }}>
-                    <View style={{ marginTop: 4, flexDirection: 'column', paddingHorizontal: 16, backgroundColor: 'white', borderColor: '#F6ECEC', borderRadius: 10, borderWidth: 1, paddingBottom: 9 }}>
-                        <Text style={{ paddingTop: 4 }}>Select Date</Text>
-                        <View style={{ flexDirection: 'row', marginTop: 3 }}>
+            <View style={{ justifyContent: 'space-between', marginTop: 17, paddingTop: 7, paddingBottom: 9, backgroundColor: '#FFFFFF',marginLeft:15,marginEnd:16, borderRadius: 10, height: 180, elevation: 2 }}>
+            <View style={{justifyContent:'flex-end',flex:1,flexDirection:'row',marginEnd:7}}>
+            <Image source={require('../../assets/info.png')} style={{ height: 16, width: 16 }} />
+            </View>
+                <View style={{ marginTop:10,flexDirection: 'row'}}>
+                    <View style={{ marginTop: 4,marginStart:16,marginEnd:8, flexDirection: 'column', paddingHorizontal: 11, backgroundColor: 'white', borderColor: '#F6ECEC', borderRadius: 10, borderWidth: 1, paddingBottom: 9 }}>
+                        <Text style={{ paddingTop: 4,color:'#9252AA',fontWeight:'500',fontSize:10}}>Booking Date</Text>
+                        <View style={{ flexDirection: 'row', marginTop: 1 }}>
                             <TouchableOpacity onPress={() => setShowDatePicker(true)}>
-                                <Text>{selectedDate.toDateString()}</Text>
+                                <Text style={{fontSize:16,fontWeight:600,color:'#383838'}}>12/Jan/2023</Text>
                             </TouchableOpacity>
-                            <Image source={require('../../assets/clock.png')} style={{ height: 19, width: 19, marginLeft: 17 }} />
+                            <Image source={require('../../assets/ic_calendar.png')} style={{ height: 19, width: 19, marginLeft: 17 }} />
                             {showDatePicker && (
                                 <DateTimePicker
                                     value={selectedDate}
@@ -285,12 +356,12 @@ const SelectDate = ({ route }) => {
                             )}
                         </View>
                     </View>
-                    <View style={{ paddingLeft: 9, paddingEnd: 13, justifyContent: 'space-between', flexDirection: 'row' }}>
-                        <View style={{ marginTop: 4, flexDirection: 'column', paddingHorizontal: 16, backgroundColor: 'white', borderColor: '#F6ECEC', borderRadius: 10, borderWidth: 1 }}>
-                            <Text>Select Time</Text>
-                            <View style={{ flexDirection: 'row', marginTop: 3 }}>
+                    <View style={{ flexDirection: 'row' }}>
+                        <View style={{ marginTop: 4, flexDirection: 'column', paddingHorizontal:11, backgroundColor: 'white', borderColor: '#F6ECEC', borderRadius: 10, borderWidth: 1 }}>
+                        <Text style={{ paddingTop: 4,color:'#9252AA',fontWeight:'500',fontSize:10}}>Chef Arrival Time</Text>
+                            <View style={{ flexDirection: 'row', marginTop: 1 }}>
                                 <TouchableOpacity onPress={() => setShowTimePicker(true)}>
-                                    <Text>{selectedTime.toLocaleTimeString()}</Text>
+                                    <Text style={{fontSize:16,fontWeight:600,color:'#383838'}}>{selectedTime.toLocaleTimeString()}</Text>
                                 </TouchableOpacity>
                                 <Image source={require('../../assets/clock.png')} style={{ height: 19, width: 19, marginLeft: 17 }} />
                                 {showTimePicker && (
@@ -306,57 +377,75 @@ const SelectDate = ({ route }) => {
                         </View>
                     </View>
                 </View>
-                <View style={{ flexDirection: 'row' }}>
+                <View style={{ flexDirection: 'row',marginTop:11,marginLeft:20,marginRight:1}}>
                     <Image style={styles.verticalSeparator} source={require('../../assets/verticalSeparator.png')}></Image>
                 </View>
 
-                <View style={{ flex: 1, flexDirection: 'row', justifyContent: 'space-evenly', marginTop: 13, justifyContent: 'center', alignItems: 'center' }}>
-                    <Image source={require('../../assets/people.png')} style={{ height: 24, width: 24, marginLeft: 10 }} />
-                    <Text style={{ marginLeft: 5, color: '#3C3C3E', fontWeight: '500' }}>How many people you are hosting?</Text>
+                <View style={{ flex: 1, flexDirection: 'row', justifyContent: 'space-evenly', marginTop: 13, justifyContent: 'center', alignItems: 'center',marginLeft:16 }}>
+                    <Image source={require('../../assets/people.png')} style={{ height: 25, width: 25 }} />
+                    <Text style={{ marginLeft: 9, fontSize:12,color: '#3C3C3E', fontWeight: '500',}}>How many people you are hosting?</Text>
                     <View style={{ flexDirection: 'row', flex: 1 }}>
                         <TouchableOpacity onPress={increasePeopleCount}>
-                            <Image source={require('../../assets/plus.png')} style={{ height: 24, width: 24, marginLeft: 5 }} />
+                            <Image source={require('../../assets/plus.png')} style={{ height: 24, width: 24, marginLeft: 10}} />
                         </TouchableOpacity>
-                        <Text style={{ marginLeft: 3 }}>{peopleCount}</Text>
+                        <Text style={{ marginLeft: 8,lineHeight:20,fontSize:20,marginTop:2 }}>{peopleCount}</Text>
                         <TouchableOpacity onPress={decreasePeopleCount}>
-                            <Image source={require('../../assets/minus.png')} style={{ height: 24, width: 24, marginLeft: 5 }} />
+                            <Image source={require('../../assets/ic_minus.png')} style={{ height: 24, width: 24, marginLeft: 8 }} />
                         </TouchableOpacity>
                     </View>
                 </View>
 
-                <View style={{ flex: 1, flexDirection: 'row', borderRadius: 10, marginLeft: 13, paddingLeft: 11, paddingRight: 11, marginTop: 15, borderRadius: 10, backgroundColor: '#F9E9FF' }}>
+                <View style={{ flex: 1, flexDirection: 'row',paddingVertical:4, borderRadius: 10, marginLeft: 13,marginRight:6, paddingLeft: 11, paddingRight: 11,marginTop: 15, borderRadius: 10, backgroundColor: '#F9E9FF' }}>
                     <Image source={require('../../assets/info.png')} style={{ height: 16, width: 16 }} />
-                    <Text style={{ color: '#9252AA', fontWeight: '700', marginLeft: 4 }}>₹ 49/person would be added to bill value in addition to dish price</Text>
+                    <Text style={{ color: '#9252AA', fontWeight: '700',marginLeft: 9,fontSize:10 }}>₹ 49/person would be added to bill value in addition to dish price</Text>
 
                 </View>
 
 
             </View>
-            <View style={{ justifyContent: 'center' }}>
-                <Text >Required Procurement ?</Text>
-                <Text >Keep these Appliances and Ingredients ready before chef Arrival</Text>
+            <View style={{ justifyContent: 'center',flexDirection:'row',marginTop:16}}>
+                <Text  style={{color:'#707070',fontSize:14,fontWeight:'800'}} >Required Procurement ?</Text>
             </View>
 
-            <View style={styles.tabSwitch}>
-                <TouchableOpacity onPress={() => setActiveTab('left')}>
-                    <Text style={activeTab === 'left' ? styles.activeTab : styles.inactiveTab}>Left Tab</Text>
+            <View style={{flexDirection:'row',marginTop:6,marginHorizontal:9}}>
+                <Text style={{color:'#707070',fontSize:12,fontWeight:'400'}} >Keep these Appliances and Ingredients ready before chef Arrival</Text>
+            </View>
+
+            <View style={{flexDirection:'row',marginTop:20,marginHorizontal:16}}>
+                <TouchableOpacity style={{backgroundColor:'white',borderTopRightRadius:10,borderTopLeftRadius:15,paddingVertical:8,paddingStart:50,paddingRight:50}} onPress={() => setActiveTab('left')}>
+                    <Text style={activeTab === 'left' ? styles.activeTab : styles.inactiveTab}>Appliances</Text>
                 </TouchableOpacity>
-                <TouchableOpacity onPress={() => setActiveTab('right')}>
-                    <Text style={activeTab === 'right' ? styles.activeTab : styles.inactiveTab}>Right Tab</Text>
+                <TouchableOpacity style={{backgroundColor:'#D9D9D9',borderTopRightRadius:10,borderTopLeftRadius:15,paddingVertical:8,paddingStart:50,paddingRight:50}} onPress={() => setActiveTab('right')}>
+                    <Text style={activeTab === 'right' ? styles.activeTab : styles.inactiveTab}>Ingredient</Text>
                 </TouchableOpacity>
             </View>
             {renderTabContent()}
-            <View style={{ flexDirection: 'column' }}>
-                <View style={styles.header}>
-                    <Text style={{}}>Readiness Required*</Text>
-                    <TouchableOpacity onPress={toggleShowAll}>
-                        <Text style={styles.showAllText}>{showAll ? 'Show Less' : 'Show All'}</Text>
-                    </TouchableOpacity>
-                </View>
-                <View style={{}}>
-                    {/* {renderPreparationText(preparationTextList)} */}
-                </View>
+            <View style={{borderColor:"#F39200",borderWidth:0.5,borderRadius:5,backgroundColor:"#FFE3B9",marginHorizontal:16,flexDirection:'row',alignItems:'center',marginTop:5}}>
+            <Image source={require('../../assets/orderIcon.png')} style={{ height: 28, width: 30 ,marginStart:5,marginTop:5,marginBottom:7}} />
+            <Text style={{marginStart:9,color:'#606060',fontSize:13,fontWeight:'400'}} >Expected cooking time of your food</Text>
+
+            <View style={{marginStart:5,backgroundColor:"#FFD1B7",borderRadius:7,justifyContent:'center',padding:6}}>
+                <Text style={{color:'#5F5C59',fontWeight:'700',fontSize:13}}>
+                {getTotalCookingTime()} Hrs
+                </Text>
+
             </View>
+            <View style={{marginStart:3}} >
+            <Image source={require('../../assets/icCross.png')} style={{ height: 12, width: 12}} />
+            </View>
+
+            </View>
+
+            <View style={{paddingHorizontal:16,justifyContent:'space-between'}}>
+            <TouchableHighlight onPress={onContinueClick} style={styles.continueButton} underlayColor="transparent" activeOpacity={1}>
+            <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center',paddingHorizontal:16 }}>
+            <Text style={styles.buttonText1}>Continue</Text>
+            <Text style={styles.buttonText1}>{data.length} Items | ₹ {}</Text>
+        </View>
+
+            </TouchableHighlight>
+        </View>
+           
         </View>
     )
 }

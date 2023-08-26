@@ -275,11 +275,20 @@ const CreateOrder = ({navigation}) => {
                 <Text style={styles.text1}>Bill value depends upon Dish selected + Number of people</Text>
             </View>
             <View style={styles.view2}>
-                <Image style={styles.image2} source={require('../../assets/selectDish.png')} />
-                <Image style={styles.image3} source={require('../../assets/separator.png')} />
-                <Image style={styles.image2} source={require('../../assets/SelectDateAndTime.png')} />
-                <Image style={styles.image3} source={require('../../assets/separator.png')} />
-                <Image style={styles.image2} source={require('../../assets/selectDish.png')} />
+                <View>
+                <Image style={styles.dish} source={require('../../assets/SelectDishUnselected.png')} />
+                <Text style={{fontSize:10,fontFamily:'600',color:'#F46C5B'}}>Select Dishes</Text>
+                </View>
+                <Image style={styles.separator1} source={require('../../assets/horizontalSeparator.png')} />
+                <View>
+                <Image style={styles.time} source={require('../../assets/SelectDateAndTimeSelected.png')} />
+                <Text style={{fontSize:10,fontFamily:'600',color:'#F46C5B'}}>Select Date & Time</Text>
+                </View>
+                <Image style={styles.separator2} source={require('../../assets/horizontalSeparator.png')} />
+                <View>  
+                <Image style={styles.order} source={require('../../assets/ConfirmOrderUnselected.png')} />
+                <Text style={{fontSize:10,fontFamily:'600',color:'#827F84'}}>Confirm Order</Text>
+                </View>
 
             </View>
 
@@ -331,7 +340,7 @@ const CreateOrder = ({navigation}) => {
                                         <Text style={{ color: '#9252AA', fontWeight: '400', textDecorationLine: 'underline', fontSize: 11, marginLeft: 10 }}>View All</Text>
 
                                     </TouchableOpacity>
-                                    <Image style={{ width: 9, height: 9, marginLeft: 8 }} source={require('../../assets/Vector.png')}></Image>
+                                    <Image style={{ width: 9, height: 9, marginLeft: 8 }} source={require('../../assets/viewAll.png')}></Image>
                                 </View>
 
                             </View>

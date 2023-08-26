@@ -6,7 +6,6 @@ import Splash from '../screens/splash/splash'
 import Home from '../screens/home/Home';
 import Login from '../screens/login/Login'
 import MyAccount from '../screens/myaccount/MyAccount'
-// import Refer from '../screens/refer/Refer';
 import OrderHistory from '../screens/orderhistory/OrderHistory';
 import CreateOrder from '../screens/createorder/CreateOrder';
 import ConfirmOrder from '../screens/confirmOrder/ConfirmOrder';
@@ -27,7 +26,7 @@ const StackNavigation = () => {
         return <CustomHeader title={route.name} />;
       },
     }}
-    initialRouteName='ConfirmDishOrder'
+    initialRouteName='CreateOrder'
   >
     <Stack.Screen name="MyAccount" component={MyAccount} options={{headerShown:true}}/>
       <Stack.Screen name="Splash" component={Splash} options={{headerShown:true}} />
@@ -41,6 +40,7 @@ const StackNavigation = () => {
       <Stack.Screen name="SelectDate" component={SelectDate} options={{headerShown:true}} />
       <Stack.Screen name="ConfirmDishOrder" component={ConfirmDishOrder} options={{headerShown:true}} />
       <Stack.Screen name="Onboarding" component={Onboarding} options={{headerShown:true}} />
+      <Stack.Screen name="Contact" component={Onboarding} options={{headerShown:true}} />
 
       {/* <Stack.Screen name="Refer" component={Refer} options={{headerShown:true}} /> */}
 
