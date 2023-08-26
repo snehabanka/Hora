@@ -2,13 +2,10 @@ import { StyleSheet, Dimensions } from 'react-native';
 
 const styles = StyleSheet.create({
     image: {
-        alignSelf: 'stretch',
-        height: Dimensions.get('window').width * (19 / 16),
-        width: Dimensions.get('window').width,
-        marginBottom: 40
-    },
-    container: {
-        flex: 1
+        height: 72,
+        width: 132,
+        marginTop:200,
+        alignItems:'center'
     },
     text1: {
         fontSize: 18,
@@ -25,12 +22,9 @@ const styles = StyleSheet.create({
     },
     text3: {
         fontSize: 14,
-        color: '#414141',
-        marginLeft: 36,
+        color: '#BEBEBE',
         marginTop:2,
-        fontWeight: '400',
-        opacity: 0.6000000238418579
-
+        fontWeight: '500'
     },
     text4: {
         fontSize: 14,
@@ -43,8 +37,9 @@ const styles = StyleSheet.create({
     
 
     input: {
-        fontSize:14,
-        fontWeight:'500',
+        fontSize:20,
+        fontWeight:'700',
+        color:"#433939",
         justifyContent: 'center'
 
     },
@@ -75,8 +70,8 @@ const styles = StyleSheet.create({
     },
     button: {
         height: 50,
-        borderRadius: 6,
-        backgroundColor: '#E56352',
+        borderRadius: 20,
+        backgroundColor: '#9252AA',
         marginLeft: 36,
         marginRight:26,
         justifyContent: 'center',
@@ -87,33 +82,31 @@ const styles = StyleSheet.create({
         alignItems:'center',
         justifyContent:'center',
         color: '#FFF',
-        fontSize: 13,
-        fontWeight: '600',
+        fontSize: 18,
+        fontWeight: '500',
+        marginHorizontal:32
     },
     buttonText1: {
-        justifyContent:'center',
-        color: '#8A8A8A',
+        justifyContent:'flex-end',
+        color: '#9252AA',
         fontSize: 13,
         fontWeight: '600',
-        marginLeft: 261,
-        
     },
     
       otpContainer: {
         flexDirection: 'row',
-        marginLeft:32,
+        marginLeft:65,
         marginTop:20,
-        marginBottom:10
-     
     },
       otpInput: {
-        width: 60,
-        height: 42,
-        borderColor: '#545454',
+        width: 56,
+        height: 45,
+        borderColor: '#D9D9D9',
         borderWidth: 1,
-        borderRadius: 6,
-        marginHorizontal: 7,
+        borderRadius: 8,
+        marginHorizontal: 4,
         fontSize: 19,
+        backgroundColor:'#E7E7E7',
         textAlign: 'center',
         opacity: 0.800000011920929,
         color:'#292929',
@@ -121,21 +114,57 @@ const styles = StyleSheet.create({
       },
       invalidOtpText:{
         fontSize:14,
-        color:'#C61B1B',
-        marginLeft:38,
-        marginTop:-20,
-        fontWeight:'800',
-        opacity: 0.6000000238418579
+        color:'#F46C5B',
+        fontWeight:'600',
       },
       timerText:{
-        fontSize:13,
-        fontWeight:'400',
+        fontSize:12,
+        fontWeight:'600',
         color:'#8A8A8A',
-        marginLeft:210,
-        justifyContent: 'flex-end',
-
+        maxWidth:700,
+        textAlign:'center'
+      },
+      backgroundImage:{
+        height: Dimensions.get('window').height,
+        width: Dimensions.get('window').width
+      },
+      bottomContainer: {
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        alignItems: 'center',
+        marginTop: 22,
+        marginLeft:65,
+        marginRight: 40,
+      },
+    
+      resendContainer: {
+        flexDirection: 'row',
+        justifyContent: 'center',
+        alignItems: 'center',
+      },
+    
+      resendCodeText: {
+        color:"#9252AA",
+        fontSize:13,
+        fontWeight:'600',
+        maxWidth:100
+      },
+      rightContainer: {
+        flex: 1,
+        alignItems: 'flex-end',
+      },
+    
+      leftContainer: {
+        flex: 1,
+      },
+    
+      centerContainer: {
+        flex: 1,
       }
     },
+    
+
+    
     
     );
     

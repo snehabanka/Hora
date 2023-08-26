@@ -1,23 +1,24 @@
-import React, { useEffect, useState, useRef} from 'react';
-import { Dimensions,TouchableOpacity,Text,Image,View,FlatList, StyleSheet,TextInput, Alert, Platform, PermissionsAndroid } from 'react-native';
+import React, { useEffect, useState, useRef } from 'react';
+import { Dimensions, TouchableOpacity, Text, Image, View, FlatList, StyleSheet, TextInput, Alert, Platform, PermissionsAndroid } from 'react-native';
 import MapView, { Marker } from 'react-native-maps';
 import Geolocation from 'react-native-geolocation-service';
 import * as Permissions from 'react-native-permissions';
 import Geocoder from 'react-native-geocoding';
 import RBSheet from 'react-native-raw-bottom-sheet';
-import { BASE_URL,SAVE_LOCATION_ENDPOINT,API_SUCCESS_CODE } from '../../utils/ApiConstants';
+import { BASE_URL, SAVE_LOCATION_ENDPOINT, API_SUCCESS_CODE } from '../../utils/ApiConstants';
 import axios from 'axios';
 
-const ConfirmLocation = () => {
+const ConfirmLocation = ({ navigation, route }) => {
   const [initialRegion, setInitialRegion] = useState(null);
   const [locationPermissionStatus, setLocationPermissionStatus] = useState(null);
   const [locationText, setLocationText] = useState('');
-  const [currentLocation, setCurrentLocation] =useState('')
-  const [center, setCenter] = useState(null);
+  const [currentLocation, setCurrentLocation] = useState('')
   const [selectedButtonId, setSelectedButtonId] = useState(null);
   const [recipient, setRecipient] = useState('');
   const [houseNumber, setHouseNumber] = useState('');
   const [address, setAddress] = useState('');
+  const data = route.params.data
+  const [mapRegion, setMapRegion] = useState(initialRegion);
 
   const bottomSheetRef = useRef();
 
@@ -34,14 +35,14 @@ const ConfirmLocation = () => {
   };
 
   const renderButton = ({ item }) => (
-    <TouchableOpacity style={[styles.button1 , selectedButtonId === item.id && styles.selectedButton]} onPress={() => handleButtonPress(item.id)}>
-      <Text style={[styles.buttonText , selectedButtonId === item.id && styles.selectedText]} >{item.label}</Text>
+    <TouchableOpacity activeOpacity={1} style={[styles.button1, selectedButtonId === item.id && styles.selectedButton]} onPress={() => handleButtonPress(item.id)}>
+      <Text style={[styles.buttonText, selectedButtonId === item.id && styles.selectedText]} >{item.label}</Text>
     </TouchableOpacity>
   );
 
 
   const handleRegionChange = async (newRegion) => {
-    setCenter(newRegion);
+    setInitialRegion(newRegion)
     try {
       const response = await Geocoder.from(newRegion.latitude, newRegion.longitude);
       const address = response.results[0].formatted_address;
@@ -54,7 +55,9 @@ const ConfirmLocation = () => {
 
   useEffect(() => {
     Geocoder.init('AIzaSyBmHupwMPDVmKEryBTT9LlIeQITS3olFeY');
-
+    if (data != null) {
+      handleSetLocation()
+    }
     const checkLocationPermission = async () => {
       if (Platform.OS === 'android') {
         const granted = await PermissionsAndroid.check(
@@ -99,28 +102,33 @@ const ConfirmLocation = () => {
     //   }
     // };
 
+    const focusOnCurrentLocation = () => {
+      if (locationPermissionStatus === 'granted') {
+        getCurrentLocation()
+      }
+    };
 
-    
 
     const getCurrentLocation = () => {
       Geolocation.getCurrentPosition(
         (position) => {
           const { latitude, longitude } = position.coords;
-          const initialRegion= {
+          const updatedInitialRegion = {
             latitude,
             longitude,
             latitudeDelta: 0.0922,
             longitudeDelta: 0.0421,
-          }
-          setInitialRegion(initialRegion);
-          setCenter(initialRegion)
+          };
+          setInitialRegion(updatedInitialRegion); // Update the initialRegion directly
           Geocoder.from(latitude, longitude)
-          .then((response) => {
-            const address = response.results[0].formatted_address;
-            console.log('Current location address:', address);
-            setCurrentLocation(address)
-          })
-          .catch((error) => console.warn('Error fetching location address:', error));
+            .then((response) => {
+              const address = response.results[0].formatted_address;
+              console.log('Current location address:', address);
+              setCurrentLocation(address);
+            })
+            .catch((error) =>
+              console.warn('Error fetching location address:', error)
+            );
         },
         (error) => console.log('Error getting current location:', error),
         { enableHighAccuracy: true, timeout: 20000, maximumAge: 1000 }
@@ -132,7 +140,6 @@ const ConfirmLocation = () => {
 
   const handleSetLocation = () => {
     bottomSheetRef.current.open();
-
   };
 
   const handleSearchLocation = (text) => {
@@ -140,48 +147,51 @@ const ConfirmLocation = () => {
     Geocoder.from(text)
       .then((response) => {
         const { lat, lng } = response.results[0].geometry.location;
-        const address=response.results[0].geometry.formatted_address
-        const initialRegion= {
-            latitude: lat,
-            longitude: lng,
-            latitudeDelta: 0.0922,
-            longitudeDelta: 0.0421 }
+        const address = response.results[0].geometry.formatted_address
+        const initialRegion = {
+          latitude: lat,
+          longitude: lng,
+          latitudeDelta: 0.0922,
+          longitudeDelta: 0.0421
+        }
         setInitialRegion(initialRegion);
-        setCenter(initialRegion)
         setCurrentLocation(address)
       })
       .catch((error) => console.warn('Error fetching location:', error));
   };
 
-  
-    const saveAddress = async () => {
-      try {
-          const url = BASE_URL + SAVE_LOCATION_ENDPOINT;
-          const requestData =
-            {
-              title:"Add edit",
-              address1:"sdf",
-              address2:"fsdfsdf",
-              address_type:"1",
-              _id:"6400482a8efa231e9390e487"
-          };
-          const response = await axios.post(url, requestData, {
-              headers: {
-                  'Content-Type': 'application/json',
-                  'authorization': 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2NGFmY2RjMTVmY2RjMDNlMTRiZmNkNmUiLCJuYW1lIjoiIiwiZW1haWwiOiIiLCJwaG9uZSI6Ijc5OTIyNzkzODYiLCJyb2xlIjoiY3VzdG9tZXIiLCJpYXQiOjE2ODk4NjU4MTYsImV4cCI6MTcyMTQwMTgxNn0.tF6nGHudhONGgICO8Xf6TDH3XGb1YKLGERSqmbWE8E4'
-              },
-          });
-          console.warn(requestData)
-          if (response.status == API_SUCCESS_CODE) {
-              console.warn(response.status)
-          }
-      } catch (error) {
-          console.log('Error Fetching Data:', error.message);
+  const saveAddress = async () => {
+    try {
+      const url = BASE_URL + SAVE_LOCATION_ENDPOINT;
+      const requestData =
+      {
+        title: "Add edit",
+        address1: "sdf",
+        address2: "fsdfsdf",
+        address_type: "1",
+        _id: "6400482a8efa231e9390e487"
+      };
+      const response = await axios.post(url, requestData, {
+        headers: {
+          'Content-Type': 'application/json',
+          'authorization': 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2NGFmY2RjMTVmY2RjMDNlMTRiZmNkNmUiLCJuYW1lIjoiIiwiZW1haWwiOiIiLCJwaG9uZSI6Ijc5OTIyNzkzODYiLCJyb2xlIjoiY3VzdG9tZXIiLCJpYXQiOjE2ODk4NjU4MTYsImV4cCI6MTcyMTQwMTgxNn0.tF6nGHudhONGgICO8Xf6TDH3XGb1YKLGERSqmbWE8E4'
+        },
+      });
+      console.warn(requestData)
+      if (response.status == API_SUCCESS_CODE) {
+        console.warn(response.status)
       }
+    } catch (error) {
+      console.log('Error Fetching Data:', error.message);
+    }
   };
 
   return (
     <View style={styles.container}>
+      <View style={styles.view1}>
+        <Image style={styles.image4} source={require('../../assets/info.png')} />
+        <Text style={styles.text1}>Price is calculated from dish cost and number of servings.</Text>
+      </View>
       {locationPermissionStatus === 'granted' && initialRegion && (
         <MapView
           style={styles.map}
@@ -190,40 +200,51 @@ const ConfirmLocation = () => {
           onRegionChange={handleRegionChange}
         >
           <Marker
-            coordinate={center}
-            image={require('../../assets/plus.png')}
+            coordinate={initialRegion}
+            image={require('../../assets/markerPin1.png')}
+            style={{ width: 200, height: 216 }}
           />
         </MapView>
       )}
+
       <View style={styles.searchBox}>
-      <TouchableOpacity style={styles.searchButton}>
-         <Image source={require('../../assets/search.png')} style={styles.image1}></Image>
+        <TouchableOpacity activeOpacity={1} style={styles.searchButton}>
+          <Image source={require('../../assets/ic_search_black.png')} style={styles.image1}></Image>
         </TouchableOpacity>
         <TextInput
           style={styles.input}
           placeholder="Find Your location"
           value={locationText}
           onChangeText={handleSearchLocation}
-          placeholderTextColor="gray"
+          placeholderTextColor="black"
         />
-        
+
       </View>
+
+      <TouchableOpacity
+        style={styles.focusButton}
+        onPress={{}}
+        activeOpacity={1}
+      >
+        <Image
+          source={require('../../assets/markLocation.png')}
+          style={styles.markLocationImage}
+        />
+      </TouchableOpacity>
+
       <View style={styles.card}>
         <View style={styles.locationContainer}>
           <Text style={styles.locationText1}>Your Location</Text>
-          <TouchableOpacity  onPress={() => setLocationText('')} >
-        <Text style={styles.changeLocation}>CHANGE</Text>
-      </TouchableOpacity>
         </View>
         <View style={styles.buttonsContainer}>
-        <Image source={require('../../assets/LocationPin.png')} style={styles.image2}></Image>
-        <Text style={styles.locationText2} multiline
-        numberOfLines={2}>{currentLocation}</Text>
-          
+          <Image source={require('../../assets/LocationPin.png')} style={styles.image2}></Image>
+          <Text style={styles.locationText2} multiline
+            numberOfLines={4}>{currentLocation}</Text>
+
         </View>
-        <TouchableOpacity style={styles.setLocation1} onPress={handleSetLocation}>
-            <Text style={{color:'white',fontSize:14,fontWeight:'500'}}>Set Location</Text>
-          </TouchableOpacity>
+        <TouchableOpacity activeOpacity={1} style={styles.setLocation1} onPress={handleSetLocation}>
+          <Text style={{ color: 'white', fontSize: 14, fontWeight: '500' }}>Set Location</Text>
+        </TouchableOpacity>
       </View>
 
       <RBSheet
@@ -242,36 +263,37 @@ const ConfirmLocation = () => {
           <Text style={styles.saveAddress}>Save Address As*</Text>
           <View style={styles.container1}>
 
-      <FlatList
-        data={buttonData}
-        renderItem={renderButton}
-        keyExtractor={(item) => item.id}
-        horizontal
-        showsHorizontalScrollIndicator={false}
-      />
-    </View>
+            <FlatList
+              data={buttonData}
+              renderItem={renderButton}
+              keyExtractor={(item) => item.id}
+              horizontal
+              showsHorizontalScrollIndicator={false}
+            />
+          </View>
 
-      <View style={{...styles.textInputContainer}}>
-        <TextInput style={styles.textInput} placeholder="Recipient Name"  value={recipient}
-        onChangeText={setRecipient}/>
-      </View>
-      <View style={{...styles.textInputContainer,marginTop:12}}>
-        <TextInput style={styles.textInput} placeholder="House/Flat/tower/floor number"  value={houseNumber}
-        onChangeText={setHouseNumber}/>
-      </View>
-      <View style={{...styles.textInputContainer,marginTop:12}}>
-        <TextInput style={styles.textInput} placeholder="Street/Society/Nearyby Landmark" value={address}
-        onChangeText={setAddress} />
-      </View>
+          <View style={{ ...styles.textInputContainer }}>
+            <TextInput style={styles.textInput} placeholder="Recipient Name" value={recipient}
+              onChangeText={setRecipient} />
+          </View>
+          <View style={{ ...styles.textInputContainer, marginTop: 12 }}>
+            <TextInput style={styles.textInput} placeholder="House/Flat/tower/floor number" value={houseNumber}
+              onChangeText={setHouseNumber} />
+          </View>
+          <View style={{ ...styles.textInputContainer, marginTop: 12 }}>
+            <TextInput style={styles.textInput} placeholder="Street/Society/Nearyby Landmark" value={address}
+              onChangeText={setAddress} />
+          </View>
 
-      <TouchableOpacity style={{...styles.setLocation, width:Dimensions.get('window').width*0.9}} onPress={saveAddress}>
-            <Text style={{color:'white',fontSize:14,fontWeight:'500'}}>Save Address</Text>
-        </TouchableOpacity>
+          <TouchableOpacity activeOpacity={1} style={{ ...styles.setLocation, width: Dimensions.get('window').width * 0.9 }} onPress={saveAddress}>
+            <Text style={{ color: 'white', fontSize: 14, fontWeight: '500' }}>Save Address</Text>
+          </TouchableOpacity>
 
         </View>
       </RBSheet>
-      </View>
-)};
+    </View>
+  )
+};
 
 const styles = StyleSheet.create({
   container: {
@@ -283,40 +305,43 @@ const styles = StyleSheet.create({
   },
   searchBox: {
     position: 'absolute',
-    top: 20,
+    top: 40,
     left: 20,
     right: 20,
+    opacity: 0.5,
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: 'rgba(255, 255, 255, 0.7)',
+    backgroundColor: '#818181',
     borderRadius: 15,
     paddingHorizontal: 10,
   },
   input: {
     flex: 1,
     height: 40,
-    color: 'black',
+    color: '000',
   },
+  view1: { flexDirection: 'row', backgroundColor: '#EFF0F3', elevation: 2, width: Dimensions.get('window').width },
+  text1: { color: '#676767', fontSize: 12, fontWeight: '400', paddingVertical: 5, marginStart: 8 },
+  image4: { width: 16, height: 16, marginLeft: 16, marginTop: 5, marginBottom: 5 },
   searchButton: {
     marginLeft: 10,
   },
-  image1:{
-    height:24,
-    width:24
+  image1: {
+    height: 24,
+    width: 24
   },
-  image2:{
-    height:33,
-    width:33,
-    marginLeft:20,
-    marginTop:28
+  image2: {
+    height: 33,
+    width: 33,
+    marginLeft: 20
   },
   card: {
     position: 'absolute',
-    width:Dimensions.get('window').width*0.9,
-   
+    width: Dimensions.get('window').width * 0.9,
     bottom: 20,
     left: 20,
     right: 20,
+    height: 220,
     backgroundColor: 'white',
     borderRadius: 22,
   },
@@ -324,7 +349,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    paddingHorizontal: 20, 
+    paddingHorizontal: 20,
   },
   locationIcon: {
     marginRight: 5,
@@ -332,53 +357,52 @@ const styles = StyleSheet.create({
   locationText1: {
     fontSize: 15,
     fontWeight: '700',
-    marginTop:22,
-    color:'#000'
+    marginTop: 22,
+    color: '#000'
   },
   locationText2: {
-    textAlign: 'center',
-    fontSize: 16,
+    fontSize: 15,
     fontWeight: 'bold',
-    marginLeft:20,
-    marginTop:28,
-    marginEnd:36
+    marginLeft: 20,
+    marginEnd: 26,
+    height: 55,
   },
   buttonsContainer: {
-    marginTop: 10,
+    marginTop: 22,
     flexDirection: 'row',
-    paddingEnd:36,
-   
+    paddingEnd: 36,
+
   },
   changeLocation: {
 
-    color:'#9252AA',
-    fontSize:11,
-    fontWeight:'700',
-    marginTop:24
+    color: '#9252AA',
+    fontSize: 11,
+    fontWeight: '700',
+    marginTop: 24
 
   },
   setLocation: {
     alignItems: 'center',
-    justifyContent:'center',
+    justifyContent: 'center',
     backgroundColor: '#9252AA',
     paddingVertical: 8,
     paddingHorizontal: 20,
     borderRadius: 15,
-    marginBottom:33,
-    height:57,
-    marginTop:43
+    marginBottom: 33,
+    height: 57,
+    marginTop: 43
   },
   setLocation1: {
     alignItems: 'center',
-    justifyContent:'center',
+    justifyContent: 'center',
     backgroundColor: '#9252AA',
     paddingVertical: 8,
     paddingHorizontal: 20,
     borderRadius: 15,
-    marginHorizontal:16,
-    marginBottom:33,
-    height:57,
-    marginTop:43
+    marginHorizontal: 16,
+    marginBottom: 10,
+    height: 57,
+    marginTop: 32
   },
   bottomSheetWrapper: {
     backgroundColor: 'rgba(0, 0, 0, 0.5)',
@@ -388,8 +412,8 @@ const styles = StyleSheet.create({
   },
   sheetContent: {
     flex: 1,
-    flexDirection:'column',
-    marginBottom:-19
+    flexDirection: 'column',
+    marginBottom: -19
   },
   bottomSheetContainer: {
     backgroundColor: 'white',
@@ -400,65 +424,78 @@ const styles = StyleSheet.create({
   },
   container1: {
     flex: 1,
-    justifyContent:'space-between',
-    marginTop:22
+    justifyContent: 'space-between',
+    marginTop: 22
   },
   button1: {
-    flex:1,
-    height:33,
-    width:70,
-    justifyContent:'center',
-    alignItems:'center',
+    flex: 1,
+    height: 33,
+    width: 70,
+    justifyContent: 'center',
+    alignItems: 'center',
     backgroundColor: '#0000',
-    marginHorizontal:5,
-    borderColor:'#AC6ABE',
-    borderWidth:0.5,
+    marginHorizontal: 5,
+    borderColor: '#AC6ABE',
+    borderWidth: 0.5,
     borderRadius: 22,
   },
   buttonText: {
     color: '#AC6ABE',
     fontSize: 13,
     fontWeight: '600',
-    textAlign:'center'
+    textAlign: 'center'
   },
-  selectedButton:{
-    backgroundColor:'#AC6ABE',
+  selectedButton: {
+    backgroundColor: '#AC6ABE',
   },
-  selectedText:{
+  selectedText: {
     color: '#FFFFFF',
     fontSize: 13,
     fontWeight: '600',
-    textAlign:'center'
+    textAlign: 'center'
   },
-  textInputContainer:{
-    width:Dimensions.get('window').width*0.9,
-    height:57,
-    backgroundColor:'#E7E7E7',
-    borderRadius:15,
-    borderColor:'#D9D9D9',
-    borderWidth:1,
-    paddingHorizontal:28,
-    justifyContent:'center'},
-  textInput:{fontSize:13,
-      fontWeight:'400',
-      color:'#414141'
+  textInputContainer: {
+    width: Dimensions.get('window').width * 0.9,
+    height: 57,
+    backgroundColor: '#E7E7E7',
+    borderRadius: 15,
+    borderColor: '#D9D9D9',
+    borderWidth: 1,
+    paddingHorizontal: 28,
+    justifyContent: 'center'
+  },
+  textInput: {
+    fontSize: 13,
+    fontWeight: '400',
+    color: '#414141'
 
-    },
-    textAddress:{
-      fontSize:16,
-      marginTop:44,
-      fontWeight:'700',
-      color:'black',
-      marginLeft:10
-    },
-    saveAddress:{
-      justifyContent:'flex-start',
-      fontSize:12,
-      marginTop:26,
-      marginLeft:10,
-      fontWeight:'400',
-      color:'#414141'
-    }
+  },
+  textAddress: {
+    fontSize: 16,
+    marginTop: 44,
+    fontWeight: '700',
+    color: 'black',
+    marginLeft: 10
+  },
+  saveAddress: {
+    justifyContent: 'flex-start',
+    fontSize: 12,
+    marginTop: 26,
+    marginLeft: 10,
+    fontWeight: '400',
+    color: '#414141'
+  },
+  focusButton: {
+    position: 'absolute',
+    top: 100,
+    right: 20,
+    zIndex: 2, // Ensure the button appears above the map
+    backgroundColor: 'transparent',
+  },
+  markLocationImage: {
+    width: 39,
+    height: 39,
+  },
 });
 
 

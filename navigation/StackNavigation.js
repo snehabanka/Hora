@@ -10,7 +10,6 @@ import OrderHistory from '../screens/orderhistory/OrderHistory';
 import CreateOrder from '../screens/createorder/CreateOrder';
 import ConfirmOrder from '../screens/confirmOrder/ConfirmOrder';
 import ConfirmLocation from '../screens/confirmlocation/ConfirmLocation';
-import AddAddress from '../screens/bottomsheet/AddAddress';
 import SelectDate from '../screens/SelectDate/SelectDate';
 import ConfirmDishOrder from '../screens/confirmdishorder/ConfirmDishOrder';
 import Onboarding from '../screens/Onboarding/Onboarding';
@@ -36,7 +35,6 @@ const StackNavigation = () => {
       <Stack.Screen name="CreateOrder" component={CreateOrder} options={{headerShown:true}} />
       <Stack.Screen name="ConfirmOrder" component={ConfirmOrder} options={{headerShown:true}} />
       <Stack.Screen name="ConfirmLocation" component={ConfirmLocation} options={{headerShown:true}} />
-      <Stack.Screen name="AddAddress" component={AddAddress} options={{headerShown:true}} />
       <Stack.Screen name="SelectDate" component={SelectDate} options={{headerShown:true}} />
       <Stack.Screen name="ConfirmDishOrder" component={ConfirmDishOrder} options={{headerShown:true}} />
       <Stack.Screen name="Onboarding" component={Onboarding} options={{headerShown:true}} />

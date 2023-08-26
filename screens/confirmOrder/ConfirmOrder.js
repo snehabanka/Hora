@@ -1,5 +1,5 @@
 import React from 'react';
-import { Dimensions,View, Text, TouchableOpacity, Image, StyleSheet,TouchableHighlight } from 'react-native';
+import { Dimensions,View, Text, TouchableOpacity, StatusBar,Image, StyleSheet,TouchableHighlight } from 'react-native';
 
 const ConfirmOrder = ({navigation}) => {
 
@@ -8,11 +8,12 @@ const ConfirmOrder = ({navigation}) => {
   }
     
   const trackorder =() => {
-    navigation.navigate('ConfirmLocation')
+    navigation.navigate('ConfirmLocation',{'data':null})
   }
   
   return (
     <View style={styles.container}>
+      <StatusBar translucent backgroundColor="transparent" barStyle="light-content" />
       <Image source={require('../../assets/confirmorder_image.png')} style={styles.image} />
       <Text style={styles.firstText}>Your order is confirmed!</Text>
       <Text style={styles.multilineText}>
