@@ -180,11 +180,10 @@ const CreateOrder = ({ navigation }) => {
                                     />
                                 </View>
                             </TouchableOpacity>
-                            {item.special_appliance_id.length > 0 && selectedDishes.includes(item._id) && (
                                 <View style={{ justifyContent: 'center', alignItems: 'center' }}>
-                                    <Text style={{ fontSize: 11, fontWeight: '600', color: 'white' }}>Appliance required</Text>
+                                    <Text style={{ fontSize: 11, fontWeight: '600', color: item.special_appliance_id.length > 0 && selectedDishes.includes(item._id)? 'white':'transparent' }}>Appliance required</Text>
                                 </View>
-                            )}
+                        
                             <Text
                                 style={{
 

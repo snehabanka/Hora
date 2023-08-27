@@ -346,6 +346,8 @@ const SelectDate = ({ navigation, route }) => {
         else {
             navigation.navigate("ConfirmDishOrder", {
                 "selectedDate": selectedDate, "selectedTime": selectedTime, "peopleCount": peopleCount,
+                "burnerCount":burnerCount,
+                
                 "selectedDishes": data
             })
         }

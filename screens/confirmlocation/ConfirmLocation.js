@@ -7,9 +7,11 @@ import Geocoder from 'react-native-geocoding';
 import RBSheet from 'react-native-raw-bottom-sheet';
 import { BASE_URL, SAVE_LOCATION_ENDPOINT, API_SUCCESS_CODE } from '../../utils/ApiConstants';
 import axios from 'axios';
+import { GooglePlacesAutocomplete } from 'react-native-google-places-autocomplete';
+import { KeyboardAvoidingView } from 'react-native';
+
 
 const ConfirmLocation = ({ navigation, route }) => {
-  const [initialRegion, setInitialRegion] = useState(null);
   const [locationPermissionStatus, setLocationPermissionStatus] = useState(null);
   const [locationText, setLocationText] = useState('');
   const [currentLocation, setCurrentLocation] = useState('')
@@ -18,9 +20,14 @@ const ConfirmLocation = ({ navigation, route }) => {
   const [houseNumber, setHouseNumber] = useState('');
   const [address, setAddress] = useState('');
   const data = route.params.data
-  const [mapRegion, setMapRegion] = useState(initialRegion);
+  const [mapRegion, setMapRegion] = useState(null);
+  const mapViewRef = useRef(null);
+  const [isAddressValid, setAddressValid] = useState(false);
+
+
 
   const bottomSheetRef = useRef();
+  const GOOGLE_MAP_KEY = "AIzaSyBmHupwMPDVmKEryBTT9LlIeQITS3olFeY"
 
   const buttonData = [
     { id: '1', label: 'Home' },
@@ -29,9 +36,23 @@ const ConfirmLocation = ({ navigation, route }) => {
     { id: '4', label: 'Other' },
   ];
 
+  const checkAddressValidity = () => {
+    if (recipient && houseNumber && address) {
+      setAddressValid(true);
+    } else {
+      setAddressValid(false);
+    }
+  };
+
+  const ValidateAddress =(address) => {
+    setAddress(address)
+    checkAddressValidity()
+  }
+
+
   const handleButtonPress = (buttonId) => {
+    console.warn(buttonId)
     setSelectedButtonId(buttonId);
-    // You can also perform additional actions when a button is pressed
   };
 
   const renderButton = ({ item }) => (
@@ -42,7 +63,7 @@ const ConfirmLocation = ({ navigation, route }) => {
 
 
   const handleRegionChange = async (newRegion) => {
-    setInitialRegion(newRegion)
+    setMapRegion(newRegion)
     try {
       const response = await Geocoder.from(newRegion.latitude, newRegion.longitude);
       const address = response.results[0].formatted_address;
@@ -54,7 +75,7 @@ const ConfirmLocation = ({ navigation, route }) => {
   };
 
   useEffect(() => {
-    Geocoder.init('AIzaSyBmHupwMPDVmKEryBTT9LlIeQITS3olFeY');
+    Geocoder.init(GOOGLE_MAP_KEY);
     if (data != null) {
       handleSetLocation()
     }
@@ -111,7 +132,6 @@ const ConfirmLocation = ({ navigation, route }) => {
     }
   };
 
-
   const getCurrentLocation = () => {
     Geolocation.getCurrentPosition(
       (position) => {
@@ -122,11 +142,10 @@ const ConfirmLocation = ({ navigation, route }) => {
           latitudeDelta: 0.0922,
           longitudeDelta: 0.0421,
         };
-        setInitialRegion(updatedInitialRegion); // Update the initialRegion directly
+        setMapRegion(updatedInitialRegion); // Update the initialRegion directly
         Geocoder.from(latitude, longitude)
           .then((response) => {
             const address = response.results[0].formatted_address;
-            console.log('Current location address:', address);
             setCurrentLocation(address);
           })
           .catch((error) =>
@@ -138,38 +157,64 @@ const ConfirmLocation = ({ navigation, route }) => {
     );
   };
 
+
+
   const handleSetLocation = () => {
     bottomSheetRef.current.open();
   };
 
-  const handleSearchLocation = (text) => {
-    setLocationText(text)
-    Geocoder.from(text)
-      .then((response) => {
-        const { lat, lng } = response.results[0].geometry.location;
-        const address = response.results[0].geometry.formatted_address
-        const initialRegion = {
-          latitude: lat,
-          longitude: lng,
-          latitudeDelta: 0.0922,
-          longitudeDelta: 0.0421
-        }
-        setInitialRegion(initialRegion);
-        setCurrentLocation(address)
-      })
-      .catch((error) => console.warn('Error fetching location:', error));
+  const handleSearchLocation = (address) => {
+    setLocationText(address);
   };
+  
+
+  useEffect(() => {
+    // ... your existing code
+    if (route.params.data != null) {
+      handleSetLocation();
+      // Prefill recipient, houseNumber, and address based on address2
+      console.warn(route.params.data)
+      if (data.address2) {
+        console.warn(data.address2)
+        const [prefillRecipient, prefillHouseNumber, prefillAddress] = data.address2.split('/');
+        if (prefillAddress != NaN && prefillAddress != NaN) {
+          setRecipient(prefillRecipient);
+          setHouseNumber(prefillHouseNumber);
+          setAddress(prefillAddress);
+        }
+      }
+
+      const matchedButton = buttonData.find(button => button.label.toLowerCase() === data.title.toLowerCase());
+      if (matchedButton) {
+        setSelectedButtonId(matchedButton.id);
+      }
+      else {
+        setSelectedButtonId('4');
+      }
+      checkAddressValidity()
+    }
+
+    // ... rest of your code
+  }, []);
+
+
 
   const saveAddress = async () => {
     try {
       const url = BASE_URL + SAVE_LOCATION_ENDPOINT;
+      let label = null
+      if (selectedButtonId != null) {
+        label = buttonData[selectedButtonId - 1]['label']
+      }
+
+      const address2 = recipient + "/" + houseNumber + "/" + address
       const requestData =
       {
-        title: "Add edit",
-        address1: "sdf",
-        address2: "fsdfsdf",
+        title: label,
+        address1: currentLocation,
+        address2: address2,
         address_type: "1",
-        _id: "6400482a8efa231e9390e487"
+        _id: "6413340f549b58e3dc39a035"
       };
       const response = await axios.post(url, requestData, {
         headers: {
@@ -179,34 +224,45 @@ const ConfirmLocation = ({ navigation, route }) => {
       });
       console.warn(requestData)
       if (response.status == API_SUCCESS_CODE) {
-        console.warn(response.status)
+        navigation.goBack()
       }
     } catch (error) {
-      console.log('Error Fetching Data:', error.message);
+      console.log('Error  Data:', error.message);
     }
   };
 
+ 
+
   return (
-    <View style={styles.container}>
+    <KeyboardAvoidingView style={styles.container} behavior={Platform.OS === 'ios' ? 'padding' : null}>
       <View style={styles.view1}>
         <Image style={styles.image4} source={require('../../assets/info.png')} />
         <Text style={styles.text1}>Price is calculated from dish cost and number of servings.</Text>
       </View>
-      {locationPermissionStatus === 'granted' && initialRegion && (
+      {locationPermissionStatus === 'granted' && mapRegion && (
         <MapView
+          ref={mapViewRef}
           style={styles.map}
           mapType="standard"
-          initialRegion={initialRegion}
-          onRegionChange={handleRegionChange}
+          initialRegion={mapRegion}
+          onRegionChange={(region) => handleRegionChange(region)}
         >
-          <Marker
-            coordinate={initialRegion}
-            image={require('../../assets/markerPin1.png')}
-            style={{ width: 200, height: 216 }}
-          />
+
         </MapView>
       )}
 
+      {mapRegion && (
+        <View style={styles.markerContainer}>
+          <Image
+            source={require('../../assets/markerPin1.png')}
+            style={styles.markerImage}
+          />
+        </View>
+      )}
+
+
+
+      {/* 
       <View style={styles.searchBox}>
         <TouchableOpacity activeOpacity={1} style={styles.searchButton}>
           <Image source={require('../../assets/ic_search_black.png')} style={styles.image1}></Image>
@@ -219,33 +275,72 @@ const ConfirmLocation = ({ navigation, route }) => {
           placeholderTextColor="black"
         />
 
+      </View> */}
+
+      <View style={{}}>
+        <TouchableOpacity activeOpacity={1} style={styles.searchButton}>
+          <Image source={require('../../assets/ic_search_black.png')} style={styles.image1}></Image>
+        </TouchableOpacity>
+
+        <GooglePlacesAutocomplete
+          placeholder="Find Your location"
+          onPress={(data, details = null) => {
+            if (details) {
+              console.warn(details)
+              // 'data' contains information about the selected place
+              // You can access the latitude and longitude using 'details.geometry.location'
+              const { description, geometry } = details;
+              const lat = geometry.location.lat;
+              const lng = geometry.location.lng;
+              setCurrentLocation(details.formatted_address); // Set the location text
+              handleRegionChange({
+                latitude: lat,
+                longitude: lng,
+                latitudeDelta: 0.0922,
+                longitudeDelta: 0.0421,
+              }); // Update the map region
+            }
+          }}
+          sheetContent={styles.searchBox}
+          query={{
+            key: GOOGLE_MAP_KEY,
+            language: 'en', // To receive results in English
+          }}
+        />
       </View>
 
-      <TouchableOpacity
-        style={styles.focusButton}
-        onPress={{focusOnCurrentLocation}}
-        activeOpacity={1}
-      >
-        <Image
-          source={require('../../assets/markLocation.png')}
-          style={styles.markLocationImage}
-        />
-      </TouchableOpacity>
-
-      <View style={styles.card}>
-        <View style={styles.locationContainer}>
-          <Text style={styles.locationText1}>Your Location</Text>
-        </View>
-        <View style={styles.buttonsContainer}>
-          <Image source={require('../../assets/LocationPin.png')} style={styles.image2}></Image>
-          <Text style={styles.locationText2} multiline
-            numberOfLines={4}>{currentLocation}</Text>
-
-        </View>
-        <TouchableOpacity activeOpacity={1} style={styles.setLocation1} onPress={handleSetLocation}>
-          <Text style={{ color: 'white', fontSize: 14, fontWeight: '500' }}>Set Location</Text>
+      <View style={{ position: 'absolute', bottom: 270, right: 20 }}>
+        <TouchableOpacity
+          style={{ backgroundColor: 'transparent' }}
+          onPress={focusOnCurrentLocation}
+          activeOpacity={1}
+        >
+          <Image
+            source={require('../../assets/markLocation.png')}
+            style={styles.markLocationImage}
+          />
         </TouchableOpacity>
       </View>
+
+
+      <View style={styles.container}>
+
+        <View style={styles.card}>
+          <View style={styles.locationContainer}>
+            <Text style={styles.locationText1}>Your Location</Text>
+          </View>
+          <View style={styles.buttonsContainer}>
+            <Image source={require('../../assets/LocationPin.png')} style={styles.image2}></Image>
+            <Text style={styles.locationText2} multiline
+              numberOfLines={4}>{currentLocation}</Text>
+
+          </View>
+          <TouchableOpacity activeOpacity={1} style={styles.setLocation1} onPress={handleSetLocation}>
+            <Text style={{ color: 'white', fontSize: 14, fontWeight: '500' }}>Set Location</Text>
+          </TouchableOpacity>
+        </View>
+      </View>
+
 
       <RBSheet
         ref={bottomSheetRef}
@@ -273,35 +368,47 @@ const ConfirmLocation = ({ navigation, route }) => {
           </View>
 
           <View style={{ ...styles.textInputContainer }}>
-            <TextInput style={styles.textInput} placeholder="Recipient Name" value={recipient}
+            <TextInput style={styles.textInput} placeholder="Recipient Name" value={recipient} onEndEditing={() => checkAddressValidity()}
+
               onChangeText={setRecipient} />
           </View>
           <View style={{ ...styles.textInputContainer, marginTop: 12 }}>
             <TextInput style={styles.textInput} placeholder="House/Flat/tower/floor number" value={houseNumber}
-              onChangeText={setHouseNumber} />
+              onChangeText={setHouseNumber} onEndEditing={() => checkAddressValidity()}
+            />
           </View>
           <View style={{ ...styles.textInputContainer, marginTop: 12 }}>
             <TextInput style={styles.textInput} placeholder="Street/Society/Nearyby Landmark" value={address}
-              onChangeText={setAddress} />
+              onChangeText={(address) => ValidateAddress(address)}
+            />
           </View>
-
-          <TouchableOpacity activeOpacity={1} style={{ ...styles.setLocation, width: Dimensions.get('window').width * 0.9 }} onPress={saveAddress}>
-            <Text style={{ color: 'white', fontSize: 14, fontWeight: '500' }}>Save Address</Text>
+          <TouchableOpacity
+            activeOpacity={1}
+            style={{
+              ...styles.setLocation,
+              width: Dimensions.get('window').width * 0.9,
+              backgroundColor: isAddressValid ? '#9252AA' : '#CFCFCF', // Change the background color based on validity
+            }}
+            onPress={saveAddress}
+            disabled={!isAddressValid} // Disable the button if inputs are not valid
+          >
+            <Text style={{ color: !isAddressValid ? "#343333":'white', fontSize: 14, fontWeight: '500' }}>Save Address</Text>
           </TouchableOpacity>
+
 
         </View>
       </RBSheet>
-    </View>
+    </KeyboardAvoidingView>
   )
 };
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
-    backgroundColor: 'white',
+    flex: 1
   },
   map: {
-    flex: 1,
+    ...StyleSheet.absoluteFillObject,
+
   },
   searchBox: {
     position: 'absolute',
@@ -417,8 +524,8 @@ const styles = StyleSheet.create({
   },
   bottomSheetContainer: {
     backgroundColor: 'white',
-    borderTopLeftRadius: 10,
-    borderTopRightRadius: 10,
+    borderTopLeftRadius: 40,
+    borderTopRightRadius: 40,
     padding: 16,
 
   },
@@ -487,15 +594,27 @@ const styles = StyleSheet.create({
   },
   focusButton: {
     position: 'absolute',
-    top: 100,
+    top: 20,
     right: 20,
-    zIndex: 2, // Ensure the button appears above the map
+    zIndex: 2,
     backgroundColor: 'transparent',
   },
   markLocationImage: {
     width: 39,
     height: 39,
   },
+  markerContainer: {
+    position: 'absolute',
+    top: '50%',
+    left: '50%',
+    transform: [{ translateX: -33 }, { translateY: -108 }], // Adjust values as needed
+    zIndex: 1,
+  },
+  markerImage: {
+    width: 116,
+    height: 116,
+  },
+
 });
 
 
