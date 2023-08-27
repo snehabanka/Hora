@@ -158,7 +158,7 @@ const ConfirmLocation = ({ navigation, route }) => {
   };
 
 
-
+//ammamm
   const handleSetLocation = () => {
     bottomSheetRef.current.open();
   };
