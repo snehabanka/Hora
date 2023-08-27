@@ -30,7 +30,8 @@ const styles = StyleSheet.create({
   headerContainer: {
     flexDirection: 'row',
     alignItems: 'center',
-    height: 70,
+    marginTop:36,
+    height:64
   },
   headerTitle: {
     fontSize: 15,
