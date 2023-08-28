@@ -19,13 +19,14 @@ const SelectDate = ({ navigation, route }) => {
     const [dishPrice, setDishPrice] = useState(route.params.price);
     const [showAll, setShowAll] = useState(false);
     const [burnerCount, setBurnerCount] = useState(0)
-    const [isViewVisible, setViewVisible] = useState(true);
     const [isWarningVisible, setWarningVisible] = useState(false);
     const [isTimeValid, setTimeValid] = useState(null);
     const [isDateValid, setDateValid] = useState(null);
     const [errorText, setErrorText] = useState(null)
     const [isDatePressed, setIsDatePressed] = useState(false)
     const [isTimePressed, setIsTimePressed] = useState(false)
+    const [showCookingTime, setShowCookingTime] = useState(true);
+
 
 
     const checkIsDateValid =() => {
@@ -48,36 +49,70 @@ const SelectDate = ({ navigation, route }) => {
 
 
 
+    // const handleDateChange = (event, date) => {
+    //     if (date !== undefined) {
+    //         setSelectedDate(date);
+    //         setIsDatePressed(true)
+    //         setShowDatePicker(false);
+    //         if(checkIsDateValid()==false){
+    //             setErrorText('*Order can be placed at least 24 hours in advance.')
+    //             return
+    //         }
+    //         else{
+    //             setErrorText(null)
+    //         }
+
+    //         if(checkIsTimeValid()==false){
+    //             setErrorText('*Order can be placed only between 7:00 AM to 10:00 PM')
+    //             return
+    //         }
+    //         else{
+    //             setErrorText(null)
+    //         }
+    //     }
+    // };
+
     const handleDateChange = (event, date) => {
         if (date !== undefined) {
             setSelectedDate(date);
-            setIsDatePressed(true)
             setShowDatePicker(false);
-            if(checkIsDateValid()==false){
-                setErrorText('*Order can be placed at least 24 hours in advance.')
-                return
-            }
-            else{
-                setErrorText(null)
-            }
-
-            if(checkIsTimeValid()==false){
-                setErrorText('*Order can be placed only between 7:00 AM to 10:00 PM')
-                return
-            }
-            else{
-                setErrorText(null)
+    
+            const isDateValid = checkIsDateValid();
+            const isTimeValid = checkIsTimeValid();
+    
+            if (!isDateValid) {
+                setErrorText('Order can be placed at least 24 hours in advance.');
+                return;
+            } else if (!isTimeValid) {
+                setErrorText('*Order can be placed only between 7:00 AM to 10:00 PM');
+                return;
+            } else {
+                setErrorText(null);
             }
         }
     };
-
-    const hideView = () => {
-        setViewVisible(false);
+    
+    const handleTimeChange = (event, time) => {
+        if (time !== undefined) {
+            setSelectedTime(time);
+            setShowTimePicker(false);
+    
+            const isDateValid = checkIsDateValid();
+            const isTimeValid = checkIsTimeValid();
+    
+            if (!isDateValid) {
+                setErrorText('Order can be placed at least 24 hours in advance.');
+                return;
+            } else if (!isTimeValid) {
+                setErrorText('*Order can be placed only between 7:00 AM to 10:00 PM');
+                return;
+            } else {
+                setErrorText(null);
+            }
+        }
     };
+    
 
-    if (!isViewVisible) {
-        return null; // Return null to completely remove the view from the component tree
-    }
 
     const RenderAppliances = ({ item }) => {
         return (
@@ -164,7 +199,6 @@ const SelectDate = ({ navigation, route }) => {
                         <Image style={styles.verticalSeparator} source={require('../../assets/verticalSeparator.png')}></Image>
                     </View>
                 )}
-
 
 
                 <View style={{ flexDirection: 'column', marginTop: 8 }}>
@@ -257,6 +291,7 @@ const SelectDate = ({ navigation, route }) => {
                 });
             }
         }
+        console.warn(totalIngredients)
         return Object.values(totalIngredients);
     };
 
@@ -277,7 +312,6 @@ const SelectDate = ({ navigation, route }) => {
 
 
 
-
     const getTotalCookingTime = () => {
         let totalCookingMinutes = 0;
         for (const dishId in data) {
@@ -291,6 +325,7 @@ const SelectDate = ({ navigation, route }) => {
         const totalTime = totalHours + remainingMinutes / 60;
         return totalTime.toFixed(1); // Convert to string with one decimal place
     };
+
 
 
 
@@ -323,7 +358,6 @@ const SelectDate = ({ navigation, route }) => {
                 });
             }
         }
-        console.warn(totalSpecialAppliances)
         return Object.values(totalSpecialAppliances);
     };
 
@@ -347,7 +381,6 @@ const SelectDate = ({ navigation, route }) => {
             navigation.navigate("ConfirmDishOrder", {
                 "selectedDate": selectedDate, "selectedTime": selectedTime, "peopleCount": peopleCount,
                 "burnerCount":burnerCount,
-
                 "selectedDishes": data
             })
         }
@@ -356,29 +389,7 @@ const SelectDate = ({ navigation, route }) => {
     const handleWarningClose = () => {
         setWarningVisible(false);
     };
-
-    const handleTimeChange = (event, time) => {
-        if (time !== undefined) {
-            setSelectedTime(time);
-            setIsTimePressed(true)
-            setShowTimePicker(false);
-            if(checkIsDateValid()==false){
-                setErrorText('Order can be placed at least 24 hours in advance.')
-                return
-            }
-            else{
-                setErrorText(null)
-            }
-
-            if(checkIsTimeValid()==false){
-                setErrorText('*Order can be placed only between 7:00 AM to 10:00 PM')
-                return
-            }
-            else{
-                setErrorText(null)
-            }
-        }
-    };
+    
 
     const increasePeopleCount = () => {
         setPeopleCount(peopleCount + 1)
@@ -391,6 +402,10 @@ const SelectDate = ({ navigation, route }) => {
             setDishPrice(dishPrice - 49)
         }
     }
+
+    const toggleCookingTimeVisibility = () => {
+        setShowCookingTime(!showCookingTime);
+    };
 
 
 
@@ -425,12 +440,14 @@ const SelectDate = ({ navigation, route }) => {
                         <Image source={require('../../assets/info.png')} style={{ height: 16, width: 16 }} />
                     </View>
                     <View style={{ marginTop: 10, flexDirection: 'row' }}>
+                        <TouchableOpacity onPress={() => setShowDatePicker(true)} activeOpacity={1}>
+
                         <View style={{ marginTop: 4, marginStart: 16, marginEnd: 8, flexDirection: 'column', paddingHorizontal: 11, backgroundColor: 'white', borderColor: isDateValid != null && isDateValid==false ? '#FF3636': "#F6ECEC", borderRadius: 10, borderWidth: 1, paddingBottom: 9 }}>
                             <Text style={{ paddingTop: 4, color: '#9252AA', fontWeight: '500', fontSize: 10 }}>Booking Date</Text>
                             <View style={{ flexDirection: 'row', marginTop: 1 }}>
-                                <TouchableOpacity onPress={() => setShowDatePicker(true)} activeOpacity={1}>
+
                                     <Text style={{ fontSize: 16, fontWeight: 600, color: isDatePressed ? '#383838' : "grey" }}>{selectedDate.toLocaleDateString()}</Text>
-                                </TouchableOpacity>
+                            
                                 <Image source={require('../../assets/ic_calendar.png')} style={{ height: 19, width: 19, marginLeft: 17 }} />
                                 {showDatePicker && (
                                     <DateTimePicker
@@ -442,13 +459,15 @@ const SelectDate = ({ navigation, route }) => {
                                 )}
                             </View>
                         </View>
+                        </TouchableOpacity>
                         <View style={{ flexDirection: 'row' }}>
-                            <View style={{ marginTop: 4, flexDirection: 'column', paddingHorizontal: 11, backgroundColor: 'white', borderColor: isTimeValid != null && isTimeValid==false ? '#FF3636' : "#F6ECEC", borderRadius: 10, borderWidth: 1 }}>
+                        <TouchableOpacity onPress={() => setShowTimePicker(true)} activeOpacity={1}>
+                            <View style={{ marginTop: 4, flexDirection: 'column', paddingHorizontal: 11, backgroundColor: 'white', borderColor: isTimeValid != null && isTimeValid==false ? '#FF3636' : "#F6ECEC", borderRadius: 10, borderWidth: 1 ,paddingBottom: 9}}>
                                 <Text style={{ paddingTop: 4, color: '#9252AA', fontWeight: '500', fontSize: 10 }}>Chef Arrival Time</Text>
                                 <View style={{ flexDirection: 'row', marginTop: 1 }}>
-                                    <TouchableOpacity onPress={() => setShowTimePicker(true)} activeOpacity={1}>
+                            
                                         <Text style={{ fontSize: 16, fontWeight: 600, color: isTimePressed ? '#383838' : "grey" }}>{selectedTime.toLocaleTimeString()}</Text>
-                                    </TouchableOpacity>
+                                    
                                     <Image source={require('../../assets/clock.png')} style={{ height: 19, width: 19, marginLeft: 17 }} />
                                     {showTimePicker && (
                                         <DateTimePicker
@@ -461,6 +480,7 @@ const SelectDate = ({ navigation, route }) => {
                                 </View>
 
                             </View>
+                            </TouchableOpacity>
                         </View>
                     </View>
                     {errorText != null && (
@@ -525,7 +545,8 @@ const SelectDate = ({ navigation, route }) => {
                 </View>
                 {renderTabContent()}
 
-
+                <View>
+            {getTotalCookingTime() > 0.0 && showCookingTime && (
                 <View style={{ borderColor: "#F39200", borderWidth: 0.5, borderRadius: 5, backgroundColor: "#FFE3B9", marginHorizontal: 16, flexDirection: 'row', alignItems: 'center', marginTop: 5 }}>
                     <Image source={require('../../assets/orderIcon.png')} style={{ height: 28, width: 30, marginStart: 5, marginTop: 5, marginBottom: 7 }} />
                     <Text style={{ marginStart: 9, color: '#606060', fontSize: 13, fontWeight: '400' }} >Expected cooking time of your food</Text>
@@ -536,10 +557,13 @@ const SelectDate = ({ navigation, route }) => {
                         </Text>
                     </View>
 
-                    <TouchableOpacity style={{ marginStart: 3 }} activeOpacity={1}>
+                    <TouchableOpacity style={{ marginStart: 3 }} onPress={toggleCookingTimeVisibility} activeOpacity={1}>
                         <Image source={require('../../assets/icCross.png')} style={{ height: 12, width: 12 }} />
                     </TouchableOpacity>
                 </View>
+                
+            )}
+            </View>
             </ScrollView>
 
 
