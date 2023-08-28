@@ -3,6 +3,7 @@ import { Dimensions, View, Button, FlatList, Text, TouchableOpacity, StyleSheet,
 import RBSheet from 'react-native-raw-bottom-sheet';
 import { BASE_URL, API_SUCCESS_CODE, GET_ADDRESS_LIST } from '../../utils/ApiConstants';
 import axios from 'axios';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 
 
@@ -150,10 +151,11 @@ const DishDetails = () => {
         const requestData = {
           page: '1'
         };
+        const token = await AsyncStorage.getItem('token')
         const response = await axios.post(url, requestData, {
           headers: {
             'Content-Type': 'application/json',
-            'authorization': 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2NDEzMzQwZjU0OWI1OGUzZGMzOWEwMzUiLCJuYW1lIjoiUmFodWwiLCJlbWFpbCI6IiIsInBob25lIjoiODM4Nzk5OTM4MiIsInJvbGUiOiJzdXBwbGllciIsImlhdCI6MTY3ODk4NDg3OSwiZXhwIjoxNzEwNTIwODc5fQ.PEnGF12sAFsF_idngQZnGR_eSLYweXCOPsq7iTJUMoc'
+            'authorization': token
           },
         });
         console.warn(response.status)

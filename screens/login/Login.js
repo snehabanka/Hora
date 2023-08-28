@@ -1,10 +1,10 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { ScrollView,StatusBar,View, Text, TextInput, Image, TouchableOpacity, TouchableHighlight,BackHandler } from 'react-native';
+import { ScrollView, StatusBar, View, Text, KeyboardAvoidingView, Platform, TextInput, Image, ImageBackground, TouchableOpacity, TouchableHighlight, BackHandler } from 'react-native';
 import styles from './style';
 import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import CustomStatusBar from '../../components/CustomStatusBar';
-import { BASE_URL,OTP_GENERATE_END_POINT,API_SUCCESS_CODE } from '../../utils/ApiConstants';
+import { BASE_URL, OTP_GENERATE_END_POINT, API_SUCCESS_CODE, OTP_VERIFY_ENDPOINT } from '../../utils/ApiConstants';
 
 const Login = ({ navigation }) => {
 
@@ -14,20 +14,21 @@ const Login = ({ navigation }) => {
     const inputRefs = useRef([]);
     const [timer, setTimer] = useState(0);
     const [validOtp, setValidOtp] = useState(undefined);
-    const [fetchedOtp,setFetchedOtp]= useState(null)
+    const [fetchedOtp, setFetchedOtp] = useState(null)
+    const [validMobileNumber, setValidMobileNumber] = useState(true)
 
     useEffect(() => {
         const backAction = () => {
-          BackHandler.exitApp(); // Close the app
-          return true; // Prevent default back button behavior
+            BackHandler.exitApp();
+            return true;
         };
-    
+
         const backHandler = BackHandler.addEventListener('hardwareBackPress', backAction);
-    
+
         return () => {
-          backHandler.remove();
+            backHandler.remove();
         };
-      }, []);
+    }, []);
 
 
     const handleOtpChange = (text, index) => {
@@ -65,17 +66,16 @@ const Login = ({ navigation }) => {
 
     const fetchOtp = async () => {
         try {
-            const url= BASE_URL + OTP_GENERATE_END_POINT;
+            const url = BASE_URL + OTP_GENERATE_END_POINT;
             const requestData = {
                 phone: mobileNumber,
                 role: 'customer',
-              };
-            const response = await axios.post(url,requestData, {
+            };
+            const response = await axios.post(url, requestData, {
                 headers: {
                     'Content-Type': 'application/json',
-                  },
+                },
             });
-            console.warn(response.data)
             if (response.data.status === API_SUCCESS_CODE) {
                 setFetchedOtp(response.data.otp);
             } else {
@@ -86,19 +86,42 @@ const Login = ({ navigation }) => {
         }
     };
 
-    const setData = async() =>{
-        AsyncStorage.setItem("isLoggedIn","true")
-        AsyncStorage.setItem("mobileNumber",mobileNumber)
+
+    const setData = async (enteredOtp) => {
+        try {
+            const url = BASE_URL + OTP_VERIFY_ENDPOINT;
+            const requestData = {
+                phone: mobileNumber,
+                role: 'customer',
+                otp: enteredOtp
+            };
+            const response = await axios.post(url, requestData, {
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+            });
+            if (response.data.status === API_SUCCESS_CODE) {
+                AsyncStorage.setItem("isLoggedIn", "true")
+                AsyncStorage.setItem("mobileNumber", mobileNumber)
+                AsyncStorage.setItem('token', response.data.token)
+                    .then(() => {
+                        navigation.navigate('CreateOrder');
+                    })
+                    .catch((error) => {
+                        console.log('Error storing token:', error.message);
+                    });
+            }
+        } catch (error) {
+            console.log('Error sending OTP:', error.message);
+        }
+
     }
 
     const validateOtp = (enteredOtp) => {
-        console.warn(enteredOtp)
-        console.warn(fetchedOtp)
         if (fetchedOtp != null) {
             if (enteredOtp === String(fetchedOtp)) {
                 setValidOtp(true);
-                setData()
-                navigation.navigate('MyAccount');
+                setData(enteredOtp)
             } else {
                 setValidOtp(false);
             }
@@ -119,8 +142,9 @@ const Login = ({ navigation }) => {
 
     const handlePress = () => {
         if (mobileNumber.length < 10) {
-            console.warn('Invalid Mobile Number');
+            setValidMobileNumber(false)
         } else {
+            setValidMobileNumber(true)
             setIsPressed(true);
             setValidOtp(undefined)
             fetchOtp();
@@ -130,45 +154,65 @@ const Login = ({ navigation }) => {
 
     const validOtpInputStyle = {
         ...styles.otpInput,
-        backgroundColor: validOtp === true ? '#F4FFF6' : validOtp === false ? '#FFF4F7' : undefined,
-        borderColor: validOtp === true ? '#4D9058' : validOtp === false ? '#B46B7C' : undefined,
+        backgroundColor: validOtp === true ? 'rgba(86, 152, 105, 0.2)' : validOtp === false ? '#FFE0E0' : undefined,
+        borderColor: validOtp === true ? '#2D9362' : validOtp === false ? '#F66' : undefined,
     };
 
 
     return (
-        <ScrollView style={styles.container}>
-            
-            <StatusBar translucent backgroundColor="transparent" barStyle="light-content" />
-            <Image source={require('../../assets/login.png')} style={styles.image} />
-            <Text style={styles.text1}>Login</Text>
-            <Text style={styles.text2}>{isPressed ? 'Verification Code' : 'Mobile Number'}</Text>
-            <View style={{flexDirection:'row'}}>
-            <Text style={styles.text3}>{isPressed ? `Enter Code sent to` : null}</Text>
-            <Text style={styles.text4}>{isPressed ? `(+91) ${mobileNumber}` : null}</Text>
-            </View>
-            {!isPressed ? (
-                <View style={styles.inputContainer}>
-                    <View style={styles.borderWithOpacity}>
-                    <TextInput style={{...styles.prefix}} value="(+91) | " editable={false} />
-                    <TextInput
-                        style={{ ...styles.input }}
-                        placeholder="000 000 0000"
-                        keyboardType="phone-pad"
-                        maxLength={10}
-                        textContentType='telephoneNumber'
-                        value={mobileNumber}
-                        onChangeText={handleMobileNumberChange}
-                    />
-                    </View>
+        <ScrollView>
+            <ImageBackground source={require('../../assets/loginBackground.png')} style={styles.backgroundImage}>
+                <StatusBar translucent backgroundColor="transparent" barStyle="light-content" />
+                <View style={{ justifyContent: 'center', flexDirection: 'row' }}>
+
+                    <Image source={require('../../assets/hora.png')} style={styles.image} />
                 </View>
 
-            ) : null}
-            {!isPressed ? (
-                <TouchableHighlight style={styles.button} onPress={handlePress} underlayColor="#E56352">
-                    <Text style={styles.buttonText}>GET OTP</Text>
-                </TouchableHighlight>
-            ) : (
-                <View style={styles.otpContainer}>
+
+                <View style={{ justifyContent: 'center', flexDirection: 'column', alignItems: 'center', marginTop: 11, marginHorizontal: 45 }}>
+                    <Text style={{ fontWeight: '500', fontSize: 14, color: "#BEBEBE" }}> Get Restaurant like food cooked at{'\n'}            your home and parties</Text>
+                    {!isPressed ? (<Text style={{ fontWeight: '800', fontSize: 18, color: 'black', marginTop: 28 }}>Get Started</Text>) : null}
+                    {isPressed ? (<Text style={{ fontSize: 18, color: 'black', fontWeight: '700', marginTop: 3 }}>Enter OTP</Text>) : null}
+                    <View style={{ marginLeft: 16 }}>
+
+                        <Text style={[styles.text3]}>
+                            {isPressed ? 'Check your phone we have sent you \n       an OTP to' : null}
+                            {isPressed ?
+                                <Text style={{ color: '#9252AA', fontSize: 14, fontWeight: '700' }}>
+                                    {' (+91) ' + mobileNumber}
+                                </Text>
+                                : null}
+                        </Text>
+
+
+                    </View>
+
+
+                    {!isPressed ? (<Text style={{ fontSize: 14, lineHeight: 16, fontWeight: '500', color: '#BEBEBE', marginTop: 12 }}>Login with your mobile number </Text>) : null}
+                </View>
+
+
+
+                {!isPressed || (isPressed && validMobileNumber === false) ? (
+                    <View style={{ flexDirection: 'row', marginHorizontal: 31, marginTop: 20 }}>
+
+                        <View style={{ width: 56, height: 45, paddingHorizontal: 10, backgroundColor: '#E7E7E7', justifyContent: 'center', borderRadius: 8, borderWidth: 1, borderColor: "#D9D9D9" }}>
+                            <Text style={{ color: "#929292", fontSize: 16, fontWeight: '700' }}> +91 </Text>
+                        </View>
+
+                        <View style={{ width: 240, height: 45, marginStart: 3, backgroundColor: validMobileNumber ? "#E7E7E7" : '#FFE0E0', justifyContent: 'center', alignItems: 'cenetr', paddingLeft: 29, borderRadius: 8, borderWidth: 1, borderColor: validMobileNumber ? "#D9D9D9" : '#F46C5B' }}>
+                            <TextInput
+                                style={{ ...styles.input }}
+                                placeholder="000 000 0000"
+                                keyboardType="phone-pad"
+                                maxLength={10}
+                                textContentType='telephoneNumber'
+                                value={mobileNumber}
+                                onChangeText={handleMobileNumberChange}
+                            />
+                        </View>
+
+                    </View>) : <View style={styles.otpContainer}>
                     {Array.from({ length: 4 }).map((_, index) => (
                         <TextInput
                             key={index}
@@ -182,22 +226,51 @@ const Login = ({ navigation }) => {
                             onChangeText={(text) => handleOtpChange(text, index)}
                         />
                     ))}
-                </View>
-            )}
+                </View>}
+                {validMobileNumber === false ? (
 
-            {isPressed ? (
-                <View>
-                    {timer === 0 ? (
-                        <TouchableOpacity style={styles.resendButton} onPress={handleResendOtp}>
-                            <Text style={styles.buttonText1}>Resend Code</Text>
-                        </TouchableOpacity>
-                    ) : (
-                        <Text style={styles.timerText}>Resend OTP in {timer} seconds</Text>
-                    )}
-                    {validOtp === false && <Text style={styles.invalidOtpText}>Wrong OTP</Text>}
-                </View>
-            ) : null}
+                    <View style={{ marginTop: 22, marginStart: 31, marginRight: 35 }}>
+                        <Text style={{ color: '#F46C5B', fontSize: 12, fontWeight: '600' }}>*Invalid phone no, length can not be less than 10 digits</Text>
+                    </View>
+                ) : null}
+
+                {isPressed ? (
+                    <View style={styles.bottomContainer}>
+                        <View style={styles.leftContainer}>
+                            {validOtp === false && (
+                                <Text style={styles.invalidOtpText}>*Wrong OTP</Text>
+                            )}
+                        </View>
+                        <View style={styles.centerContainer}>
+                            {timer !== 0 ? (
+                                <Text style={styles.timerText}>Resend Code in 00:{timer}</Text>
+                            ) : (
+                                <Text style={styles.timerText}></Text>
+                            )}
+                        </View>
+                        <View style={styles.rightContainer}>
+                            {timer === 0 ? (
+                                <TouchableOpacity onPress={handleResendOtp}>
+                                    <Text style={styles.resendCodeText}>Resend Code</Text>
+                                </TouchableOpacity>
+                            ) : null}
+                        </View>
+                    </View>
+                ) : null}
+
+                {!isPressed ?
+
+                    <View style={{ flex: 1, justifyContent: 'flex-end', marginBottom: 54 }}>
+
+                        <TouchableHighlight style={styles.button} onPress={handlePress} underlayColor="#9252AA">
+                            <Text style={styles.buttonText}>GET OTP</Text>
+                        </TouchableHighlight>
+
+                    </View>
+                    : null}
+            </ImageBackground>
         </ScrollView>
+
     );
 };
 

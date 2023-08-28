@@ -56,19 +56,39 @@ const styles = StyleSheet.create({
         marginStart:6
       },
       continueButton: {
-        width:Dimensions.get('window').width * 0.9,
-        backgroundColor: '#9252AA',
-        justifyContent:'center',
-        paddingLeft:5,
+        marginTop: 10,
+        backgroundColor: 'gray',
+        marginBottom:15,
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        alignItems: 'center',
+        paddingLeft:21,
+        paddingEnd:20,
         paddingVertical:17,
         borderRadius: 20,
-        marginBottom:15
-      },
+    },
       buttonText1: {
         color: 'white',
         fontWeight:'500',
         fontSize: 18,
       },
+      buttonContent: {
+      flexDirection: 'row',
+      justifyContent: 'space-between',
+      alignItems: 'center',
+      width: '100%',
+  },
+
+  continueButtonLeftText: {
+      color: 'white',
+      fontSize: 19,
+      fontWeight: '500',
+  },
+  continueButtonRightText: {
+    color: '#FFF',
+    fontSize: 16,
+    fontWeight: '400',
+},
 
 })
 export default styles;
