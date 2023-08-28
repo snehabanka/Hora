@@ -9,6 +9,7 @@ import { BASE_URL, SAVE_LOCATION_ENDPOINT, API_SUCCESS_CODE } from '../../utils/
 import axios from 'axios';
 import { GooglePlacesAutocomplete } from 'react-native-google-places-autocomplete';
 import { KeyboardAvoidingView } from 'react-native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 
 const ConfirmLocation = ({ navigation, route }) => {
@@ -44,7 +45,7 @@ const ConfirmLocation = ({ navigation, route }) => {
     }
   };
 
-  const ValidateAddress =(address) => {
+  const ValidateAddress = (address) => {
     setAddress(address)
     checkAddressValidity()
   }
@@ -158,7 +159,6 @@ const ConfirmLocation = ({ navigation, route }) => {
   };
 
 
-//ammamm
   const handleSetLocation = () => {
     bottomSheetRef.current.open();
   };
@@ -166,14 +166,13 @@ const ConfirmLocation = ({ navigation, route }) => {
   const handleSearchLocation = (address) => {
     setLocationText(address);
   };
-  
+
 
   useEffect(() => {
     // ... your existing code
     if (route.params.data != null) {
       handleSetLocation();
       // Prefill recipient, houseNumber, and address based on address2
-      console.warn(route.params.data)
       if (data.address2) {
         console.warn(data.address2)
         const [prefillRecipient, prefillHouseNumber, prefillAddress] = data.address2.split('/');
@@ -216,10 +215,11 @@ const ConfirmLocation = ({ navigation, route }) => {
         address_type: "1",
         _id: "6413340f549b58e3dc39a035"
       };
+      const token = await AsyncStorage.getItem('token')
       const response = await axios.post(url, requestData, {
         headers: {
           'Content-Type': 'application/json',
-          'authorization': 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2NGFmY2RjMTVmY2RjMDNlMTRiZmNkNmUiLCJuYW1lIjoiIiwiZW1haWwiOiIiLCJwaG9uZSI6Ijc5OTIyNzkzODYiLCJyb2xlIjoiY3VzdG9tZXIiLCJpYXQiOjE2ODk4NjU4MTYsImV4cCI6MTcyMTQwMTgxNn0.tF6nGHudhONGgICO8Xf6TDH3XGb1YKLGERSqmbWE8E4'
+          'authorization': token
         },
       });
       console.warn(requestData)
@@ -231,7 +231,12 @@ const ConfirmLocation = ({ navigation, route }) => {
     }
   };
 
- 
+  const SearchIcon = () => (
+    <Image source={require('../../assets/ic_search_black.png')} style={styles.image1}></Image>
+  );
+  
+
+
 
   return (
     <KeyboardAvoidingView style={styles.container} behavior={Platform.OS === 'ios' ? 'padding' : null}>
@@ -260,10 +265,8 @@ const ConfirmLocation = ({ navigation, route }) => {
         </View>
       )}
 
-
-
-      {/* 
-      <View style={styles.searchBox}>
+        
+      {/* <View style={styles.searchBox}>
         <TouchableOpacity activeOpacity={1} style={styles.searchButton}>
           <Image source={require('../../assets/ic_search_black.png')} style={styles.image1}></Image>
         </TouchableOpacity>
@@ -274,40 +277,34 @@ const ConfirmLocation = ({ navigation, route }) => {
           onChangeText={handleSearchLocation}
           placeholderTextColor="black"
         />
-
       </View> */}
 
-      <View style={{}}>
-        <TouchableOpacity activeOpacity={1} style={styles.searchButton}>
-          <Image source={require('../../assets/ic_search_black.png')} style={styles.image1}></Image>
-        </TouchableOpacity>
-
-        <GooglePlacesAutocomplete
-          placeholder="Find Your location"
-          onPress={(data, details = null) => {
-            if (details) {
-              console.warn(details)
-              // 'data' contains information about the selected place
-              // You can access the latitude and longitude using 'details.geometry.location'
-              const { description, geometry } = details;
-              const lat = geometry.location.lat;
-              const lng = geometry.location.lng;
-              setCurrentLocation(details.formatted_address); // Set the location text
-              handleRegionChange({
-                latitude: lat,
-                longitude: lng,
-                latitudeDelta: 0.0922,
-                longitudeDelta: 0.0421,
-              }); // Update the map region
-            }
-          }}
-          sheetContent={styles.searchBox}
-          query={{
-            key: GOOGLE_MAP_KEY,
-            language: 'en', // To receive results in English
-          }}
-        />
-      </View>
+<View style={styles.container}>
+      <GooglePlacesAutocomplete
+        onPress={(data, details = null) => {
+          console.warn(data);
+          console.warn(details);
+          if (details) {
+            console.warn(data);
+            // Display the selected location on the map
+            // You can use the "details" object to get the location's latitude and longitude
+          }
+        }}
+        query={{
+          key: GOOGLE_MAP_KEY,
+          language: 'en',
+        }}
+        styles={{
+          container: styles.searchContainer,
+          textInputContainer: styles.InputContainer,
+          listView: styles.listView,
+        }}
+        renderLeftButton={SearchIcon}
+      />
+    </View>
+    
+      
+    
 
       <View style={{ position: 'absolute', bottom: 270, right: 20 }}>
         <TouchableOpacity
@@ -392,7 +389,7 @@ const ConfirmLocation = ({ navigation, route }) => {
             onPress={saveAddress}
             disabled={!isAddressValid} // Disable the button if inputs are not valid
           >
-            <Text style={{ color: !isAddressValid ? "#343333":'white', fontSize: 14, fontWeight: '500' }}>Save Address</Text>
+            <Text style={{ color: !isAddressValid ? "#343333" : 'white', fontSize: 14, fontWeight: '500' }}>Save Address</Text>
           </TouchableOpacity>
 
 
@@ -432,10 +429,13 @@ const styles = StyleSheet.create({
   image4: { width: 16, height: 16, marginLeft: 16, marginTop: 5, marginBottom: 5 },
   searchButton: {
     marginLeft: 10,
+    alignItems: 'center'
   },
   image1: {
     height: 24,
-    width: 24
+    width: 24,
+    marginLeft:16,
+    marginTop:10
   },
   image2: {
     height: 33,
@@ -613,6 +613,21 @@ const styles = StyleSheet.create({
   markerImage: {
     width: 116,
     height: 116,
+  },
+  searchContainer: {
+    marginHorizontal: 19,
+    backgroundColor: null,
+    height: 30,
+    borderRadius: 15,
+  },
+  InputContainer: {
+    backgroundColor: null,
+    opacity: 0.5,
+    marginLeft: 20,
+  },
+  listView: {
+    backgroundColor: 'white',
+    borderRadius: 25,
   },
 
 });

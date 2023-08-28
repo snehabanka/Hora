@@ -347,7 +347,7 @@ const SelectDate = ({ navigation, route }) => {
             navigation.navigate("ConfirmDishOrder", {
                 "selectedDate": selectedDate, "selectedTime": selectedTime, "peopleCount": peopleCount,
                 "burnerCount":burnerCount,
-                
+
                 "selectedDishes": data
             })
         }
@@ -493,14 +493,25 @@ const SelectDate = ({ navigation, route }) => {
                         <Text style={{ color: '#9252AA', fontWeight: '700', marginLeft: 9, fontSize: 10 }}>₹ 49/person would be added to bill value in addition to dish price</Text>
 
                     </View>
-
+                    
 
                 </View>
-                <View style={{ justifyContent: 'center', flexDirection: 'row', marginTop: 16 }}>
+                {/* <View style={{ justifyContent: 'center', flexDirection: 'row', marginTop: 16 }}>
                     <Text style={{ color: '#707070', fontSize: 14, fontWeight: '800' }} >Required Procurement ?</Text>
-                </View>
+                </View> */}
+                <View style={{    flex: 1,marginTop:16,
+    justifyContent: 'center',
+    alignItems: 'center',
+}}>
+      <Text style={{flexDirection: 'row', alignItems: 'center',}}>
+        <Text style={{color:'#000',fontSize:14,fontWeight:'800'}}>Required </Text>
+        <Text style={{color:'#9252AA',fontSize:14,fontWeight:'800'}}>Procurement </Text>
+        <Text style={{color:'#000',fontSize:14,fontWeight:'800'}}>?</Text>
+      </Text>
+    </View>
 
-                <View style={{ flexDirection: 'row', marginTop: 6, marginHorizontal: 9 }}>
+
+                <View style={{ flexDirection: 'row', marginTop: 4, marginHorizontal: 9 ,justifyContent:'center'}}>
                     <Text style={{ color: '#707070', fontSize: 12, fontWeight: '400' }} >Keep these Appliances and Ingredients ready before chef Arrival</Text>
                 </View>
 

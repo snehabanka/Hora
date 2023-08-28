@@ -25,7 +25,7 @@ const StackNavigation = () => {
         return <CustomHeader title={route.name} />;
       },
     }}
-    initialRouteName='CreateOrder'
+    initialRouteName='Login'
   >
     <Stack.Screen name="MyAccount" component={MyAccount} options={{headerShown:true}}/>
       <Stack.Screen name="Splash" component={Splash} options={{headerShown:true}} />

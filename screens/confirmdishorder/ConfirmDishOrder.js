@@ -143,10 +143,13 @@ const ConfirmDishOrder = ({ navigation, route }) => {
             const requestData = {
                 page: '1'
             };
+            const token = await AsyncStorage.getItem('token')
+
+            console.warn(token)
             const response = await axios.post(url, requestData, {
                 headers: {
                     'Content-Type': 'application/json',
-                    'authorization': 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2NDEzMzQwZjU0OWI1OGUzZGMzOWEwMzUiLCJuYW1lIjoiUmFodWwiLCJlbWFpbCI6IiIsInBob25lIjoiODM4Nzk5OTM4MiIsInJvbGUiOiJzdXBwbGllciIsImlhdCI6MTY3ODk4NDg3OSwiZXhwIjoxNzEwNTIwODc5fQ.PEnGF12sAFsF_idngQZnGR_eSLYweXCOPsq7iTJUMoc'
+                    'authorization': token
                 },
             });
             if (response.status == API_SUCCESS_CODE) {
@@ -186,229 +189,229 @@ const ConfirmDishOrder = ({ navigation, route }) => {
     }
 
     const onContinueClick = async () => {
-        navigation.navigate('ConfirmOrder')
-    //     try {
-    //         const url = BASE_URL + CONFIRM_ORDER_ENDPOINT;
-    //         const requestData = {
-    //             "toId": "",
-    //             "order_time": selectedTime.toLocaleTimeString(),
-    //             "no_of_people": peopleCount,
-    //             "type": 2,
-    //             "fromId": "64a58d475fcdc03e14bfc136",
-    //             "is_discount": "0",
-    //             "addressId": "64a58e1c5fcdc03e14bfc171",
-    //             "order_date": selectedDate.toDateString(),
-    //             "no_of_burner": "",
-    //             "categoryIds": ["63ee472c6f4f9c2af1da490b"],
-    //             "order_locality": "",
-    //             "total_amount": totalPrice,
-    //             "orderApplianceIds": [],
-    //             "payable_amount": totalPrice,
-    //             "is_gst": "0",
-    //             "order_type": true,
-    //             "items": [{ "item_id": "641540d58c62c01319fcccc6" }]
-    //         }
-    //     const response = await axios.post(url, requestData, {
-    //         headers: {
-    //             'Content-Type': 'application/json',
-    //             'authorization': 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2NDEzMzQwZjU0OWI1OGUzZGMzOWEwMzUiLCJuYW1lIjoiUmFodWwiLCJlbWFpbCI6IiIsInBob25lIjoiODM4Nzk5OTM4MiIsInJvbGUiOiJzdXBwbGllciIsImlhdCI6MTY3ODk4NDg3OSwiZXhwIjoxNzEwNTIwODc5fQ.PEnGF12sAFsF_idngQZnGR_eSLYweXCOPsq7iTJUMoc'
-    //         },
-    //     });
-    //     if (response.status == API_SUCCESS_CODE) {
-    //         navigation.navigate('ConfirmOrder')
-    //     }
-    // } catch (error) {
-    //     console.log('Error Fetching Data:', error.message);
-    // }
-}
+        try {
+            const url = BASE_URL + CONFIRM_ORDER_ENDPOINT;
+            const requestData = {
+                "toId": "",
+                "order_time": selectedTime.toLocaleTimeString(),
+                "no_of_people": peopleCount,
+                "type": 2,
+                "fromId": "64a58d475fcdc03e14bfc136",
+                "is_discount": "0",
+                "addressId": "64a58e1c5fcdc03e14bfc171",
+                "order_date": selectedDate.toDateString(),
+                "no_of_burner": "",
+                "categoryIds": ["63ee472c6f4f9c2af1da490b"],
+                "order_locality": "",
+                "total_amount": totalPrice,
+                "orderApplianceIds": [],
+                "payable_amount": totalPrice,
+                "is_gst": "0",
+                "order_type": true,
+                "items": [{ "item_id": "641540d58c62c01319fcccc6" }]
+            }
+            const token = await AsyncStorage.getItem('token')
+            const response = await axios.post(url, requestData, {
+                headers: {
+                    'Content-Type': 'application/json',
+                    'authorization': token
+                },
+            });
+            if (response.status == API_SUCCESS_CODE) {
+                navigation.navigate('ConfirmOrder')
+            }
+        } catch (error) {
+            console.log('Error Fetching Data:', error.message);
+        }
+    }
 
-const addMore = () => {
-    navigation.navigate('CreateOrder')
-}
+    const addMore = () => {
+        navigation.navigate('CreateOrder')
+    }
 
-const changeLocation = () => {
-    openBottomSheet()
-}
+    const changeLocation = () => {
+        openBottomSheet()
+    }
 
-const addAddress = () => {
-    bottomSheetRef.current.close();
-    navigation.navigate('ConfirmLocation', { 'data': null })
-}
+    const addAddress = () => {
+        bottomSheetRef.current.close();
+        navigation.navigate('ConfirmLocation', { 'data': null })
+    }
 
-return (
-    <View style={styles.screenContainer}>
-        <View style={styles.view1}>
-            <Image style={styles.image1} source={require('../../assets/info.png')} />
-            <Text style={styles.text1}>Bill value depends upon Dish selected + Number of people</Text>
-        </View>
-        <View style={styles.view2}>
-            <View>
-                <Image style={styles.dish} source={require('../../assets/SelectDishUnselected.png')} />
-                <Text style={{ fontSize: 10, fontFamily: '600', color: '#F46C5B' }}>Select Dishes</Text>
+    return (
+        <View style={styles.screenContainer}>
+            <View style={styles.view1}>
+                <Image style={styles.image1} source={require('../../assets/info.png')} />
+                <Text style={styles.text1}>Bill value depends upon Dish selected + Number of people</Text>
             </View>
-            <Image style={styles.separator1} source={require('../../assets/horizontalSeparator.png')} />
-            <View>
-                <Image style={styles.time} source={require('../../assets/SelectDateAndTimeTick.png')} />
-                <Text style={{ fontSize: 10, fontFamily: '600', color: '#F46C5B' }}>Select Date & Time</Text>
-            </View>
-            <Image style={styles.separator2} source={require('../../assets/horizontalSeparator.png')} />
-            <View>
-                <Image style={styles.order} source={require('../../assets/ConfirmOrderSelected.png')} />
-                <Text style={{ fontSize: 10, fontFamily: '600', color: '#F46C5B' }}>Confirm Order</Text>
-            </View>
-
-        </View>
-        <View style={{ marginHorizontal: 16, flexDirection: 'column', width: Dimensions.get('window').width * 0.9, padding: 7, backgroundColor: 'rgba(255, 164, 164, 0.27)', borderColor: '#F15252', borderWidth: 1, borderRadius: 3, alignItems: 'center', justifyContent: 'center', marginTop: 15 }}>
-
-            <Text style={{ color: '#000', fontSize: 10, fontWeight: '500' }}>Chef details will be shared 5 hours before the order time</Text>
-            <Text style={{ color: '#FF2929', fontWeight: '500', fontSize: 10 }}>Learn More</Text>
-        </View>
-        <ScrollView style={{}}>
-            <View style={{ marginHorizontal: 16, flexDirection: 'column', width: Dimensions.get('window').width * 0.9, padding: 13, borderRadius: 6, borderColor: '#E6E6E6', borderWidth: 1, marginTop: 6, }}>
-                <Text style={{ color: '#333', fontSize: 13, fontWeight: '700', }}>
-                    Cooking location
-                </Text>
-                <View style={{ marginTop: 5, paddingStart: 11, paddingVertical: 6, backgroundColor: 'rgba(211, 75, 233, 0.10)', borderRadius: 4, borderWidth: 1, borderColor: '#FFE1E6', paddingEnd: 20 }}>
-                    <Text style={{ color: '#9252AA', fontWeight: '500', lineHeight: 18, fontSize: 13 }}>{currentAddress}</Text>
-
+            <View style={styles.view2}>
+                <View>
+                    <Image style={styles.dish} source={require('../../assets/SelectDishUnselected.png')} />
+                    <Text style={{ fontSize: 10, fontFamily: '600', color: '#F46C5B' }}>Select Dishes</Text>
                 </View>
-                <TouchableOpacity onPress={changeLocation} activeOpacity={1}>
+                <Image style={styles.separator1} source={require('../../assets/horizontalSeparator.png')} />
+                <View>
+                    <Image style={styles.time} source={require('../../assets/SelectDateAndTimeTick.png')} />
+                    <Text style={{ fontSize: 10, fontFamily: '600', color: '#F46C5B' }}>Select Date & Time</Text>
+                </View>
+                <Image style={styles.separator2} source={require('../../assets/horizontalSeparator.png')} />
+                <View>
+                    <Image style={styles.order} source={require('../../assets/ConfirmOrderSelected.png')} />
+                    <Text style={{ fontSize: 10, fontFamily: '600', color: '#F46C5B' }}>Confirm Order</Text>
+                </View>
 
-                    <View style={{ alignItems: 'center', justifyContent: 'center', marginTop: 6 }}>
-                        <Text style={{ color: '#9252AA', fontSize: 13, fontWeight: '500', lineHeight: 18 }} >Change location</Text>
+            </View>
+            <View style={{ marginHorizontal: 16, flexDirection: 'column', width: Dimensions.get('window').width * 0.9, padding: 7, backgroundColor: 'rgba(255, 164, 164, 0.27)', borderColor: '#F15252', borderWidth: 1, borderRadius: 3, alignItems: 'center', justifyContent: 'center', marginTop: 15 }}>
+
+                <Text style={{ color: '#000', fontSize: 10, fontWeight: '500' }}>Chef details will be shared 5 hours before the order time</Text>
+                <Text style={{ color: '#FF2929', fontWeight: '500', fontSize: 10 }}>Learn More</Text>
+            </View>
+            <ScrollView style={{}}>
+                <View style={{ marginHorizontal: 16, flexDirection: 'column', width: Dimensions.get('window').width * 0.9, padding: 13, borderRadius: 6, borderColor: '#E6E6E6', borderWidth: 1, marginTop: 6, }}>
+                    <Text style={{ color: '#333', fontSize: 13, fontWeight: '700', }}>
+                        Cooking location
+                    </Text>
+                    <View style={{ marginTop: 5, paddingStart: 11, paddingVertical: 6, backgroundColor: 'rgba(211, 75, 233, 0.10)', borderRadius: 4, borderWidth: 1, borderColor: '#FFE1E6', paddingEnd: 20 }}>
+                        <Text style={{ color: '#9252AA', fontWeight: '500', lineHeight: 18, fontSize: 13 }}>{currentAddress}</Text>
+
                     </View>
+                    <TouchableOpacity onPress={changeLocation} activeOpacity={1}>
 
-                </TouchableOpacity>
-            </View>
-            <View style={{ marginHorizontal: 16, flexDirection: 'column', width: Dimensions.get('window').width * 0.9, padding: 13, borderRadius: 6, borderColor: '#E6E6E6', borderWidth: 1, marginTop: 6, paddingEnd: 10 }}>
-                <Text style={{ color: '#333', fontSize: 13, fontWeight: '700', lineHeight: 26 }}>Payment summary</Text>
-                <View style={{ flexDirection: 'column' }}>
-                    <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center' }}>
-                        <View style={{ marginHorizontal: 16, flexDirection: 'column', width: 120, paddingTop: 7, paddingLeft: 13, borderRadius: 6, borderColor: '#E6E6E6', borderWidth: 1, marginTop: 6, paddingBottom: 3 }}>
-                            <Text style={{ color: '#A3A3A3', fontSize: 9, fontWeight: '400' }}>Booking Date</Text>
-                            <Text style={{ color: '#9252AA', fontSize: 13, fontWeight: '600' }}>{selectedDate.toDateString()}</Text>
+                        <View style={{ alignItems: 'center', justifyContent: 'center', marginTop: 6 }}>
+                            <Text style={{ color: '#9252AA', fontSize: 13, fontWeight: '500', lineHeight: 18 }} >Change location</Text>
                         </View>
-                        <View style={{ marginHorizontal: 16, flexDirection: 'column', width: 120, paddingBottom: 3, paddingTop: 7, paddingLeft: 13, borderRadius: 6, borderColor: '#E6E6E6', borderWidth: 1, marginTop: 6 }}>
-                            <Text style={{ color: '#A3A3A3', fontSize: 9, fontWeight: '400' }}>Chef Arrival time</Text>
-                            <Text style={{ color: '#9252AA', fontSize: 13, fontWeight: '600' }}>{selectedTime.toLocaleTimeString()}</Text>
-                        </View>
-                    </View>
-                    <View style={{ flexDirection: 'row', justifyContent: 'center', alignItems: 'center' }}>
-                        <View style={{ marginHorizontal: 16, flexDirection: 'column', width: 120, paddingBottom: 3, paddingTop: 7, paddingLeft: 13, borderRadius: 6, borderColor: '#E6E6E6', borderWidth: 1, marginTop: 6 }}>
-                            <Text style={{ color: '#A3A3A3', fontSize: 9, fontWeight: '400' }}>Total Dishes</Text>
-                            <Text style={{ color: '#9252AA', fontSize: 13, fontWeight: '600' }}>{Object.keys(selectedDishData).length}</Text>
-                        </View>
-                        <View style={{ marginHorizontal: 16, flexDirection: 'column', width: 120, paddingBottom: 3, paddingTop: 7, paddingLeft: 13, borderRadius: 6, borderColor: '#E6E6E6', borderWidth: 1, marginTop: 6 }}>
-                            <Text style={{ color: '#A3A3A3', fontSize: 9, fontWeight: '400' }}>No. of People</Text>
-                            <Text style={{ color: '#9252AA', fontSize: 13, fontWeight: '600' }}>{peopleCount}</Text>
-                        </View>
-                    </View>
-                </View>
-                <Image style={{ width: 316, height: 1, marginTop: 23 }} source={require('../../assets/Rectangleline.png')}></Image>
-                <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
-                    <Text style={{ color: "#525252", fontWeight: '500', fontSize: 12, lineHeight: 20 }}>Price for dish</Text>
-                    <Text style={{ color: "#525252", fontWeight: '500', fontSize: 12, lineHeight: 20 }}>₹ {dishPrice}</Text>
-                </View>
-                <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
-                    <Text style={{ color: "#525252", fontWeight: '500', fontSize: 12, lineHeight: 20 }}>Price for Number of people</Text>
-                    <Text style={{ color: "#525252", fontWeight: '500', fontSize: 12, lineHeight: 20 }}>₹ {priceForPeople}</Text>
-                </View>
-                <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginTop: 7 }}>
-                    <Text style={{ color: "#A3A3A3", fontWeight: '400', fontSize: 12, lineHeight: 20 }}>Other Charges</Text>
-                    <Text style={{ color: "#A3A3A3", fontWeight: '400', fontSize: 12, lineHeight: 20 }}>Free</Text>
-                </View>
-                <Image style={{ width: 316, height: 1, marginTop: 3 }} source={require('../../assets/Rectangleline.png')}></Image>
-                <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginTop: 3 }}>
-                    <Text style={{ color: "#9252AA", fontWeight: '600', fontSize: 16, lineHeight: 20 }}>Total payment</Text>
-                    <Text style={{ color: "#9252AA", fontWeight: '600', fontSize: 16, lineHeight: 20 }}>₹ {totalPrice}</Text>
-                </View>
-                <Image style={{ width: 316, height: 1, marginTop: 3 }} source={require('../../assets/Rectangleline.png')}></Image>
-                <View style={{ padding: 7, flexDirection: 'row', borderRadius: 10, paddingRight: 11, marginTop: 15, borderRadius: 100, backgroundColor: 'rgba(211, 75, 233, 0.10)', justifyContent: 'center', alignItems: 'center' }}>
-                    <Image source={require('../../assets/info.png')} style={{ height: 16, width: 16 }} />
-                    <Text style={{ fontSize: 10, color: '#9252AA', fontWeight: '400', marginLeft: 4, lineHeight: 15 }}>100% Payment is to be paid to chef after order completion.</Text>
-                </View>
-            </View>
 
-
-
-
-            <View style={{ justifyContent: 'space-between', marginTop: 5, borderRadius: 6, backgroundColor: '#E8E8E8', borderColor: '#D8D8D8', borderWidth: 1, width: Dimensions.get('window').width, paddingBottom: 10 }}>
-                <View style={{ marginHorizontal: 16, flexDirection: 'row', justifyContent: 'space-between', marginTop: 5 }}>
-                    <Text style={{ padding: 4, color: '#000', fontSize: 13, fontWeight: '600' }}>Order Summary</Text>
-                    <View style={{ flexDirection: 'row', justifyContent: 'flex-end', alignItems: 'center' }}>
-                        <TouchableOpacity onPress={onViewAllClick}>
-                            <Text style={{ color: '#9252AA', fontWeight: '400', textDecorationLine: 'underline', fontSize: 11, marginLeft: 10 }}>View All</Text>
-
-                        </TouchableOpacity>
-                        <Image style={{ width: 9, height: 9, marginLeft: 5 }} source={require('../../assets/viewAll.png')}></Image>
-                    </View>
-                </View>
-
-                <View style={{ marginTop: 10, marginHorizontal: 15, flexDirection: 'row', flex: 1 }} >
-                    <FlatList
-                        data={showAllItems ? selectedMealList : selectedMealList.slice(0, 3)}
-                        keyExtractor={(item) => item._id}
-                        renderItem={renderDishItem}
-                        numColumns={3}
-                        columnWrapperStyle={styles.dishColumnWrapper}
-                    />
-                </View>
-                <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center', paddingTop: 12 }}>
-                    <Text style={{ fontSize: 14, fontWeight: 500, color: '#333' }}>Need more dishes?</Text>
-                    <TouchableOpacity onPress={addMore} activeOpacity={1}>
-                        <View style={{ marginLeft: 5, backgroundColor: '#E8E8E8', borderRadius: 18, borderWidth: 1, borderColor: '#9252AA', justifyContent: 'center', alignItems: 'center', width: 96, height: 28 }}>
-                            <Text style={{ color: '#9252AA', fontSize: 13, fontWeight: '500' }}>Add More</Text>
-                        </View>
                     </TouchableOpacity>
                 </View>
-            </View>
-
-
-        </ScrollView>
-        <View style={{ marginTop: 11, alignItems: 'center', justifyContent: 'center' }}>
-            <TouchableOpacity onPress={onContinueClick} style={styles.continueButton} activeOpacity={1}>
-                <View style={{ flexDirection: 'row', justifyContent: 'center', alignItems: 'center', paddingHorizontal: 16 }}>
-                    <Text style={styles.buttonText1}>Confirm Order</Text>
-
+                <View style={{ marginHorizontal: 16, flexDirection: 'column', width: Dimensions.get('window').width * 0.9, padding: 13, borderRadius: 6, borderColor: '#E6E6E6', borderWidth: 1, marginTop: 6, paddingEnd: 10 }}>
+                    <Text style={{ color: '#333', fontSize: 13, fontWeight: '700', lineHeight: 26 }}>Payment summary</Text>
+                    <View style={{ flexDirection: 'column' }}>
+                        <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center' }}>
+                            <View style={{ marginHorizontal: 16, flexDirection: 'column', width: 120, paddingTop: 7, paddingLeft: 13, borderRadius: 6, borderColor: '#E6E6E6', borderWidth: 1, marginTop: 6, paddingBottom: 3 }}>
+                                <Text style={{ color: '#A3A3A3', fontSize: 9, fontWeight: '400' }}>Booking Date</Text>
+                                <Text style={{ color: '#9252AA', fontSize: 13, fontWeight: '600' }}>{selectedDate.toDateString()}</Text>
+                            </View>
+                            <View style={{ marginHorizontal: 16, flexDirection: 'column', width: 120, paddingBottom: 3, paddingTop: 7, paddingLeft: 13, borderRadius: 6, borderColor: '#E6E6E6', borderWidth: 1, marginTop: 6 }}>
+                                <Text style={{ color: '#A3A3A3', fontSize: 9, fontWeight: '400' }}>Chef Arrival time</Text>
+                                <Text style={{ color: '#9252AA', fontSize: 13, fontWeight: '600' }}>{selectedTime.toLocaleTimeString()}</Text>
+                            </View>
+                        </View>
+                        <View style={{ flexDirection: 'row', justifyContent: 'center', alignItems: 'center' }}>
+                            <View style={{ marginHorizontal: 16, flexDirection: 'column', width: 120, paddingBottom: 3, paddingTop: 7, paddingLeft: 13, borderRadius: 6, borderColor: '#E6E6E6', borderWidth: 1, marginTop: 6 }}>
+                                <Text style={{ color: '#A3A3A3', fontSize: 9, fontWeight: '400' }}>Total Dishes</Text>
+                                <Text style={{ color: '#9252AA', fontSize: 13, fontWeight: '600' }}>{Object.keys(selectedDishData).length}</Text>
+                            </View>
+                            <View style={{ marginHorizontal: 16, flexDirection: 'column', width: 120, paddingBottom: 3, paddingTop: 7, paddingLeft: 13, borderRadius: 6, borderColor: '#E6E6E6', borderWidth: 1, marginTop: 6 }}>
+                                <Text style={{ color: '#A3A3A3', fontSize: 9, fontWeight: '400' }}>No. of People</Text>
+                                <Text style={{ color: '#9252AA', fontSize: 13, fontWeight: '600' }}>{peopleCount}</Text>
+                            </View>
+                        </View>
+                    </View>
+                    <Image style={{ width: 316, height: 1, marginTop: 23 }} source={require('../../assets/Rectangleline.png')}></Image>
+                    <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
+                        <Text style={{ color: "#525252", fontWeight: '500', fontSize: 12, lineHeight: 20 }}>Price for dish</Text>
+                        <Text style={{ color: "#525252", fontWeight: '500', fontSize: 12, lineHeight: 20 }}>₹ {dishPrice}</Text>
+                    </View>
+                    <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
+                        <Text style={{ color: "#525252", fontWeight: '500', fontSize: 12, lineHeight: 20 }}>Price for Number of people</Text>
+                        <Text style={{ color: "#525252", fontWeight: '500', fontSize: 12, lineHeight: 20 }}>₹ {priceForPeople}</Text>
+                    </View>
+                    <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginTop: 7 }}>
+                        <Text style={{ color: "#A3A3A3", fontWeight: '400', fontSize: 12, lineHeight: 20 }}>Other Charges</Text>
+                        <Text style={{ color: "#A3A3A3", fontWeight: '400', fontSize: 12, lineHeight: 20 }}>Free</Text>
+                    </View>
+                    <Image style={{ width: 316, height: 1, marginTop: 3 }} source={require('../../assets/Rectangleline.png')}></Image>
+                    <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginTop: 3 }}>
+                        <Text style={{ color: "#9252AA", fontWeight: '600', fontSize: 16, lineHeight: 20 }}>Total payment</Text>
+                        <Text style={{ color: "#9252AA", fontWeight: '600', fontSize: 16, lineHeight: 20 }}>₹ {totalPrice}</Text>
+                    </View>
+                    <Image style={{ width: 316, height: 1, marginTop: 3 }} source={require('../../assets/Rectangleline.png')}></Image>
+                    <View style={{ padding: 7, flexDirection: 'row', borderRadius: 10, paddingRight: 11, marginTop: 15, borderRadius: 100, backgroundColor: 'rgba(211, 75, 233, 0.10)', justifyContent: 'center', alignItems: 'center' }}>
+                        <Image source={require('../../assets/info.png')} style={{ height: 16, width: 16 }} />
+                        <Text style={{ fontSize: 10, color: '#9252AA', fontWeight: '400', marginLeft: 4, lineHeight: 15 }}>100% Payment is to be paid to chef after order completion.</Text>
+                    </View>
                 </View>
 
-            </TouchableOpacity>
-        </View>
-        <RBSheet
-            ref={bottomSheetRef}
-            closeOnDragDown={true}
-            height={500}
-            customStyles={{
-                container: styles.bottomSheetContainer,
-                wrapper: styles.bottomSheetWrapper,
-                draggableIcon: styles.draggableIcon,
-            }}
-        >
-            <View style={{ flexDirection: 'column', marginBottom: 39, flex: 1 }}>
-                <BottomSheetContent
-                    data={addresses}
-                    onSelectAddress={handleSelectAddress}
 
-                />
-            </View>
 
-            <View style={{
-                justifyContent: 'center',
-                marginTop: 29,
-                marginBottom: 26,
-                alignItems: 'center',
-            }}>
-                <TouchableOpacity onPress={() => addAddress()} style={styles.customButton} activeOpacity={1}>
-                    <Text style={styles.buttonText}> + Add Address</Text>
+
+                <View style={{ justifyContent: 'space-between', marginTop: 5, borderRadius: 6, backgroundColor: '#E8E8E8', borderColor: '#D8D8D8', borderWidth: 1, width: Dimensions.get('window').width, paddingBottom: 10 }}>
+                    <View style={{ marginHorizontal: 16, flexDirection: 'row', justifyContent: 'space-between', marginTop: 5 }}>
+                        <Text style={{ padding: 4, color: '#000', fontSize: 13, fontWeight: '600' }}>Order Summary</Text>
+                        <View style={{ flexDirection: 'row', justifyContent: 'flex-end', alignItems: 'center' }}>
+                            <TouchableOpacity onPress={onViewAllClick}>
+                                <Text style={{ color: '#9252AA', fontWeight: '400', textDecorationLine: 'underline', fontSize: 11, marginLeft: 10 }}>View All</Text>
+
+                            </TouchableOpacity>
+                            <Image style={{ width: 9, height: 9, marginLeft: 5 }} source={require('../../assets/viewAll.png')}></Image>
+                        </View>
+                    </View>
+
+                    <View style={{ marginTop: 10, marginHorizontal: 15, flexDirection: 'row', flex: 1 }} >
+                        <FlatList
+                            data={showAllItems ? selectedMealList : selectedMealList.slice(0, 3)}
+                            keyExtractor={(item) => item._id}
+                            renderItem={renderDishItem}
+                            numColumns={3}
+                            columnWrapperStyle={styles.dishColumnWrapper}
+                        />
+                    </View>
+                    <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center', paddingTop: 12 }}>
+                        <Text style={{ fontSize: 14, fontWeight: 500, color: '#333' }}>Need more dishes?</Text>
+                        <TouchableOpacity onPress={addMore} activeOpacity={1}>
+                            <View style={{ marginLeft: 5, backgroundColor: '#E8E8E8', borderRadius: 18, borderWidth: 1, borderColor: '#9252AA', justifyContent: 'center', alignItems: 'center', width: 96, height: 28 }}>
+                                <Text style={{ color: '#9252AA', fontSize: 13, fontWeight: '500' }}>Add More</Text>
+                            </View>
+                        </TouchableOpacity>
+                    </View>
+                </View>
+
+
+            </ScrollView>
+            <View style={{ marginTop: 11, alignItems: 'center', justifyContent: 'center' }}>
+                <TouchableOpacity onPress={onContinueClick} style={styles.continueButton} activeOpacity={1}>
+                    <View style={{ flexDirection: 'row', justifyContent: 'center', alignItems: 'center', paddingHorizontal: 16 }}>
+                        <Text style={styles.buttonText1}>Confirm Order</Text>
+
+                    </View>
+
                 </TouchableOpacity>
             </View>
-        </RBSheet>
+            <RBSheet
+                ref={bottomSheetRef}
+                closeOnDragDown={true}
+                height={500}
+                customStyles={{
+                    container: styles.bottomSheetContainer,
+                    wrapper: styles.bottomSheetWrapper,
+                    draggableIcon: styles.draggableIcon,
+                }}
+            >
+                <View style={{ flexDirection: 'column', marginBottom: 39, flex: 1 }}>
+                    <BottomSheetContent
+                        data={addresses}
+                        onSelectAddress={handleSelectAddress}
 
-    </View>
+                    />
+                </View>
+
+                <View style={{
+                    justifyContent: 'center',
+                    marginTop: 29,
+                    marginBottom: 26,
+                    alignItems: 'center',
+                }}>
+                    <TouchableOpacity onPress={() => addAddress()} style={styles.customButton} activeOpacity={1}>
+                        <Text style={styles.buttonText}> + Add Address</Text>
+                    </TouchableOpacity>
+                </View>
+            </RBSheet>
+
+        </View>
 
 
 
-)
+    )
 }
 
 const styles = StyleSheet.create({

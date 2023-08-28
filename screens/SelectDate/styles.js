@@ -73,22 +73,22 @@ const styles = StyleSheet.create({
         fontSize: 18,
       },
       buttonContent: {
-        flexDirection: 'row',
-        justifyContent: 'space-between',
-        alignItems: 'center',
-        width: '100%',
-    },
-  
-    continueButtonLeftText: {
-        color: 'white',
-        fontSize: 19,
-        fontWeight: '500',
-    },
-    continueButtonRightText: {
-      color: '#FFF',
-      fontSize: 16,
-      fontWeight: '400',
+      flexDirection: 'row',
+      justifyContent: 'space-between',
+      alignItems: 'center',
+      width: '100%',
   },
+
+  continueButtonLeftText: {
+      color: 'white',
+      fontSize: 19,
+      fontWeight: '500',
+  },
+  continueButtonRightText: {
+    color: '#FFF',
+    fontSize: 16,
+    fontWeight: '400',
+},
 
 })
 export default styles;
