@@ -158,7 +158,6 @@ const ConfirmLocation = ({ navigation, route }) => {
   };
 
 
-//ammamm
   const handleSetLocation = () => {
     bottomSheetRef.current.open();
   };
@@ -235,10 +234,6 @@ const ConfirmLocation = ({ navigation, route }) => {
 
   return (
     <KeyboardAvoidingView style={styles.container} behavior={Platform.OS === 'ios' ? 'padding' : null}>
-      <View style={styles.view1}>
-        <Image style={styles.image4} source={require('../../assets/info.png')} />
-        <Text style={styles.text1}>Price is calculated from dish cost and number of servings.</Text>
-      </View>
       {locationPermissionStatus === 'granted' && mapRegion && (
         <MapView
           ref={mapViewRef}
@@ -247,6 +242,7 @@ const ConfirmLocation = ({ navigation, route }) => {
           initialRegion={mapRegion}
           onRegionChange={(region) => handleRegionChange(region)}
         >
+          
 
         </MapView>
       )}
@@ -259,6 +255,11 @@ const ConfirmLocation = ({ navigation, route }) => {
           />
         </View>
       )}
+
+<View style={styles.view1}>
+        <Image style={styles.image4} source={require('../../assets/info.png')} />
+        <Text style={styles.text1}>Price is calculated from dish cost and number of servings.</Text>
+      </View>
 
 
 
@@ -276,7 +277,7 @@ const ConfirmLocation = ({ navigation, route }) => {
         />
 
       </View> */}
-
+{/* 
       <View style={{}}>
         <TouchableOpacity activeOpacity={1} style={styles.searchButton}>
           <Image source={require('../../assets/ic_search_black.png')} style={styles.image1}></Image>
@@ -307,7 +308,7 @@ const ConfirmLocation = ({ navigation, route }) => {
             language: 'en', // To receive results in English
           }}
         />
-      </View>
+      </View> */}
 
       <View style={{ position: 'absolute', bottom: 270, right: 20 }}>
         <TouchableOpacity

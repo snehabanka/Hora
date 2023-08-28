@@ -12,7 +12,6 @@ const CreateOrder = ({ navigation }) => {
     const [selectedCuisines, setSelectedCuisines] = useState([]);
     const [expandedCategories, setExpandedCategories] = useState([]);
     const [mealList, setMealList] = useState([]);
-    const [isSelectedDish, setIsSelectedDish] = useState(false);
     const [dishDetail, setDishDetail] = useState(null)
     const [selectedCount, setSelectedCount] = useState(0);
     const [selectedDishes, setSelectedDishes] = useState([]);
@@ -106,9 +105,9 @@ const CreateOrder = ({ navigation }) => {
                 )}
 
                 <View style={styles.bottomButtonContainer}>
-                    <TouchableHighlight onPress={() => addDishAndCloseBottomSheet} style={styles.customButton} underlayColor="transparent" activeOpacity={1}>
+                    <TouchableOpacity onPress={() => addDishAndCloseBottomSheet} style={styles.customButton} activeOpacity={1}>
                         <Text style={styles.buttonText1}> + Add Dish</Text>
-                    </TouchableHighlight>
+                    </TouchableOpacity>
                 </View>
             </ScrollView>
         </View>
@@ -160,10 +159,10 @@ const CreateOrder = ({ navigation }) => {
                     <ImageBackground
                         source={
                             selectedDishes.includes(item._id)
-                                ? require('../../assets/Rectanglepurple.png')
+                                ? require('../../assets/RectanglePurple.png')
                                 : require('../../assets/rectanglewhite.png')
                         }
-                        style={{ width: 106, height: 122, marginTop: 33 }}
+                        style={{ width: 106, height: 132, marginTop: 33 }}
                         imageStyle={{ borderRadius: 16 }}
                     >
                         <View style={{ flexDirection: 'column', paddingHorizontal: 5 }}>
@@ -182,22 +181,26 @@ const CreateOrder = ({ navigation }) => {
                                 <View style={{ justifyContent: 'center', alignItems: 'center' }}>
                                     <Text style={{ fontSize: 11, fontWeight: '600', color: item.special_appliance_id.length > 0 && selectedDishes.includes(item._id)? 'white':'transparent' }}>Appliance required</Text>
                                 </View>
-                        
-                            <Text
+                            
+                         <Text
                                 style={{
-
-                                    marginHorizontal: 5,
+                                    marginHorizontal: 3,
                                     textAlign: 'left',
                                     fontWeight: '600',
                                     fontSize: 11,
-                                    color: '#9252AA',
+                                    color: 'transparent',
                                     opacity: 0.9,
+                                    height:28,
                                     marginBottom: 8,
                                     color: selectedDishes.includes(item._id) ? 'white' : '#9252AA',
                                 }}
                             >
-                                {item.name}
+                                {isDishSelected && item.special_appliance_id.length > 0 && selectedDishes.includes(item._id)
+        ? item.special_appliance_id[0].name
+        : item.name}
                             </Text>
+
+
                             <View
                                 style={{
                                     flexDirection: 'row',
@@ -240,7 +243,7 @@ const CreateOrder = ({ navigation }) => {
                                         ? require('../../assets/Rectanglered.png')
                                         : require('../../assets/Rectanglegreen.png')
                                 }
-                                style={{ width: 72, height: 3, marginTop: 9 }}
+                                style={{ width: 72, height: 3, marginTop: 6 }}
                             />
                         </View>
                     </ImageBackground>
@@ -293,11 +296,17 @@ const CreateOrder = ({ navigation }) => {
     }, []);
 
     useEffect(() => {
+        console.warn(selectedCuisines)
         if(selectedCuisines.length>0){    
         fetchMealBasedOnCuisine()
         }
         else{
-            setMealList([])
+            setMealList([])  
+            setSelectedDishDictionary({});
+            setIsDishSelected(false);
+            setSelectedDishes([]);
+            setSelectedCount(0);
+            setSelectedDishPrice(0)
         }
     }, [selectedCuisines])
 
