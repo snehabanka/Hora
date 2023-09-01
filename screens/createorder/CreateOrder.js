@@ -8,12 +8,10 @@ import RBSheet from 'react-native-raw-bottom-sheet';
 import { BASE_URL, GET_CUISINE_ENDPOINT, API_SUCCESS_CODE, GET_MEAL_DISH_ENDPOINT } from '../../utils/ApiConstants';
 
 const CreateOrder = ({ navigation }) => {
-    const [selected, setSelected] = useState('veg');
     const [cuisines, setCuisines] = useState([]);
     const [selectedCuisines, setSelectedCuisines] = useState([]);
     const [expandedCategories, setExpandedCategories] = useState([]);
     const [mealList, setMealList] = useState([]);
-    const [isSelectedDish, setIsSelectedDish] = useState(false);
     const [dishDetail, setDishDetail] = useState(null)
     const [selectedCount, setSelectedCount] = useState(0);
     const [selectedDishes, setSelectedDishes] = useState([]);
@@ -107,9 +105,9 @@ const CreateOrder = ({ navigation }) => {
                 )}
 
                 <View style={styles.bottomButtonContainer}>
-                    <TouchableHighlight onPress={() => addDishAndCloseBottomSheet} style={styles.customButton} underlayColor="transparent" activeOpacity={1}>
+                    <TouchableOpacity onPress={() => addDishAndCloseBottomSheet} style={styles.customButton} activeOpacity={1}>
                         <Text style={styles.buttonText1}> + Add Dish</Text>
-                    </TouchableHighlight>
+                    </TouchableOpacity>
                 </View>
             </ScrollView>
         </View>
@@ -161,7 +159,7 @@ const CreateOrder = ({ navigation }) => {
                     <ImageBackground
                         source={
                             selectedDishes.includes(item._id)
-                                ? require('../../assets/Rectanglepurple.png')
+                                ? require('../../assets/RectanglePurple.png')
                                 : require('../../assets/rectanglewhite.png')
                         }
                         style={{ width: 106, height: 132, marginTop: 33 }}
@@ -183,22 +181,26 @@ const CreateOrder = ({ navigation }) => {
                                 <View style={{ justifyContent: 'center', alignItems: 'center' }}>
                                     <Text style={{ fontSize: 11, fontWeight: '600', color: item.special_appliance_id.length > 0 && selectedDishes.includes(item._id)? 'white':'transparent' }}>Appliance required</Text>
                                 </View>
-                        
-                            <Text
+                            
+                         <Text
                                 style={{
-
-                                    marginHorizontal: 5,
+                                    marginHorizontal: 3,
                                     textAlign: 'left',
                                     fontWeight: '600',
                                     fontSize: 11,
-                                    color: '#9252AA',
+                                    color: 'transparent',
                                     opacity: 0.9,
+                                    height:28,
                                     marginBottom: 8,
                                     color: selectedDishes.includes(item._id) ? 'white' : '#9252AA',
                                 }}
                             >
-                                {item.name}
+                                {isDishSelected && item.special_appliance_id.length > 0 && selectedDishes.includes(item._id)
+        ? item.special_appliance_id[0].name
+        : item.name}
                             </Text>
+
+
                             <View
                                 style={{
                                     flexDirection: 'row',
@@ -237,11 +239,11 @@ const CreateOrder = ({ navigation }) => {
                         <View style={{ justifyContent: 'center', paddingHorizontal: 17 }}>
                             <Image
                                 source={
-                                    item.is_dish === 0
+                                    item.is_dish === 2
                                         ? require('../../assets/Rectanglered.png')
                                         : require('../../assets/Rectanglegreen.png')
                                 }
-                                style={{ width: 72, height: 3, marginTop: 9 }}
+                                style={{ width: 72, height: 3, marginTop: 6 }}
                             />
                         </View>
                     </ImageBackground>
@@ -293,6 +295,21 @@ const CreateOrder = ({ navigation }) => {
         fetchCuisineData();
     }, []);
 
+    useEffect(() => {
+        console.warn(selectedCuisines)
+        if(selectedCuisines.length>0){    
+        fetchMealBasedOnCuisine()
+        }
+        else{
+            setMealList([])  
+            setSelectedDishDictionary({});
+            setIsDishSelected(false);
+            setSelectedDishes([]);
+            setSelectedCount(0);
+            setSelectedDishPrice(0)
+        }
+    }, [selectedCuisines])
+
     const handleCuisinePress = (cuisineId) => {
         setSelectedCuisines((prevSelected) => {
             if (prevSelected.includes(cuisineId)) {
@@ -301,13 +318,12 @@ const CreateOrder = ({ navigation }) => {
                 return [...prevSelected, cuisineId];
             }
         });
-        fetchMealBasedOnCuisine()
     };
 
     const fetchMealBasedOnCuisine = async () => {
         try {
             const url = BASE_URL + GET_MEAL_DISH_ENDPOINT;
-            const is_dish = selected == "veg" ? 1 : 0
+            const is_dish = isNonVegSelected  ? 0 : 1
             const requestData = {
                 cuisineId: selectedCuisines,
                 is_dish: is_dish
@@ -318,6 +334,7 @@ const CreateOrder = ({ navigation }) => {
                 },
             });
             if (response.status == API_SUCCESS_CODE) {
+                console.warn(response.data.data)
                 setMealList(response.data.data)
             }
         } catch (error) {
@@ -370,24 +387,32 @@ const CreateOrder = ({ navigation }) => {
 
             <View style={styles.vegNonVegContainer}>
                 <View style={styles.boxvegContainer}>
+                   
+                    <View style={{}}>
                     <Switch
                         value={true}
                         disabled={true}
-                        trackColor={{ true: '#569869', false: '#D4DBDE' }}
-                        thumbColor={'#569869'}
-                        style={{ width: 32, height: 18, marginStart: 10, marginVertical: 3 }}
+                        trackColor={{ true: '#8DE080', false: '#D4DBDE' }}
+                        thumbColor={'white'}
+                        style={{ transform: [{ scaleX: 1 }, { scaleY: 1 }],width: 32, height: 18, marginStart: 10, marginVertical: 3 }}
                     />
-                    <Text style={{ fontWeight: '500', fontSize: 9, color: '#9252AA' }}>Veg only</Text>
+                   </View>
+                   
+                    <View style={{marginLeft:7,marginRight:12}}>
+                    <Text style={{ fontWeight: '500', fontSize: 9, color: 'white' }}>Veg only</Text>
+                    </View>
                 </View>
-                <View style={styles.boxnonVegContainer}>
+                <View style={{backgroundColor:isNonVegSelected ? "#FF6767":"white",flexDirection: 'row',alignItems: 'center',borderWidth: 1,borderRadius: 2, borderColor: '#FF6767',padding:3}}>
                     <Switch
                         value={isNonVegSelected}
                         onValueChange={handleToggle}
-                        trackColor={{ true: '#FF6767', false: '#D4DBDE' }}
-                        thumbColor={isNonVegSelected ? '#FF6767' : 'white'}
+                        trackColor={{ true: '#D33030', false: '#D4DBDE' }}
+                        thumbColor={isNonVegSelected ? 'white' : 'white'}
                         style={{ width: 32, height: 18, marginStart: 10, marginVertical: 3 }}
                     />
-                    <Text style={{ fontWeight: '500', fontSize: 9, color: '#9252AA' }}>Non-Veg</Text>
+                    <View style={{marginRight:12}}>
+                    <Text style={{ fontWeight: '500', fontSize: 9, color: isNonVegSelected ? "white":"#9252AA"}}>Non-Veg</Text>
+                    </View>
                 </View>
             </View>
             <View style={{ flexDirection: 'row' }}>

@@ -184,17 +184,10 @@ const styles = StyleSheet.create({
       alignItems: 'center',
       borderWidth: 1,
       borderRadius: 2,
-      borderColor: '#50A74E',
-      padding:3,
+      paddingLef:3,
+      borderColor:"#50A74E",
+      backgroundColor:"#50A74E",
       marginRight:9
-    },
-    boxnonVegContainer: {
-      flexDirection: 'row',
-      alignItems: 'center',
-      borderWidth: 1,
-      borderRadius: 2,
-      borderColor: '#FF6767',
-      padding:3
     },
     continueButton: {
       marginTop: 10,

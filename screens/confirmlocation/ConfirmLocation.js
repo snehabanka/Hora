@@ -240,10 +240,6 @@ const ConfirmLocation = ({ navigation, route }) => {
 
   return (
     <KeyboardAvoidingView style={styles.container} behavior={Platform.OS === 'ios' ? 'padding' : null}>
-      <View style={styles.view1}>
-        <Image style={styles.image4} source={require('../../assets/info.png')} />
-        <Text style={styles.text1}>Price is calculated from dish cost and number of servings.</Text>
-      </View>
       {locationPermissionStatus === 'granted' && mapRegion && (
         <MapView
           ref={mapViewRef}
@@ -252,6 +248,7 @@ const ConfirmLocation = ({ navigation, route }) => {
           initialRegion={mapRegion}
           onRegionChange={(region) => handleRegionChange(region)}
         >
+          
 
         </MapView>
       )}
@@ -265,8 +262,15 @@ const ConfirmLocation = ({ navigation, route }) => {
         </View>
       )}
 
-        
-      {/* <View style={styles.searchBox}>
+<View style={styles.view1}>
+        <Image style={styles.image4} source={require('../../assets/info.png')} />
+        <Text style={styles.text1}>Price is calculated from dish cost and number of servings.</Text>
+      </View>
+
+
+
+      {/* 
+      <View style={styles.searchBox}>
         <TouchableOpacity activeOpacity={1} style={styles.searchButton}>
           <Image source={require('../../assets/ic_search_black.png')} style={styles.image1}></Image>
         </TouchableOpacity>
@@ -278,33 +282,38 @@ const ConfirmLocation = ({ navigation, route }) => {
           placeholderTextColor="black"
         />
       </View> */}
+{/* 
+      <View style={{}}>
+        <TouchableOpacity activeOpacity={1} style={styles.searchButton}>
+          <Image source={require('../../assets/ic_search_black.png')} style={styles.image1}></Image>
+        </TouchableOpacity>
 
-<View style={styles.container}>
-      <GooglePlacesAutocomplete
-        onPress={(data, details = null) => {
-          console.warn(data);
-          console.warn(details);
-          if (details) {
-            console.warn(data);
-            // Display the selected location on the map
-            // You can use the "details" object to get the location's latitude and longitude
-          }
-        }}
-        query={{
-          key: GOOGLE_MAP_KEY,
-          language: 'en',
-        }}
-        styles={{
-          container: styles.searchContainer,
-          textInputContainer: styles.InputContainer,
-          listView: styles.listView,
-        }}
-        renderLeftButton={SearchIcon}
-      />
-    </View>
-    
-      
-    
+        <GooglePlacesAutocomplete
+          placeholder="Find Your location"
+          onPress={(data, details = null) => {
+            if (details) {
+              console.warn(details)
+              // 'data' contains information about the selected place
+              // You can access the latitude and longitude using 'details.geometry.location'
+              const { description, geometry } = details;
+              const lat = geometry.location.lat;
+              const lng = geometry.location.lng;
+              setCurrentLocation(details.formatted_address); // Set the location text
+              handleRegionChange({
+                latitude: lat,
+                longitude: lng,
+                latitudeDelta: 0.0922,
+                longitudeDelta: 0.0421,
+              }); // Update the map region
+            }
+          }}
+          sheetContent={styles.searchBox}
+          query={{
+            key: GOOGLE_MAP_KEY,
+            language: 'en', // To receive results in English
+          }}
+        />
+      </View> */}
 
       <View style={{ position: 'absolute', bottom: 270, right: 20 }}>
         <TouchableOpacity
