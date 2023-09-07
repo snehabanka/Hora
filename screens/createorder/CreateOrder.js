@@ -159,7 +159,7 @@ const CreateOrder = ({ navigation }) => {
                     <ImageBackground
                         source={
                             selectedDishes.includes(item._id)
-                                ? require('../../assets/RectanglePurple.png')
+                                ? require('../../assets/Rectanglepurple.png')
                                 : require('../../assets/rectanglewhite.png')
                         }
                         style={{ width: 106, height: 132, marginTop: 33 }}

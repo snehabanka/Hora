@@ -1,10 +1,10 @@
 import React  , { useState , useEffect } from 'react';
 import { Text, View, StyleSheet, Image, Dimensions } from 'react-native'
 import { createDrawerNavigator, DrawerContentScrollView, DrawerItemList, DrawerItem } from '@react-navigation/drawer';
-import Contact from '../Screens/contact/Contact';
-import Profile from '../Screens/profile/Profile';
-import Orderlist from '../Screens/orderlist/Orderlist';
-import OrderDetails from '../Screens/orderdetails/OrderDetails';
+import Contact from '../screens/contact/Contact';
+import Profile from '../screens/profile/Profile';
+import Orderlist from '../screens/orderlist/Orderlist';
+import OrderDetails from '../screens/orderdetails/OrderDetails';
 
 const Drawer = createDrawerNavigator();
 

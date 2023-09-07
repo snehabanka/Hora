@@ -1,22 +1,22 @@
 import React, { useState, useEffect } from "react";
-import { StyleSheet, Text, View, Image , Button} from 'react-native';
-import axios from 'axios';
+import { StyleSheet, Text, View, Image, Button } from 'react-native';
+import { BASE_URL, USER_DETAILS_ENDPOINT } from '../../utils/ApiConstants';
 
 
 const Contact = ({ navigation }) => {
     const [mobileNumber, setMobileNumber] = useState('');
     const [email, setEmail] = useState('');
-    let base_url = 'https://horaservices.com:3000'
+
     useEffect(() => {
         fetchContactDetail();
     }, [])
 
     async function fetchContactDetail() {
         try {
-            const response = await fetch(base_url + '/api/setting/details');
+            const response = await fetch(BASE_URL + USER_DETAILS_ENDPOINT)
             const responseData = await response.json();
             const contactData = responseData.data
-            const phone = "+91" + contactData.phone
+            const phone = "+91" + " " + contactData.phone
             setEmail(contactData.email)
             setMobileNumber(phone)
         }
@@ -29,28 +29,36 @@ const Contact = ({ navigation }) => {
         <View>
             <View style={styles.container}>
                 <View>
-                    <Image source={require('../../assets/contactus.png')} style={styles.image} />
+                    <Image source={require('../../assets/contactus.png')} style={{
+                        width:339,
+                        height:345
+                    }} />
                 </View>
-                <View style={{ flexDirection: 'column', marginTop: 15, minHeight: 300 }}>
-                    <View style={styles.addressdetails}>
+                <View style={{
+                    flexDirection: 'column', marginTop: 15, minHeight: 300
+                }}>
+                    <View>
                         <Text style={{
                             color: '#979797',
                             fontFamily: 'Roboto-Regular',
-                            marginRight: 5,
-                            fontSize: 15
+                            fontSize: 15,
                         }}>
                             Call us at
                         </Text>
                         <View style={{
                             flexDirection: 'row',
                             alignItems: 'center',
-                            borderRadius: 7,
+                            borderRadius: 1,
                             padding: 10,
                             marginTop: 10,
                             marginBottom: 14,
                             marginLeft: 0,
                             marginRight: 0,
-                            boxShadow: "0 0 5px #9f9e9e"
+                            shadowColor: 'rgba(100, 100, 111, 0.2)',
+                            shadowOffset: { width: 0, height: 2 },
+                            shadowOpacity: 1,
+                            shadowRadius: 20,
+                            elevation: 2,
                         }}>
                             <Image source={require('../../assets/call-icon.png')}
                                 style={{
@@ -69,52 +77,63 @@ const Contact = ({ navigation }) => {
                                 fontFamily: 'Roboto-Regular',
                                 marginRight: 5,
                                 fontSize: 16,
-                                marginLeft: 30
+                                marginLeft: 30,
+                                borderColor: '#9252AA',
+                                fontWeight:700
                             }}>
                                 {mobileNumber}
                             </Text>
                         </View>
                     </View>
                     <View>
-                        <Text style={{
-                            color: '#979797',
-                            fontFamily: 'Roboto-Regular',
-                            marginRight: 5,
-                            fontSize: 15
-                        }}>Email us at</Text>
-                    </View>
-                    <View style={{
-                        flexDirection: 'row',
-                        alignItems: 'center',
-                        borderRadius: 7,
-                        padding: 10,
-                        marginTop: 10,
-                        marginBottom: 14,
-                        marginLeft: 0,
-                        marginRight: 0,
-                        boxShadow: "0 0 5px #9f9e9e"
-                    }}>
-                        <Image source={require('../../assets/email-icon.png')}
-                            style={{
-                                height: 49,
-                                marginLeft: 15,
-                                marginVertical: 46,
-                                width: 48,
+                        <View>
+                            <Text style={{
+                                color: '#979797',
+                                fontFamily: 'Roboto-Regular',
+                                marginRight: 5,
+                                fontSize: 15
+                            }}>Email us at</Text>
+                            <View style={{
+                                flexDirection: 'row',
+                                alignItems: 'center',
+                                borderRadius: 1,
+                                padding: 10,
+                                marginTop: 10,
+                                marginBottom: 14,
                                 marginLeft: 0,
                                 marginRight: 0,
-                                marginTop: 0,
-                                marginBottom: 0
-                            }}
-                        />
-                        <Text style={{
-                            color: '#3F3F3F',
-                            fontFamily: 'Roboto-Regular',
-                            marginRight: 5,
-                            fontSize: 16,
-                            marginLeft: 30
-                        }}>
-                            {email}
-                        </Text>
+                                shadowColor: 'rgba(100, 100, 111, 0.2)',
+                                shadowOffset: { width: 0, height: 2 },
+                                shadowOpacity: 1,
+                                shadowRadius: 20,
+                                elevation: 2,
+                               // boxShadow: "rgba(100, 100, 111, 0.2) 0px 7px 29px 0px"
+                            }}>
+
+                                <Image source={require('../../assets/email-icon.png')}
+                                    style={{
+                                        height: 49,
+                                        marginLeft: 15,
+                                        marginVertical: 46,
+                                        width: 48,
+                                        marginLeft: 0,
+                                        marginRight: 0,
+                                        marginTop: 0,
+                                        marginBottom: 0
+                                    }}
+                                />
+                                <Text style={{
+                                    color: '#3F3F3F',
+                                    fontFamily: 'Roboto-Regular',
+                                    marginRight: 5,
+                                    fontSize: 16,
+                                    marginLeft: 30,
+                                    fontWeight:700
+                                }}>
+                                    {email}
+                                </Text>
+                            </View>
+                        </View>
                     </View>
                 </View>
             </View>
@@ -124,19 +143,10 @@ const Contact = ({ navigation }) => {
 
 const styles = StyleSheet.create({
     container: {
-        paddingLeft: "20px",
-        paddingRight: "20px",
-        backgroundColor: 'white'
-    },
-    image: {
-        height: 320,
-        marginLeft: 15,
-        marginVertical: 46,
-        maxWidth: "100%",
-        marginLeft: 0,
-        marginRight: 0,
-        marginTop: 20,
-        marginBottom: 0
+        paddingLeft: 10,
+        paddingRight: 10,
+        backgroundColor: 'white',
+        paddingTop:20
     },
     contactnumber: {
         marginTop: 14

@@ -1,19 +1,25 @@
 import React, { useState, useEffect } from 'react';
 import { ScrollView, Linking, View, StyleSheet, Text, Image, TextInput, TouchableHighlight, Button, ImageBackground, KeyboardAvoidingView } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { BASE_URL, ORDERLIST_ENDPOINT } from '../../utils/ApiConstants';
 
 
 const Orderlist = ({ navigation }) => {
     const [orderData, setorderData] = useState({})
     const [invitedate, setInviteDate] = useState('')
-    let base_url = 'https://horaservices.com:3000'
     useEffect(() => {
         fetchOrderList();
     }, [])
 
+
+
+    const sendInvite = () => {
+        alert("invite sent")
+    }
+
     async function fetchOrderList() {
         try {
-            const response = await fetch(base_url + '/api/order/user_order_list', {
+            const response = await fetch(BASE_URL + ORDERLIST_ENDPOINT, {
                 method: 'POST',
                 headers: {
                     'Accept': 'application/json',
@@ -28,55 +34,8 @@ const Orderlist = ({ navigation }) => {
             setorderData(responseData.data.order)
         }
         catch (error) {
-            console.log(error)
+            console.log("error" + error)
         }
-    }
-
-    const sendInvite = async () => {
-         orderData.map((item) => {
-            return (
-                <View>
-                    {item.order_date}
-                    {item.order_time}
-                    {console.log(item.order_locality)}
-                    {
-                        item.selecteditems.map((cur) => {
-                            return (
-                                <View>
-                                    {
-                                    <ul>
-                                            <li>{console.log(cur.name)}</li>
-                                        </ul>
-                                    }
-                                </View>
-                            )
-                        })
-                    }
-                </View>
-            )
-        })
-        console.log("send button", orderData  )
-
-        // const shareOptions = {
-        //     massage: "text msg"
-        // }
-        // try {
-        //     const ShareResponse = Share.open(shareOptions)
-        //     console.log(ShareResponse)
-        // }
-        // catch (error) {
-        //     console.log("error")
-        // }
-    }
-
-    const getorderDate = (dateValue) => {
-        var str = dateValue;
-        var str = str.split("T");
-        var d1 = new Date(str[0])
-        var months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
-        var month = months[d1.getMonth()];
-        var dateValueUpdate = d1.getDate() + " " + month + " , " + d1.getFullYear()
-        return dateValueUpdate;
     }
 
     const getOrderStatus = (orderStatusValue) => {
@@ -108,95 +67,114 @@ const Orderlist = ({ navigation }) => {
         return updateOrderId;
     }
 
+    const getorderDate = (dateValue) => {
+        var str = dateValue;
+        var str = str.split("T");
+        var d1 = new Date(str[0])
+        var months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+        var month = months[d1.getMonth()];
+        var dateValueUpdate = d1.getDate() + " " + month + " , " + d1.getFullYear()
+        return dateValueUpdate;
+    }
 
     return (
         <View style={styles.container}>
             {
                 Object.keys(orderData).map((item, index) => {
                     return (
-                        <View key={index} style={{ boxShadow: "0 0 5px #9f9e9e", marginBottom: "20px", borderRadius: "20px", borderRadius: "20px", boxSizing: "border-box" }}>
+                        <View key={index}
+                            style={{
+                                marginBottom: 10,
+                                shadowColor: '#9f9e9e',
+                                shadowOffset: { width: 0, height: 4 },
+                                shadowOpacity: 3,
+                                shadowRadius: 2,
+                                elevation: 1,
+                                borderTopLeftRadius: 20,
+                                borderTopRightRadius: 20,
+                                borderBottomLeftRadius: 10,
+                                borderBottomRightRadius: 20
+                            }}
+                        >
                             <View style={styles.sec1}>
                                 <View style={{ display: "flex", flexDirection: "row" }}>
-                                    <span style={{ paddingLeft: "10px" }}>Order Id</span>
-                                    <span style={{ paddingLeft: "9px" }}>
+                                    <Text style={{ paddingLeft: 10, color: "rgba(146, 82, 170, 1)", fontWeight: '700', fontSize: 11 }}>Order Id</Text>
+                                    <Text style={{ paddingLeft: 9, color: "rgba(146, 82, 170, 1)", fontWeight: '700', fontSize: 11 }}>
                                         {getOrderId(orderData[item].order_id)}
-                                    </span>
+                                    </Text>
                                 </View>
                                 <View>
-                                    <Text style={styles.orderstatus}>{getOrderStatus(orderData[item].order_status)}</Text>
+                                    {
+                                        orderData[item].order_status == "3" ?
+                                            <Text style={styles.orderstatus3}>
+                                                {getOrderStatus(orderData[item].order_status)}
+                                            </Text> :
+                                            <Text style={styles.orderstatus}>
+                                                {getOrderStatus(orderData[item].order_status)}
+                                            </Text>
+                                    }
                                 </View>
                             </View>
                             <View style={styles.sec}>
                                 <View>
-                                    <ul style={styles.ulclass1}>
-                                        <li style={{ display: "flex", flexDirection: "row", justifyContent: "flex-start", alignItems: "center", listStyle: "none" }}>
-                                            <span>
-                                                <Image source={require('../../assets/date-time-icon.png')} style={{
-                                                    height: 13,
-                                                    width: 13,
-                                                    marginLeft: 15,
-                                                    marginVertical: 46,
-                                                    marginLeft: 0,
-                                                    marginRight: 0,
-                                                    marginTop: 0,
-                                                    marginBottom: 0
-                                                }} />
-                                            </span>
+                                    <View style={styles.ulclass1}>
+                                        <View style={{ display: "flex", flexDirection: "row", justifyContent: "flex-start", alignItems: "center", listStyle: "none" }}>
+                                            <Image source={require('../../assets/date-time-icon.png')} style={{
+                                                height: 13,
+                                                width: 13
+                                            }} />
 
-                                            <span style={{ marginLeft: "8px" }}><Text>{getorderDate(orderData[item].order_date)}</Text></span>
+                                            <Text style={{
+                                                marginLeft: 8,
+                                                color: 'rgba(65, 65, 65, 1)',
+                                                fontWeight: '600'
+                                            }}>
+                                                {getorderDate(orderData[item].order_date)}</Text>
+                                        </View>
+                                        <View style={{ display: "flex", flexDirection: "row", justifyContent: "flex-start", alignItems: "center", listStyle: "none", paddingTop: 6, paddingBottom: 6 }}>
 
-                                        </li>
-                                        <li style={{ display: "flex", flexDirection: "row", justifyContent: "flex-start", alignItems: "center", listStyle: "none", paddingTop: "8px", paddingBottom: "8px" }}>
-                                            <span>
-                                                <Image source={require('../../assets/Time-Circle.png')} style={{
-                                                    height: 13,
-                                                    width: 13,
-                                                    marginLeft: 15,
-                                                    marginVertical: 46,
-                                                    marginLeft: 0,
-                                                    marginRight: 0,
-                                                    marginTop: 0,
-                                                    marginBottom: 0
-                                                }} />
-                                            </span>
-                                            <span style={{ marginLeft: "8px" }}>{orderData[item].order_time}</span></li>
-                                        <li style={{ display: "flex", flexDirection: "row", justifyContent: "flex-start", alignItems: "center", listStyle: "none" }}>
-                                            <span>
-                                                <Image source={require('../../assets/User.png')} style={{
-                                                    height: 13,
-                                                    width: 13,
-                                                    marginLeft: 15,
-                                                    marginVertical: 46,
-                                                    marginLeft: 0,
-                                                    marginRight: 0,
-                                                    marginTop: 0,
-                                                    marginBottom: 0
-                                                }} />
-                                            </span>
-                                            <span style={{ marginLeft: "8px" }}>{orderData[item].no_of_people} People</span></li>
-                                    </ul>
+                                            <Image source={require('../../assets/Time-Circle.png')} style={{
+                                                height: 13,
+                                                width: 13
+                                            }} />
+
+                                            <Text style={{
+                                                marginLeft: 8,
+                                                color: 'rgba(65, 65, 65, 1)',
+                                                fontWeight: '600'
+                                            }}>
+                                                {orderData[item].order_time}</Text>
+                                        </View>
+                                        <View style={{ display: "flex", flexDirection: "row", justifyContent: "flex-start", alignItems: "center", listStyle: "none" }}>
+
+                                            <Image source={require('../../assets/User.png')} style={{
+                                                height: 13,
+                                                width: 13
+                                            }} />
+
+                                            <Text style={{
+                                                marginLeft: 8,
+                                                color: 'rgba(65, 65, 65, 1)',
+                                                fontWeight: '600'
+                                            }}>
+                                                {orderData[item].no_of_people} People</Text>
+                                        </View>
+                                    </View>
                                 </View>
                                 <View >
-                                    <ul style={styles.ulclass}>
-                                        <li style={{ textAlign: "right", listStyle: "none" }}>
-                                            <Text style={{ color: "#9252AA", fontSize: "16px", fontWeight: "bolder" }}>Total Payment</Text>
-                                        </li>
-                                        <li style={{ textAlign: "right", listStyle: "none", paddingTop: "14px" }}>
-                                            <Text style={{ color: "#9252AA", fontSize: "16px", fontWeight: "bold" }}>
+                                    <View style={styles.ulclass}>
+                                        <View style={{ textAlign: "right", listStyle: "none" }}>
+                                            <Text style={{ color: "rgba(146, 82, 170, 1)", fontSize: 16, fontWeight: "600" }}>Total Payment</Text>
+                                        </View>
+                                        <View style={{ textAlign: "right", listStyle: "none", paddingTop: 24 }}>
+                                            <Text style={{ color: "rgba(146, 82, 170, 1)", fontSize: 16, fontWeight: "600", textAlign: "right" }}>
                                                 {"₹" + "" + orderData[item].payable_amount + ".00"}</Text>
-                                        </li>
-                                    </ul>
+                                        </View>
+                                    </View>
 
                                 </View>
                             </View>
-                            <View style={styles.sec}>
-                                {/* <View>
-                                    <Button
-                                        onPress={() => { getOrderId(orderData[item].order_id) }}
-                                        title="View Details"
-                                        color="#9252AA"
-                                    />
-                                </View> */}
+                            <View style={styles.sec2}>
                                 <View>
                                     <TouchableHighlight style={styles.button} underlayColor="#E56352">
                                         <View><Text style={styles.buttonText}>View Details</Text></View>
@@ -218,25 +196,21 @@ const Orderlist = ({ navigation }) => {
                                             </View>
                                         </TouchableHighlight>
                                     }
-
                                 </View>
                             </View>
                         </View>
                     )
                 })
             }
-
-
         </View>
-    );
-};
-
+    )
+}
 
 const styles = StyleSheet.create({
     container: {
-        paddingLeft: "20px",
-        paddingRight: "20px",
-        paddingTop: "20px",
+        paddingLeft: 20,
+        paddingRight: 20,
+        paddingTop: 20,
         backgroundColor: 'white'
     },
     sec: {
@@ -244,9 +218,60 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         justifyContent: 'space-between',
         alignItems: "center",
-        paddingBottom: "16px",
-        paddingLeft: "20px",
-        paddingRight: "20px"
+        paddingBottom: 13,
+        paddingLeft: 15,
+        paddingRight: 15
+    },
+    sec2: {
+        display: "flex",
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        alignItems: "center",
+        paddingBottom: 16,
+        paddingTop: 13,
+        paddingLeft: 15,
+        paddingRight: 15,
+        borderTopColor: 'rgba(236, 236, 236, 0.5)',
+        borderTopWidth: 1,
+    },
+    sec1: {
+        display: "flex",
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        alignItems: "center",
+        borderTopEndRadius: 20,
+        borderTopStartRadius: 20,
+        paddingTop: 6,
+        paddingBottom: 6,
+        paddingRight: 6,
+        paddingLeft: 6,
+        backgroundColor: "#E7E7E7",
+        color: "#9252AA",
+        fontWeight: "bold"
+    },
+    orderstatus: {
+        color: 'rgba(255, 121, 64, 1)',
+        backgroundColor: "rgba(255, 121, 64, 0.2)",
+        borderRadius: 20,
+        textAlign: 'center',
+        paddingLeft: 6,
+        paddingRight: 6,
+        paddingTop: 2,
+        paddingBottom: 3,
+        fontSize: 10,
+        fontWeight: '500'
+    },
+    orderstatus3: {
+        color: 'rgba(72, 169, 63, 1)',
+        backgroundColor: "rgba(72, 169, 63, 0.2)",
+        borderRadius: 20,
+        textAlign: 'center',
+        paddingLeft: 6,
+        paddingRight: 6,
+        paddingTop: 2,
+        paddingBottom: 3,
+        fontSize: 10,
+        fontWeight: '500'
     },
     ulclass: {
         marginTop: 0,
@@ -254,12 +279,12 @@ const styles = StyleSheet.create({
         marginLeft: 0,
         marginRight: 0,
         paddingBottom: 0,
-        paddingTop: "5px",
+        paddingTop: 5,
         paddingLeft: 0,
         paddingRight: 0
     },
     ulclass1: {
-        marginTop: "12px",
+        marginTop: 8,
         marginBottom: 0,
         marginLeft: 0,
         marginRight: 0,
@@ -268,68 +293,53 @@ const styles = StyleSheet.create({
         paddingLeft: 0,
         paddingRight: 0
     },
-    sec1: {
-        display: "flex",
-        flexDirection: 'row',
-        justifyContent: 'space-between',
-        alignItems: "center",
-        borderRadius: "20px 20px 0 0",
-        borderTopEndRadius: 20,
-        borderTopStartRadius: 20,
-        paddingTop: "6px",
-        paddingBottom: "6px",
-        paddingRight: "6px",
-        paddingLeft: "6px",
-        backgroundColor: "#E7E7E7",
-        color: "#9252AA",
-        fontWeight: "bold"
+    button: {
+        paddingTop: 3,
+        paddingBottom: 3,
+        paddingLeft: 10,
+        paddingRight: 10,
+        backgroundColor: '#fff',
+        borderWidth: 1,
+        borderColor: "#9252AA",
+        justifyContent: 'center',
+        alignItems: 'center',
     },
+
+    buttonText: {
+        fontWeight: '400',
+        fontSize: 14,
+        color: "#9252AA"
+    },
+
     ratingbutton: {
         marginTop: 0,
         marginLeft: "auto",
         marginRight: "auto",
         backgroundColor: "#9252AA",
-        border: "1px solid #9252AA",
+        borderColor: "#9252AA",
+        borderWidth: 1,
         color: "#fff",
-        paddingTop: "3px",
-        paddingBottom: "3px",
-        paddingLeft: "10px",
-        paddingRight: "10px",
+        paddingTop: 3,
+        paddingBottom: 3,
+        paddingLeft: 10,
+        paddingRight: 10,
         justifyContent: "center",
         alignItems: "center",
         justifyContent: "center",
         alignItems: "center"
     },
     ratingbuttonText: {
-        fontWeight: 400,
-        fontSize: "14px",
+        fontWeight: '400',
+        fontSize: 14,
         color: "#fff"
     },
     ratingimage: {
-        width: "13px",
-        height: "13px",
+        width: 13,
+        height: 13,
         position: "relative",
-        marginRight: "7px",
+        marginRight: 7,
         position: "relative"
-    },
-    button: {
-        paddingTop: "3px",
-        paddingBottom: "3px",
-        paddingLeft: "10px",
-        paddingRight: "10px",
-        backgroundColor: '#fff',
-        border: "1px solid #9252AA",
-        justifyContent: 'center',
-        alignItems: 'center',
-    },
-
-    buttonText: {
-        fontWeight: 400,
-        fontSize: "14px",
-        color: "#9252AA"
-    },
-    orderstatus: {
-        paddingRight: "15px"
     }
 })
+
 export default Orderlist;

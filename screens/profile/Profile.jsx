@@ -1,26 +1,25 @@
 import React from 'react';
 import { useState, useEffect } from 'react';
-import { ScrollView, View, StyleSheet, Text, Image, TextInput, TouchableHighlight, Button, ImageBackground, KeyboardAvoidingView } from 'react-native';
-import axios from 'axios';
-import { color } from '@rneui/base';
+import { Dimensions, View, StyleSheet, Text, Image, TextInput, TouchableHighlight, Button, ImageBackground, KeyboardAvoidingView } from 'react-native';
+import { BASE_URL, USER_DETAILS_ENDPOINT , USER_MYACCOUNT_ENDPOINT} from '../../utils/ApiConstants';
 
 const Profile = ({ navigation }) => {
     const [name, setName] = useState('');
     const [mobileNumber, setMobileNumber] = useState('');
     const [email, setEmail] = useState('');
     const [customerType, setCustomerType] = useState('Male');
-    let base_url = 'https://horaservices.com:3000'
+   
+
     useEffect(() => {
         fetchUserAccount(); // Fetch user profile data on component mount
     }, []);
-
     const handlelogout = async () => {
-        console.log("user loged out")
+        alert("user logged out need to implement")
     }
 
     const fetchUserAccount = async () => {
         try {
-            const response = await fetch(base_url + '/api/setting/details'); // Replace with your API endpoint
+            const response = await fetch(BASE_URL + USER_DETAILS_ENDPOINT); // Replace with your API endpoint
             const userData = await response.json();
             setEmail(userData.data.email);
             setMobileNumber("+91" + " " + userData.data.phone);
@@ -30,9 +29,10 @@ const Profile = ({ navigation }) => {
         }
     };
 
+
     const handleEditAccount = async () => {
         try {
-            const response = await fetch(base_url + '/api/users/my_account', {
+            const response = await fetch(BASE_URL +  USER_MYACCOUNT_ENDPOINT , {
                 method: 'POST',
                 headers: {
                     'Accept': 'application/json, text/plain, */*',
@@ -46,10 +46,10 @@ const Profile = ({ navigation }) => {
             }); // Replace with your API endpoint for updating user profile
 
             // Handle success response
-            console.log('Profile updated successfully');
+            alert('Profile updated successfully');
         } catch (error) {
             // Handle error response
-            console.log('Error updating profile:', error);
+            alert('Error updating profile:', error);
         }
     };
 
@@ -65,41 +65,41 @@ const Profile = ({ navigation }) => {
                         //placeholder="Enter your number"
                         // placeholderTextColor="transparent"
                         style={styles.textInput1} />
-                        <Image source={require('../../assets/carbon_edit.png')} style={styles.carbon_edit} />
-
+                    <Image source={require('../../assets/carbon_edit.png')} style={styles.carbon_edit} />
                 </View>
                 <View style={styles.contentContainer1} >
-                <Image source={require('../../assets/material-symbols_call-outline.png')} style={styles.iconimage} />
+                    <Image source={require('../../assets/material-symbols_call-outline.png')} style={styles.iconimage} />
                     <TextInput
                         value={mobileNumber}
                         onChangeText={setMobileNumber}
                         //placeholder="Enter your number"
                         // placeholderTextColor="transparent"
                         style={styles.textInput}
-                        disabled="disabled"
+                        editable={false}
+                        selectTextOnFocus={false}
                     />
                 </View>
+
                 <View style={styles.contentContainer1} >
-                <Image source={require('../../assets/icon-email.png')} style={styles.iconimage} />
+                    <Image source={require('../../assets/icon-email.png')} style={styles.iconimage} />
                     <TextInput
                         value={email}
                         onChangeText={setEmail}
-                        placeholder="Enter email"
+                        placeholder="Enter Email"
                         // placeholderTextColor="transparent"
                         style={styles.textInput2} />
-                   <Image source={require('../../assets/carbon_edit.png')} style={styles.carbon_edit} />
-
+                    <Image source={require('../../assets/carbon_edit.png')} style={styles.carbon_edit} />
                 </View>
 
             </View>
             <View>
-                <TouchableHighlight style={styles.button} onPress={handleEditAccount} underlayColor="#E56352">
+                <TouchableHighlight style={styles.button} onPress={handleEditAccount} underlayColor='#E56352'>
                     <Text style={styles.buttonText}>Update Profile</Text>
                 </TouchableHighlight>
             </View>
             <View>
-                <TouchableHighlight style={styles.logoutbutton} onPress={handlelogout} underlayColor="#E56352">
-                    <View style={{ display: "flex", flexDirection: "row" }}>
+                <TouchableHighlight style={styles.logoutbutton} onPress={handlelogout} underlayColor='#E56352'>
+                    <View style={{ display: 'flex', flexDirection: 'row' }}>
                         <View><Image source={require('../../assets/logout.png')} style={styles.logoutimage} /></View>
                         <View><Text style={styles.logoutbuttonText}>Log Out</Text></View>
                     </View>
@@ -111,17 +111,53 @@ const Profile = ({ navigation }) => {
 
 const styles = StyleSheet.create({
     container: {
-        paddingLeft: "20px",
-        paddingRight: "21px",
+        paddingLeft: 20,
+        paddingRight: 21,
         backgroundColor: 'white'
     },
     detailsec: {
-        backgroundColor: "#EEEEEE",
-        paddingTop: "20px",
-        marginTop: "24%",
-        paddingBottom: "50px",
-        borderRadius: "30px",
-        marginBottom: "40px"
+        backgroundColor: '#F1F1F1',
+        paddingTop: 20,
+        paddingLeft:15,
+        paddingRight:15,
+        marginTop: 130,
+        paddingBottom: 60,
+        borderRadius: 30,
+        marginBottom: 40,
+        position:"relative"
+    },
+    profileimage: {
+        width: 100,
+        height: 100,
+        top: -60,
+        left: 105,
+        marginTop: 0,
+        marginBottom: 0,
+        marginLeft: 'auto',
+        marginRight: 'auto',
+        position: 'absolute',
+        borderWidth: 1,
+        borderColor: '#9252AA',
+        borderRadius: 50
+    },
+    contentContainer0: {
+        marginTop: 57
+    },
+    iconimage: {
+        width: 23,
+        height: 23,
+        position: 'absolute',
+        left: 15,
+        top: 15,
+        zIndex:111111111111111111
+    },
+    carbon_edit: {
+        width: 17,
+        height: 17,
+        position: 'absolute',
+        right: 20,
+        top: 18,
+        zIndex:111111111111111111
     },
     text: {
         paddingTop: 11,
@@ -134,49 +170,48 @@ const styles = StyleSheet.create({
     textInput1: {
         fontSize: 13,
         fontWeight: '700',
-        marginLeft: 15,
-        backgroundColor: "#fff",
-        borderRadius: "16px",
-        marginBottom: "12px",
-        width: "90%",
-        paddingTop: "15px",
-        paddingBottom: "15px",
-        paddingLeft: "16px",
-        paddingRight: "20px",
-        color: "#9252AA",
-        paddingLeft:"50px"
+        marginLeft: 0,
+        backgroundColor: '#fff',
+        borderRadius: 16,
+        marginBottom: 12,
+        width: Dimensions.get('window').width * 0.8,
+        // paddingTop: 15,
+        // paddingBottom: 15,
+        height:57,
+        paddingLeft: 16,
+        paddingRight: 20,
+        color: '#9252AA',
+        paddingLeft: 50
     },
     textInput: {
         color: '#414',
         fontSize: 13,
         fontWeight: '700',
-        marginLeft: 15,
-        backgroundColor: "#fff",
-        borderRadius: "16px",
-        marginBottom: "12px",
-        width: "90%",
-        paddingTop: "15px",
-        paddingBottom: "15px",
-        paddingLeft: "16px",
-        paddingRight: "20px",
-        paddingLeft:"50px"
+        backgroundColor: '#fff',
+        borderRadius: 16,
+        marginBottom: 12,
+       width: Dimensions.get('window').width * 0.8,
+        // paddingTop: 15,
+        // paddingBottom: 15,
+        height:57,
+        paddingLeft: 16,
+        paddingRight: 20,
+        paddingLeft: 50
     },
     textInput2: {
         color: '#8D8D8D',
         fontSize: 13,
         fontWeight: '700',
-        marginLeft: 15,
-        backgroundColor: "#D9D9D9",
-        borderRadius: "16px",
-        marginBottom: "12px",
-        width: "90%",
-        paddingTop: "15px",
-        paddingBottom: "15px",
-        paddingLeft: "16px",
-        paddingRight: "20px",
-        paddingLeft:"50px"
+        backgroundColor: '#D9D9D9',
+        borderRadius: 16,
+        width: Dimensions.get('window').width * 0.8,
+        // paddingTop: 15,
+        // paddingBottom: 15,
+        height:57,
+        paddingLeft: 16,
+        paddingRight: 20,
+        paddingLeft: 50
     },
-  
     button: {
         height: 47,
         backgroundColor: '#9252AA',
@@ -184,10 +219,9 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         alignItems: 'center',
         borderRadius: 15,
-        marginBottom: "20px",
-        width: "97%",
+        marginBottom: 15,
+        width: Dimensions.get('window').width * 0.85,
         marginTop: 0,
-        marginBottom: "20px",
         marginLeft: "auto",
         marginRight: "auto"
     },
@@ -200,62 +234,32 @@ const styles = StyleSheet.create({
     },
     logoutbutton: {
         marginTop: 0,
-        marginBottom: "20px",
-        marginLeft: "auto",
-        marginRight: "auto",
-        border: "1px solid #9252AA",
-        color: "#9252AA",
-        paddingTop: "11px",
-        paddingBottom: "11px",
-        paddingLeft: "21px",
-        paddingRight: "21px",
+        marginBottom: 220,
+        marginLeft: 'auto',
+        marginRight: 'auto',
+        borderWidth: 1,
+        borderColor: '#9252AA',
+        color: '#9252AA',
+        paddingTop: 11,
+        paddingBottom: 11,
+        paddingLeft: 21,
+        paddingRight: 21,
         borderRadius: 20,
-        width:"99%",
-        justifyContent:"center",
-        alignItems:"center"
+        width: Dimensions.get('window').width * 0.85,
+        justifyContent: 'center',
+        alignItems: 'center'
     },
     logoutbuttonText: {
-        fontWeight: 600,
-        fontSize: "16px",
-        color: "#9252AA"
+        fontSize: 16,
+        color: '#9252AA',
+        textAlign: 'center',
     },
     logoutimage: {
-        width: "20px",
-        height: "20px",
-        position: "relative",
-        marginRight: "7px",
-        position: "relative"
-    },
-    profileimage: {
-        width: "100px",
-        height: "100px",
-        top: -60,
-        left: 0,
-        right: 0,
-        marginTop: 0,
-        marginBottom: 0,
-        marginLeft: "auto",
-        marginRight: "auto",
-        position: "absolute",
-        border: "1px solid #9252AA",
-        borderRadius: "50%"
-    },
-    contentContainer0: {
-        marginTop: "57px",
-    },
-    iconimage:{
-        width:23,
-        height:23,
-        position: "absolute",
-        left: 30,
-        top: 15
-    },
-    carbon_edit:{
-        width:17,
-        height:17,
-        position:"absolute",
-        right:40,
-        top:16
+        width: 24,
+        height: 24,
+        position: 'relative',
+        marginRight: 7,
+        position: 'relative'
     }
 });
 

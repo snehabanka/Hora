@@ -12,6 +12,10 @@ export const GET_ADDRESS_LIST="/api/users/address/address_list"
 export const SAVE_LOCATION_ENDPOINT="/api/users/address/edit"
 export const CONFIRM_ORDER_ENDPOINT = "/api/order/add"
 export const OTP_VERIFY_ENDPOINT = "/api/user/otp_verify"
+export const USER_DETAILS_ENDPOINT = "/api/setting/details"
+export const USER_MYACCOUNT_ENDPOINT = "/api/users/my_account"
+export const ORDERLIST_ENDPOINT = "/api/order/user_order_list"
+
 
 
 
