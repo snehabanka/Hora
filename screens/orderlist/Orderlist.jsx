@@ -2,11 +2,17 @@ import React, { useState, useEffect } from 'react';
 import { ScrollView, Linking, View, StyleSheet, Text, Image, TextInput, TouchableHighlight, Button, ImageBackground, KeyboardAvoidingView } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { BASE_URL, ORDERLIST_ENDPOINT } from '../../utils/ApiConstants';
-
+// import Share from 'react-native-share';
 
 const Orderlist = ({ navigation }) => {
     const [orderData, setorderData] = useState({})
     const [invitedate, setInviteDate] = useState('')
+
+    const handleOrderDetails = (e) => {
+        alert("target value" + e)
+        navigation.navigate('OrderDetails')
+    }
+
     useEffect(() => {
         fetchOrderList();
     }, [])
@@ -15,6 +21,16 @@ const Orderlist = ({ navigation }) => {
 
     const sendInvite = () => {
         alert("invite sent")
+        //  const shareOptions = {
+        //     massage: "text msg1"
+        // }
+        // try {
+        //     const ShareResponse = Share.open(shareOptions)
+        //     alert(ShareResponse)
+        // }
+        // catch (error) {
+        //     alert("error" + error)
+        // }
     }
 
     async function fetchOrderList() {
@@ -176,13 +192,13 @@ const Orderlist = ({ navigation }) => {
                             </View>
                             <View style={styles.sec2}>
                                 <View>
-                                    <TouchableHighlight style={styles.button} underlayColor="#E56352">
+                                    <TouchableHighlight style={styles.button} underlayColor="#E56352" onPress={handleOrderDetails}>
                                         <View><Text style={styles.buttonText}>View Details</Text></View>
                                     </TouchableHighlight>
                                 </View>
 
                                 <View>
-                                    {getOrderStatus(orderData[item].order_status) == "Booked" ?
+                                    {getOrderStatus(orderData[item].order_status) == "Completed" ?
                                         <TouchableHighlight style={styles.ratingbutton} underlayColor="#E56352" onPress={sendInvite}>
                                             <View style={{ display: "flex", flexDirection: "row", justifyContent: "center", alignItems: "center" }}>
                                                 <View><Text style={styles.ratingbuttonText}>Send Invite</Text></View>
@@ -191,7 +207,7 @@ const Orderlist = ({ navigation }) => {
                                         :
                                         <TouchableHighlight style={styles.ratingbutton} underlayColor="#E56352">
                                             <View style={{ display: "flex", flexDirection: "row", justifyContent: "center", alignItems: "center" }}>
-                                                <View><Image source={require('../../assets/Star 6.png')} style={styles.ratingimage} /></View>
+                                                <View><Image source={require('../../assets/Star-6.png')} style={styles.ratingimage} /></View>
                                                 <View><Text style={styles.ratingbuttonText}>Rate Us</Text></View>
                                             </View>
                                         </TouchableHighlight>
@@ -212,6 +228,7 @@ const styles = StyleSheet.create({
         paddingRight: 20,
         paddingTop: 20,
         backgroundColor: 'white'
+
     },
     sec: {
         display: "flex",
