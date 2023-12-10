@@ -176,7 +176,8 @@ const ConfirmDishOrder = ({ navigation, route }) => {
     const renderDishItem = ({ item }) => {
         return (
             <View style={{ flexDirection: 'row', marginRight: 5, width: 106, borderRadius: 8, borderColor: '#B8B8B8', borderWidth: 1, backgroundColor: '#FFF', paddingBottom: 5 }}>
-                <Image source={{ uri: `https://horaservices.com/api/uploads/${item.image}` }} style={{ width: 41, height: 42, borderRadius: 20, marginBottom: 9, marginTop: 9, marginStart: 6 }} />
+                <Image source={{ uri: `https://horaservices.com/api/uploads/${item.image}` }} 
+                style={{ width: 41, height: 42, borderRadius: 20, marginBottom: 9, marginTop: 9, marginStart: 6 }} />
                 <View style={{ flexDirection: 'column', alignContent: 'flex-end' }}>
                     <Text numberOfLines={3} style={{ alignItems: 'flex-end', width: 50, marginLeft: 7, color: '#414141', fontSize: 11, fontWeight: '500', opacity: 0.9, marginTop: 10 }}>{item.name}</Text>
                     <Text style={{ width: 45, marginTop: 2, color: '#9252AA', fontSize: 11, fontWeight: '700', textAlign: 'center' }}>₹ {item.price}</Text>

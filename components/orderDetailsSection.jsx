@@ -3,20 +3,20 @@ import { StyleSheet, Text, View, Image, Button } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const OrderDetailsSection = ({ OrderDetail }) => {
-    console.log("OrderDetailsec" + OrderDetail)
+    // console.log("OrderDetailsec1" + JSON.stringify(OrderDetail))
     // console.log("OrderDetail.order_time" + OrderDetail.order_time)
     // console.log("OrderDetail.order_date" + OrderDetail.order_date)
     const [orderId, setorderId] = useState('')
     const [orderDate , setOrderDate] = useState('')
     const getOrderId = async () => {
         setorderId(await AsyncStorage.getItem("orderId"))
-        console.log(orderId)
+        console.log("orderId3" , orderId)
     }
     useEffect(() => {
         getOrderId()
     }, [])
     const getOrderStatus = (orderStatusValue) => {
-        console.log("orderStatusValue" + orderStatusValue)
+        // console.log("orderStatusValue2" + orderStatusValue)
         if (orderStatusValue === 1) {
             return "1"
         }
@@ -54,14 +54,14 @@ const OrderDetailsSection = ({ OrderDetail }) => {
 
     return (
         <View style={styles.container}>
-            <View style={{ backgroundColor: "#9252AA", paddingTop: "12px", paddingBottom: "12px", paddingLeft: "12px", paddingRight: "12px" }}>
-                <Text style={{ color: "#fff", fontWeight: "500" , fontSize:"13px"}}>
+            <View style={{ backgroundColor: "#9252AA", paddingTop: 12, paddingBottom: 12, paddingLeft: 12, paddingRight: 12 }}>
+                <Text style={{ color: "#fff", fontWeight: "500" , fontSize:13}}>
                     {"OrderId:"}{" "}{orderId}
                 </Text>
-                <Text><span style={styles.orderstausclass}>{getOrderStatus(OrderDetail.order_status)}</span></Text>
+                <Text style={styles.orderstausclass}>{getOrderStatus(OrderDetail.order_status)}</Text>
             </View>
-            <View style={{ paddingTop: "12px", paddingBottom: "12px", paddingLeft: "12px", paddingRight: "12px" }}>
-                <Text><span>
+            <View style={{ paddingTop: 12, paddingBottom: 12, paddingLeft: 12, paddingRight: 12 }}>
+                <Text>
                     <Image source={require('../assets/date.png')} style={{
                         height: 13,
                         width: 13,
@@ -72,7 +72,7 @@ const OrderDetailsSection = ({ OrderDetail }) => {
                         marginTop: 0,
                         marginBottom: 0
                     }} />
-                </span>
+              
                 </Text>
                
              {/* <Text style={styles.orderheadings}>{getOrderD(OrderDetail.order_date)}</Text> */}
@@ -80,8 +80,8 @@ const OrderDetailsSection = ({ OrderDetail }) => {
               <Text style={styles.orderheadings}>{'05 feb , 2023'}</Text>  
 
             </View>
-            <View style={{ paddingTop: "12px", paddingBottom: "12px", paddingLeft: "12px", paddingRight: "12px" }}>
-                <Text><span>
+            <View style={{ paddingTop: 12, paddingBottom: 12, paddingLeft: 12, paddingRight: 12}}>
+                <Text>
                     <Image source={require('../assets/time-icon.png')} style={{
                         height: 13,
                         width: 13,
@@ -92,11 +92,11 @@ const OrderDetailsSection = ({ OrderDetail }) => {
                         marginTop: 0,
                         marginBottom: 0
                     }} />
-                </span></Text>
+               </Text>
                 <Text style={styles.orderheadings}>{OrderDetail.order_time}</Text>
             </View>
-            <View style={{ paddingTop: "12px", paddingBottom: "12px", paddingLeft: "12px", paddingRight: "12px" }}>
-                <Text><span><Image source={require('../assets/icon3.png')} style={{
+            <View style={{ paddingTop: 12, paddingBottom: 12, paddingLeft: 12, paddingRight: 12 }}>
+                <Text><Image source={require('../assets/icon3.png')} style={{
                     height: 13,
                     width: 13,
                     marginLeft: 15,
@@ -106,7 +106,7 @@ const OrderDetailsSection = ({ OrderDetail }) => {
                     marginTop: 0,
                     marginBottom: 0
                 }} /> 
-                </span></Text>
+                </Text>
                 <Text style={styles.orderheadings}>{OrderDetail.no_of_people} {"People"}</Text>
             </View>
         </View>
@@ -125,27 +125,26 @@ const styles = StyleSheet.create({
     orderheadings: {
         color: "#9252AA",
         fontWeight: "600",
-        fontSize:"11px"
+        fontSize:11
     },
-    orderstausclass: {
+    orderstausclass: 
+    {
         backgroundColor: "rgb(169 123 185)",
-        display: "inline-block",
-        borderRadius: "15px",
-        verticalAlign: "middile",
-        fontWeight: 500,
-        fontSize:"10px",
+        borderRadius: 15,
+        // verticalAlign: "middile", // This is the invalid property
+        fontWeight: "500",
+        fontSize: 10,
         color: "#fff",
         textTransform: "capitalize",
-        boxShadow: "1px 0px 1px 1px rgb(140 136 141)",
-        marginTop: "4px",
-        marginLeft: "0",
-        marginRight: "0",
-        marginBottum: "0",
-        paddingTop: "1px",
-        paddingBottom: "4px",
-        paddingLeft: "12px",
-        paddingRight: "12px"
-    }
+        marginTop: 4,
+        marginLeft: 0,
+        marginRight: 0,
+        marginBottom: 0, // Typo: should be "marginBottom"
+        paddingTop: 1,
+        paddingBottom: 4, // Typo: should be "paddingBottom"
+        paddingLeft: 12,
+        paddingRight: 12
+      }
 })
 
 

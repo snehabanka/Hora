@@ -1,22 +1,27 @@
 import React from 'react';
-import {Text} from 'react-native'
 import { NavigationContainer } from '@react-navigation/native';
-import StackNavigation  from './navigation/StackNavigation'
+import StackNavigation from './navigation/StackNavigation';
 import DrawerNavigation from './components/Drawer';
-
+import { GestureHandlerRootView } from 'react-native-gesture-handler';
 
 const App = () => {
-  return ( 
+  const shouldUseDrawer = true;
+
+  return (
+    // <GestureHandlerRootView style={{ flex: 1 }}>
+    //   <NavigationContainer>
+    //     {/* {shouldUseDrawer ? ( */}
+    //       <DrawerNavigation />
+    //     {/* )  */}
+    //     {/* : (
+    //       <StackNavigation />
+    //     )} */}
+    //   </NavigationContainer>
+    // </GestureHandlerRootView>
+    
     <NavigationContainer>
-            <StackNavigation/>
-    </NavigationContainer>
-  //    <GestureHandlerRootView style={{ flex: 1 }}>
-  //    <NavigationContainer initialRouteName="Contact">
-  //      {shouldUseDrawer ?
-  //        <DrawerNavigation />
-  //        : <StackNavigation />}
-  //    </NavigationContainer>
-  //  </GestureHandlerRootView>
+          <StackNavigation />
+      </NavigationContainer>
   );
 };
 

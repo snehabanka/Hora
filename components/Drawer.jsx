@@ -5,9 +5,9 @@ import Contact from '../screens/contact/Contact';
 import Profile from '../screens/profile/Profile';
 import Orderlist from '../screens/orderlist/Orderlist';
 import OrderDetails from '../screens/orderdetails/OrderDetails';
-
+import { NavigationContainer } from '@react-navigation/native';
 const Drawer = createDrawerNavigator();
-
+  console.log("inside drawer")
 const UserInfo = () => {
 
   const [mobileNumber, setMobileNumber] = useState('');
@@ -32,17 +32,18 @@ const UserInfo = () => {
   }
   return (
     <View style={styles.profileimagesec}>
+    {  console.log("inside drawer return1")}
       <Image source={require('../assets/profile.png')} style={styles.profileimage} />
       <Text
         style={{
           color: "#9252AA",
-          fontSize: "20px",
+          fontSize: 20,
           fontWeight: "700",
-          paddingTop: "5px",
-          paddingBottom: "0"
+          paddingTop: 5,
+          paddingBottom: 0
         }}>{'User - 91233333000'}</Text>
-      <Text style={{ color: "#9EA1B1", fontSize: "14px", fontWeight: "500" }}>{email}</Text>
-      <Text style={{ color: "#9EA1B1", fontSize: "14px", fontWeight: "500" }}>{mobileNumber}</Text>
+      <Text style={{ color: "#9EA1B1", fontSize: 14, fontWeight: "500" }}>{email}</Text>
+      <Text style={{ color: "#9EA1B1", fontSize: 14, fontWeight: "500" }}>{mobileNumber}</Text>
     </View>
   )
 }
@@ -50,6 +51,7 @@ const UserInfo = () => {
 const CustomDrawerContent = (props) => {
   return (
     <View>
+       {  console.log("inside drawer return1")}
       <UserInfo />
       <DrawerContentScrollView {...props}>
         <DrawerItemList {...props}
@@ -65,12 +67,13 @@ const CustomDrawerContent = (props) => {
 const DrawerNavigation = () => {
   return (
     <Drawer.Navigator
+    drawerPosition="left"
       screenOptions={{
         drawerStyle: {
           backgroundColor: '#fff',
-          width: 320,
+          width: 200,
           paddingTop: 30,
-          overlayColor: 'transparent',
+          // overlayColor: 'transparent',
           position: "fixed",
           paddingLeft: 18
         },
@@ -89,7 +92,7 @@ const DrawerNavigation = () => {
         drawerLabelStyle: {
           color: "#000",
           // backgroundColor: "red",
-          fontSize: "16px",
+          fontSize: 16,
           fontWeight: "600",
           marginLeft: 0
         }
@@ -97,8 +100,10 @@ const DrawerNavigation = () => {
 
       drawerContent={(props) => <CustomDrawerContent {...props} />}
     >
-
-      <Drawer.Screen name="Profile" component={Profile}
+       {  console.log("inside drawer return2")}
+      
+      <Drawer.Screen 
+      name="Profile" component={Profile}
         options={{
           drawerIcon: ({ focused, size }) => (
             <Image
@@ -108,7 +113,7 @@ const DrawerNavigation = () => {
           )
         }}
       />
-      <Drawer.Screen name="My Order" component={Orderlist}
+      {/* <Drawer.Screen name="My Order" component={Orderlist}
         options={{
           drawerIcon: ({ focused, size }) => (
             <Image
@@ -127,7 +132,7 @@ const DrawerNavigation = () => {
           )
         }}
       />
-      <Drawer.Screen name="Help & FAQs" component={OrderDetails}
+      <Drawer.Screen name="Order Details" component={OrderDetails}
         options={{
           drawerIcon: ({ focused, size }) => (
             <Image
@@ -136,23 +141,24 @@ const DrawerNavigation = () => {
             />
           )
         }}
-      />
+      /> */}
     </Drawer.Navigator>
+    
   );
 };
 
 const styles = StyleSheet.create({
   profileimagesec: {
     paddingLeft: 0,
-    paddingBottom: "12px"
+    paddingBottom: 12
   },
   profileimage: {
-    width: "100px",
-    height: "100px",
+    width: 100,
+    height: 100,
     marginTop: 0,
     marginBottom: 15,
-    border: "3px solid #9252AA",
-    borderRadius: "50%"
+    // border: "3px solid #9252AA",
+    // borderRadius: "50%"
   }
 })
 

@@ -22,25 +22,21 @@ const styles = StyleSheet.create({
         marginTop:15,
       },
       button: {
-        paddingHorizontal: 16,
-        paddingVertical: 8,
+        paddingHorizontal: 20,
+        paddingVertical: 10,
         backgroundColor: 'white',
         borderRadius: 24,
         borderWidth:1,
-        borderColor:'#A0A5BA'
+        borderColor:'#A0A5B'
       },
       selectedButton: {
         backgroundColor: '#9252AA', // Change to the desired highlight color
       },
       buttonText: {
-        color:"#A0A5BA",
-        fontSize:12,
-        fontWeight:'400'
+        fontSize: 16,
       },
       selectedButtonText: {
-        color: 'white', 
-        fontSize:12,
-        fontWeight:'400'
+        color: 'white', // Change to the desired highlight text color
       },
       button1: {
         paddingHorizontal: 20,
@@ -71,8 +67,8 @@ const styles = StyleSheet.create({
         backgroundColor: 'white',
         borderTopLeftRadius: 10,
         borderTopRightRadius: 10,
-        paddingHorizontal:16,
-        paddingTop:14
+        padding: 12,
+        paddingTop:52
   
       },
       bottomSheetWrapper: {
@@ -126,6 +122,10 @@ const styles = StyleSheet.create({
         padding: 2,
         marginTop:10
       },
+      cuisineColumnWrapper: {
+        justifyContent: 'space-between', // Adds spacing between columns
+        marginBottom:10,
+      },
       dishContainer: {
       },
       dishColumnWrapper: {
@@ -142,83 +142,15 @@ const styles = StyleSheet.create({
         borderTopColor: '#E0E0E0',
         alignItems: 'center',
     },
-    order: {height:24,width:24,marginLeft:16},
-    time: {height:24,width:24,marginLeft:24},
-    dish:{height:24,width:24,marginLeft:15},
-    separator1:{height:1,width:70,marginTop:10,marginLeft:5},
-    separator2:{height:1,width:70,marginTop:10,marginStart:-15},
-    vegNonVegContainer: {
-      marginStart:16,
-      flexDirection:'row',
-      marginTop:15,
-      width:90,
-      height:24
-    },
-    toggleBox: {
-      flexDirection: 'row',
-      borderWidth: 1,
-      borderColor: '#569869',
-      borderRadius: 8,
-      overflow: 'hidden',
-    },
-    toggleButton: {
-      flex: 1,
-      justifyContent: 'center',
-      alignItems: 'center',
-      paddingVertical: 8,
-    },
-    activeButton: {
-      backgroundColor: '#569869',
-    },
-    inactiveButton: {
-      backgroundColor: 'white',
-    },
-    activeButtonText: {
-      color: 'white',
-    },
-    inactiveButtonText: {
-      color: '#569869',
-    },
-    boxvegContainer: {
-      flexDirection: 'row',
-      alignItems: 'center',
-      borderWidth: 1,
-      borderRadius: 2,
-      paddingLef:3,
-      borderColor:"#50A74E",
-      backgroundColor:"#50A74E",
-      marginRight:9
-    },
     continueButton: {
-      marginTop: 10,
-      backgroundColor: 'gray',
-      marginBottom:15,
-      flexDirection: 'row',
-      justifyContent: 'space-between',
-      alignItems: 'center',
-      paddingLeft:21,
-      paddingEnd:20,
+      width:Dimensions.get('window').width * 0.9,
+      backgroundColor: '#9252AA',
+      justifyContent:'center',
+      paddingLeft:5,
       paddingVertical:17,
       borderRadius: 20,
-  },
-  
-  buttonContent: {
-      flexDirection: 'row',
-      justifyContent: 'space-between',
-      alignItems: 'center',
-      width: '100%',
-  },
-
-  continueButtonLeftText: {
-      color: 'white',
-      fontSize: 19,
-      fontWeight: '500',
-  },
-  continueButtonRightText: {
-    color: '#FFF',
-    fontSize: 16,
-    fontWeight: '400',
-},
+      marginBottom:15
+    },
 
 })
 

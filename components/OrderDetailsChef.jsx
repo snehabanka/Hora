@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import { StyleSheet, Text, View, Image, Button } from 'react-native';
-import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const OrderDetailsChef = ({ OrderDetail }) => {
 
@@ -14,28 +13,15 @@ const OrderDetailsChef = ({ OrderDetail }) => {
                     <Image source={require('../assets/Frame.png')} style={styles.chefimage} />
                 </View>
             }
-            {/* <Text style={{ fontSize: "14px", fontWeight: "700" }}>Chef Details</Text> */}
-            {/* <View style={styles.chefmidsec}>
-                <Text>
-                    <Image source={require('../assets/Ellipse.png')} style={styles.image} />
-                </Text>
-                <Text style={{ fontSize: "14px", fontWeight: "600" }}>Rahul Kumar Gupta</Text>
-                <Text>
-                    <Button
-                        onPress={() => Alert.alert('Button with adjusted color pressed')}
-                        title="Rate Us"
-                        color="#9252AA"
-                    />
-                </Text>
-            </View> */}
         </View>
     )
 
+    
 }
 
 const styles = StyleSheet.create({
     container: {
-        paddingTop: "10px"
+        paddingTop: 10
     },
     chefmidsec: {
         display: "flex",
@@ -43,12 +29,12 @@ const styles = StyleSheet.create({
         alignItems: "center",
         flexDirection: "row",
         backgroundColor: "#fff",
-        paddingTop: "15px",
-        paddingBottom: "15px",
-        paddingLeft: "10px",
-        paddingRight: "10px",
-        borderRadius: "10px",
-        marginTop: "10px"
+        paddingTop: 15,
+        paddingBottom: 15,
+        paddingLeft: 10,
+        paddingRight: 10,
+        borderRadius: 10,
+        marginTop: 10
     },
     image: {
         height: 59,
@@ -59,14 +45,14 @@ const styles = StyleSheet.create({
         marginRight: 0,
         marginTop: 0,
         marginBottom: 0,
-        boxShadow: "0 0 5px #9f9e9e",
+        // boxShadow: "0 0 5px #9f9e9e",
     },
     chefimage: {
         height: 179,
         maxWidth: "100%",
-        borderRadius: "10px",
-        marginBottom: "10px",
-        boxShadow: "0 0 5px #9f9e9e",
+        borderRadius: 10,
+        marginBottom: 10,
+        // boxShadow: "0 0 5px #9f9e9e",
     },
     imagebanner: {
         backgroundSize: "contain",
