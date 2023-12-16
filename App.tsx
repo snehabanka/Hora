@@ -8,20 +8,20 @@ const App = () => {
   const shouldUseDrawer = true;
 
   return (
-    // <GestureHandlerRootView style={{ flex: 1 }}>
-    //   <NavigationContainer>
-    //     {/* {shouldUseDrawer ? ( */}
-    //       <DrawerNavigation />
-    //     {/* )  */}
-    //     {/* : (
-    //       <StackNavigation />
-    //     )} */}
-    //   </NavigationContainer>
-    // </GestureHandlerRootView>
-    
-    <NavigationContainer>
+    <GestureHandlerRootView style={{ flex: 1 }}>
+      <NavigationContainer>
+        {/* {shouldUseDrawer ? ( */}
+          <DrawerNavigation />
+        {/* )  */}
+        {/* : (
           <StackNavigation />
+        )} */}
       </NavigationContainer>
+    </GestureHandlerRootView>
+    
+    // <NavigationContainer>
+    //       <StackNavigation />
+    //   </NavigationContainer>
   );
 };
 
