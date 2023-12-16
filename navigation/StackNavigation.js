@@ -35,12 +35,12 @@ const StackNavigation = () => {
        )
       },
     }}
-    initialRouteName='Login'
+    initialRouteName='Home'
   >
     <Stack.Screen name="MyAccount" component={MyAccount} options={{headerShown:true}}/>
       <Stack.Screen name="Splash" component={Splash} options={{headerShown:true}} />
       <Stack.Screen name="Login" component={Login} options={{headerShown:false}}/>
-      <Stack.Screen name="Home" component={Home} options={{headerShown:true}} />
+      <Stack.Screen name="Home" component={Home} options={{headerShown:false}} />
       <Stack.Screen name="OrderHistory" component={OrderHistory} options={{headerShown:true}} />
       <Stack.Screen name="CreateOrder" component={CreateOrder} options={{headerShown:true}} /> 
       <Stack.Screen name="ConfirmOrder" component={ConfirmOrder} options={{headerShown:true}} />

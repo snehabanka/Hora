@@ -1,7 +1,7 @@
 import React from 'react';
 import { View, Modal, TouchableOpacity, Image, StyleSheet,Text,TouchableHighlight,Dimensions} from 'react-native';
 
-const OrderWarning = ({ visible, onClose }) => {
+const OrderWarning = ({ visible, onClose, title, amount, message, buttonText}) => {
   return (
     <Modal transparent visible={visible} animationType="slide">
       <View style={styles.container}>
@@ -12,11 +12,11 @@ const OrderWarning = ({ visible, onClose }) => {
 
         <View style={{justifyContent:'center',alignItems:'center'}}> 
         <Image source={require('../../assets/OrderWarning.png')} style={styles.warningImage} />
-        <Text style={{marginTop:17,fontSize:16,fontWeight:'500',color:'black'}}>Total Order Amount is less than </Text>
-        <Text style={{fontSize:16,fontWeight:'500',color:'#9252AA'}}> ₹400</Text>
-        <Text style={{marginTop:14,fontSize:12,fontWeight:'400',color:'#707070'}}>Total Order amount can not be less than {'\n'}            ₹400, Add more to continue</Text>
+        <Text style={{marginTop:17,fontSize:16,fontWeight:'500',color:'black'}}>{title} </Text>
+        <Text style={{fontSize:16,fontWeight:'500',color:'#9252AA'}}>{amount}</Text>
+        <Text style={{marginTop:14,fontSize:12,fontWeight:'400',color:'#707070'}}>{message}</Text>
         <TouchableOpacity onPress={onClose} style={styles.customButton} underlayColor="transparent" activeOpacity={1}>
-            <Text style={styles.buttonText}> + Add More</Text>
+            <Text style={styles.buttonText}>{buttonText}</Text>
           </TouchableOpacity>
 
         </View>

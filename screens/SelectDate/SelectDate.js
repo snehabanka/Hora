@@ -6,6 +6,8 @@ import CustomStatusBar from '../../components/CustomStatusBar';
 import { BASE_URL, GET_CUISINE_ENDPOINT, API_SUCCESS_CODE, GET_MEAL_DISH_ENDPOINT } from '../../utils/ApiConstants';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import OrderWarning from '../dialog/OrderWarning';
+import InfoModal from '../dialog/info';
+
 
 const SelectDate = ({ navigation, route }) => {
 
@@ -26,10 +28,21 @@ const SelectDate = ({ navigation, route }) => {
     const [isDatePressed, setIsDatePressed] = useState(false)
     const [isTimePressed, setIsTimePressed] = useState(false)
     const [showCookingTime, setShowCookingTime] = useState(true);
+    const [isModalVisible, setIsModalVisible] = useState(false);
+    const [selectedTab, setSelectedTab] = useState('Appliances');
+
+    const toggleSelectedTab = (tabName) => {
+        setSelectedTab(tabName);
+    };
+
+    const isAppliancesSelected = selectedTab === 'Appliances';
+    const isIngredientsSelected = selectedTab === 'Ingredients';
 
 
 
-    const checkIsDateValid =() => {
+
+
+    const checkIsDateValid = () => {
         const currentTime = new Date();
         const selectedDateTime = new Date(selectedDate);
         selectedDateTime.setHours(selectedTime.getHours(), selectedTime.getMinutes());
@@ -39,15 +52,18 @@ const SelectDate = ({ navigation, route }) => {
         return isDateGreaterThan24Hours
     }
 
-    const checkIsTimeValid =() => {
+    const checkIsTimeValid = () => {
         const isTimeBetweenRange = selectedTime.getHours() >= 7 && selectedTime.getHours() <= 22;
         setTimeValid(isTimeBetweenRange);
         return isTimeBetweenRange
     }
 
+
     const isOrderValid = isTimeValid && isDateValid && peopleCount > 0;
 
-
+    const toggleModal = () => {
+        setIsModalVisible(!isModalVisible);
+    };
 
     // const handleDateChange = (event, date) => {
     //     if (date !== undefined) {
@@ -76,10 +92,10 @@ const SelectDate = ({ navigation, route }) => {
         if (date !== undefined) {
             setSelectedDate(date);
             setShowDatePicker(false);
-    
+
             const isDateValid = checkIsDateValid();
             const isTimeValid = checkIsTimeValid();
-    
+
             if (!isDateValid) {
                 setErrorText('Order can be placed at least 24 hours in advance.');
                 return;
@@ -91,15 +107,15 @@ const SelectDate = ({ navigation, route }) => {
             }
         }
     };
-    
+
     const handleTimeChange = (event, time) => {
         if (time !== undefined) {
             setSelectedTime(time);
             setShowTimePicker(false);
-    
+
             const isDateValid = checkIsDateValid();
             const isTimeValid = checkIsTimeValid();
-    
+
             if (!isDateValid) {
                 setErrorText('Order can be placed at least 24 hours in advance.');
                 return;
@@ -111,7 +127,7 @@ const SelectDate = ({ navigation, route }) => {
             }
         }
     };
-    
+
 
 
     const RenderAppliances = ({ item }) => {
@@ -380,16 +396,25 @@ const SelectDate = ({ navigation, route }) => {
         else {
             navigation.navigate("ConfirmDishOrder", {
                 "selectedDate": selectedDate, "selectedTime": selectedTime, "peopleCount": peopleCount,
-                "burnerCount":burnerCount,
+                "burnerCount": burnerCount,
                 "selectedDishes": data
             })
         }
     }
+    function formatTime(date) {
+        let hours = date.getHours();
+        let minutes = date.getMinutes();
+        let ampm = hours >= 12 ? 'PM' : 'AM';
+        hours = hours % 12;
+        hours = hours ? hours : 12; // Handle midnight (12 AM)
+        return `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')} ${ampm}`;
+    }
+    
 
     const handleWarningClose = () => {
         setWarningVisible(false);
     };
-    
+
 
     const increasePeopleCount = () => {
         setPeopleCount(peopleCount + 1)
@@ -407,6 +432,10 @@ const SelectDate = ({ navigation, route }) => {
         setShowCookingTime(!showCookingTime);
     };
 
+    const navigateToSelectDish = () => {
+        navigation.navigate("CreateOrder")
+    }
+
 
 
     return (
@@ -417,8 +446,10 @@ const SelectDate = ({ navigation, route }) => {
             </View>
             <View style={styles.view2}>
                 <View>
-                    <Image style={styles.dish} source={require('../../assets/SelectDishUnselected.png')} />
-                    <Text style={{ fontSize: 10, fontFamily: '600', color: '#F46C5B' }}>Select Dishes</Text>
+                    <TouchableOpacity activeOpacity={1} onPress={navigateToSelectDish}>
+                        <Image style={styles.dish} source={require('../../assets/SelectDishUnselected.png')} />
+                        <Text style={{ fontSize: 10, fontFamily: '600', color: '#F46C5B' }}>Select Dishes</Text>
+                    </TouchableOpacity>
                 </View>
                 <Image style={styles.separator1} source={require('../../assets/horizontalSeparator.png')} />
                 <View>
@@ -437,54 +468,59 @@ const SelectDate = ({ navigation, route }) => {
 
                 <View style={{ justifyContent: 'space-between', marginTop: 17, paddingTop: 7, paddingBottom: 9, backgroundColor: '#FFFFFF', marginLeft: 15, marginEnd: 16, borderRadius: 10, height: 195, elevation: 2 }}>
                     <View style={{ justifyContent: 'flex-end', flex: 1, flexDirection: 'row', marginEnd: 7 }}>
-                        <Image source={require('../../assets/info.png')} style={{ height: 16, width: 16 }} />
+                        <TouchableOpacity onPress={toggleModal}>
+
+                            <Image source={require('../../assets/info.png')} style={{ height: 16, width: 16 }} />
+
+                        </TouchableOpacity>
                     </View>
-                    <View style={{ marginTop: 10, flexDirection: 'row' }}>
+                    <View style={{ flexDirection: 'row' }}>
                         <TouchableOpacity onPress={() => setShowDatePicker(true)} activeOpacity={1}>
 
-                        <View style={{ marginTop: 4, marginStart: 16, marginEnd: 8, flexDirection: 'column', paddingHorizontal: 11, backgroundColor: 'white', borderColor: isDateValid != null && isDateValid==false ? '#FF3636': "#F6ECEC", borderRadius: 10, borderWidth: 1, paddingBottom: 9 }}>
-                            <Text style={{ paddingTop: 4, color: '#9252AA', fontWeight: '500', fontSize: 10 }}>Booking Date</Text>
-                            <View style={{ flexDirection: 'row', marginTop: 1 }}>
+                            <View style={{ marginStart: 16, marginEnd: 8, flexDirection: 'column', paddingHorizontal: 17, backgroundColor: 'white', borderColor: isDateValid != null && isDateValid == false ? '#FF3636' : "#F6ECEC", borderRadius: 10, borderWidth: 1, paddingBottom: 9 }}>
+                                <Text style={{ paddingTop: 4, color: '#9252AA', fontWeight: '500', fontSize: 10 }}>Booking Date</Text>
+                                <View style={{ flexDirection: 'row', marginTop: 1 }}>
 
                                     <Text style={{ fontSize: 16, fontWeight: 600, color: isDatePressed ? '#383838' : "grey" }}>{selectedDate.toLocaleDateString()}</Text>
-                            
-                                <Image source={require('../../assets/ic_calendar.png')} style={{ height: 19, width: 19, marginLeft: 17 }} />
-                                {showDatePicker && (
-                                    <DateTimePicker
-                                        value={selectedDate}
-                                        mode="date"
-                                        display="default"
-                                        onChange={handleDateChange}
-                                    />
-                                )}
-                            </View>
-                        </View>
-                        </TouchableOpacity>
-                        <View style={{ flexDirection: 'row' }}>
-                        <TouchableOpacity onPress={() => setShowTimePicker(true)} activeOpacity={1}>
-                            <View style={{ marginTop: 4, flexDirection: 'column', paddingHorizontal: 11, backgroundColor: 'white', borderColor: isTimeValid != null && isTimeValid==false ? '#FF3636' : "#F6ECEC", borderRadius: 10, borderWidth: 1 ,paddingBottom: 9}}>
-                                <Text style={{ paddingTop: 4, color: '#9252AA', fontWeight: '500', fontSize: 10 }}>Chef Arrival Time</Text>
-                                <View style={{ flexDirection: 'row', marginTop: 1 }}>
-                            
-                                        <Text style={{ fontSize: 16, fontWeight: 600, color: isTimePressed ? '#383838' : "grey" }}>{selectedTime.toLocaleTimeString()}</Text>
-                                    
-                                    <Image source={require('../../assets/clock.png')} style={{ height: 19, width: 19, marginLeft: 17 }} />
-                                    {showTimePicker && (
+
+                                    <Image source={require('../../assets/ic_calendar.png')} style={{ height: 19, width: 19, marginLeft: 17 }} />
+                                    {showDatePicker && (
                                         <DateTimePicker
-                                            value={selectedTime}
-                                            mode="time"
+                                            value={selectedDate}
+                                            mode="date"
                                             display="default"
-                                            onChange={handleTimeChange}
+                                            onChange={handleDateChange}
                                         />
                                     )}
                                 </View>
-
                             </View>
+                        </TouchableOpacity>
+                        <View style={{ flexDirection: 'row' }}>
+                            <TouchableOpacity onPress={() => setShowTimePicker(true)} activeOpacity={1}>
+                                <View style={{ flexDirection: 'column', paddingHorizontal: 21, backgroundColor: 'white', borderColor: isTimeValid != null && isTimeValid == false ? '#FF3636' : "#F6ECEC", borderRadius: 10, borderWidth: 1, paddingBottom: 9 }}>
+                                    <Text style={{ paddingTop: 4, color: '#9252AA', fontWeight: '500', fontSize: 10 }}>Chef Arrival Time</Text>
+                                    <View style={{ flexDirection: 'row', marginTop: 1 }}>
+
+                                         <Text style={{ fontSize: 16, fontWeight: 600, color: isTimePressed ? '#383838' : "grey" }}>
+                    {formatTime(selectedTime)}
+                </Text>
+                                        <Image source={require('../../assets/clock.png')} style={{ height: 19, width: 19, marginLeft: 17 }} />
+                                        {showTimePicker && (
+                                            <DateTimePicker
+                                                value={selectedTime}
+                                                mode="time"
+                                                display="default"
+                                                onChange={handleTimeChange}
+                                            />
+                                        )}
+                                    </View>
+
+                                </View>
                             </TouchableOpacity>
                         </View>
                     </View>
                     {errorText != null && (
-                        <View style={{marginStart:21}}>
+                        <View style={{ marginStart: 21 }}>
                             <Text style={{ fontSize: 9, fontWeight: '400', color: '#FF2F2F', marginTop: 4 }}>{errorText}</Text>
                         </View>
                     )}
@@ -495,77 +531,83 @@ const SelectDate = ({ navigation, route }) => {
                     <View style={{ flex: 1, flexDirection: 'row', justifyContent: 'space-evenly', marginTop: 13, justifyContent: 'center', alignItems: 'center', marginLeft: 16 }}>
                         <Image source={require('../../assets/people.png')} style={{ height: 25, width: 25 }} />
                         <Text style={{ marginLeft: 9, fontSize: 12, color: '#3C3C3E', fontWeight: '500', }}>How many people you are hosting?</Text>
-                        <View style={{ flexDirection: 'row', flex: 1,justifyContent:'space-between',marginRight:9 }}>
-                        <TouchableOpacity onPress={decreasePeopleCount} activeOpacity={1}>
-                                <Image source={require('../../assets/ic_minus.png')} style={{ height: 25, width: 25, marginLeft: 5}} />
+                        <View style={{ flexDirection: 'row', flex: 1, justifyContent: 'space-between', marginRight: 9 }}>
+                            <TouchableOpacity onPress={decreasePeopleCount} activeOpacity={1}>
+                                <Image source={require('../../assets/ic_minus.png')} style={{ height: 25, width: 25, marginLeft: 5 }} />
                             </TouchableOpacity>
-                            <Text style={{ marginLeft: 5, lineHeight: 23, fontSize: 18, marginTop: 2,width:22,textAlign:'center'}}>{peopleCount}</Text>
+                            <Text style={{ marginLeft: 5, lineHeight: 23, fontSize: 18, marginTop: 2, width: 22, textAlign: 'center' }}>{peopleCount}</Text>
                             <TouchableOpacity onPress={increasePeopleCount} activeOpacity={1}>
                                 <Image source={require('../../assets/plus.png')} style={{ height: 25, width: 25, marginLeft: 5 }} />
                             </TouchableOpacity>
-                          
-        
+
+
                         </View>
                     </View>
 
-                    <View style={{ flex: 1, flexDirection: 'row', paddingVertical: 4, borderRadius: 10, marginLeft: 13, marginRight: 6, paddingLeft: 11, paddingRight: 11, marginTop: 15, borderRadius: 10, backgroundColor: '#F9E9FF' }}>
+                    <View style={{ alignItems: 'center', flexDirection: 'row', paddingVertical: 5, borderRadius: 10, marginLeft: 13, marginRight: 6, paddingLeft: 9, marginTop: 15, borderRadius: 10, backgroundColor: '#F9E9FF' }}>
                         <Image source={require('../../assets/info.png')} style={{ height: 16, width: 16 }} />
-                        <Text style={{ color: '#9252AA', fontWeight: '700', marginLeft: 9, fontSize: 10 }}>₹ 49/person would be added to bill value in addition to dish price</Text>
+                        <Text style={{ color: '#9252AA', fontWeight: '700', marginLeft: 5, fontSize: 9 }}>₹ 49/person would be added to bill value in addition to dish price</Text>
 
                     </View>
-                    
+
 
                 </View>
-                {/* <View style={{ justifyContent: 'center', flexDirection: 'row', marginTop: 16 }}>
-                    <Text style={{ color: '#707070', fontSize: 14, fontWeight: '800' }} >Required Procurement ?</Text>
-                </View> */}
-                <View style={{    flex: 1,marginTop:16,
-    justifyContent: 'center',
-    alignItems: 'center',
-}}>
-      <Text style={{flexDirection: 'row', alignItems: 'center',}}>
-        <Text style={{color:'#000',fontSize:14,fontWeight:'800'}}>Required </Text>
-        <Text style={{color:'#9252AA',fontSize:14,fontWeight:'800'}}>Procurement </Text>
-        <Text style={{color:'#000',fontSize:14,fontWeight:'800'}}>?</Text>
-      </Text>
-    </View>
+                <View style={{
+                    flex: 1, marginTop: 16,
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                }}>
+                    <Text style={{ flexDirection: 'row', alignItems: 'center', }}>
+                        <Text style={{ color: '#000', fontSize: 14, fontWeight: '800' }}>Required </Text>
+                        <Text style={{ color: '#9252AA', fontSize: 14, fontWeight: '800' }}>Procurement </Text>
+                        <Text style={{ color: '#000', fontSize: 14, fontWeight: '800' }}>?</Text>
+                    </Text>
+                </View>
 
-
-                <View style={{ flexDirection: 'row', marginTop: 4, marginHorizontal: 9 ,justifyContent:'center'}}>
+                <View style={{ flexDirection: 'row', marginTop: 4, marginHorizontal: 9, justifyContent: 'center' }}>
                     <Text style={{ color: '#707070', fontSize: 12, fontWeight: '400' }} >Keep these Appliances and Ingredients ready before chef Arrival</Text>
                 </View>
 
-                <View style={{ flexDirection: 'row', marginTop: 20, marginHorizontal: 16 }}>
-                    <TouchableOpacity style={{ backgroundColor: 'white', borderTopRightRadius: 10, borderTopLeftRadius: 15, paddingVertical: 8, paddingStart: 50, paddingRight: 50 }} onPress={() => setActiveTab('left')} activeOpacity={1}>
+                <View style={{ flexDirection: 'row', marginTop: 20, marginHorizontal: 16}}>
+                    <TouchableOpacity style={{
+                        backgroundColor: activeTab === 'left'
+                            ? "#D9D9D9"
+                            : 'white', borderTopRightRadius: 10, borderTopLeftRadius: 15, paddingVertical: 8, paddingStart: 50, paddingRight: 50
+                    }} onPress={() => setActiveTab('left')} activeOpacity={1}>
                         <Text style={activeTab === 'left' ? styles.activeTab : styles.inactiveTab}>Appliances</Text>
                     </TouchableOpacity>
-                    <TouchableOpacity style={{ backgroundColor: '#D9D9D9', borderTopRightRadius: 10, borderTopLeftRadius: 15, paddingVertical: 8, paddingStart: 50, paddingRight: 50 }} onPress={() => setActiveTab('right')} activeOpacity={1}>
+                    <TouchableOpacity style={{
+                        backgroundColor: activeTab === 'right'
+                            ? "#D9D9D9"
+                            : 'white', borderTopRightRadius: 10, borderTopLeftRadius: 15, paddingVertical: 8, paddingStart: 50, paddingRight: 50
+                    }} onPress={() => setActiveTab('right')} activeOpacity={1}>
                         <Text style={activeTab === 'right' ? styles.activeTab : styles.inactiveTab}>Ingredient</Text>
                     </TouchableOpacity>
                 </View>
+            
                 {renderTabContent()}
+    
 
-                <View>
-            {getTotalCookingTime() > 0.0 && showCookingTime && (
-                <View style={{ borderColor: "#F39200", borderWidth: 0.5, borderRadius: 5, backgroundColor: "#FFE3B9", marginHorizontal: 16, flexDirection: 'row', alignItems: 'center', marginTop: 5 }}>
-                    <Image source={require('../../assets/orderIcon.png')} style={{ height: 28, width: 30, marginStart: 5, marginTop: 5, marginBottom: 7 }} />
-                    <Text style={{ marginStart: 9, color: '#606060', fontSize: 13, fontWeight: '400' }} >Expected cooking time of your food</Text>
+            </ScrollView>
+            <View>
+                {getTotalCookingTime() > 0.0 && showCookingTime && (
+                    <View style={{ borderColor: "#F39200", borderWidth: 0.5, borderRadius: 5, backgroundColor: "#FFE3B9", marginHorizontal: 16, flexDirection: 'row', alignItems: 'center', marginTop: 5 }}>
+                        <Image source={require('../../assets/orderIcon.png')} style={{ height: 28, width: 30, marginStart: 5, marginTop: 5, marginBottom: 7 }} />
+                        <Text style={{ marginStart: 9, color: '#606060', fontSize: 13, fontWeight: '400' }} >Expected cooking time of your food</Text>
 
-                    <View style={{ marginStart: 5, backgroundColor: "#FFD1B7", borderRadius: 7, justifyContent: 'center', padding: 6 }}>
-                        <Text style={{ color: '#5F5C59', fontWeight: '700', fontSize: 13 }}>
-                            {getTotalCookingTime()} Hrs
-                        </Text>
+                        <View style={{ marginStart: 5, backgroundColor: "#FFD1B7", borderRadius: 7, justifyContent: 'center', padding: 6 }}>
+                            <Text style={{ color: '#5F5C59', fontWeight: '700', fontSize: 13 }}>
+                                {getTotalCookingTime()} Hrs
+                            </Text>
+                        </View>
+
+                        <TouchableOpacity style={{ marginStart: 3 }} onPress={toggleCookingTimeVisibility} activeOpacity={1}>
+                            <Image source={require('../../assets/icCross.png')} style={{ height: 12, width: 12 }} />
+                        </TouchableOpacity>
                     </View>
 
-                    <TouchableOpacity style={{ marginStart: 3 }} onPress={toggleCookingTimeVisibility} activeOpacity={1}>
-                        <Image source={require('../../assets/icCross.png')} style={{ height: 12, width: 12 }} />
-                    </TouchableOpacity>
-                </View>
-                
-            )}
+                )}
             </View>
-            </ScrollView>
-
 
             <View style={{ paddingHorizontal: 16, justifyContent: 'space-between' }}>
 
@@ -603,7 +645,20 @@ const SelectDate = ({ navigation, route }) => {
                     </View>
                 </TouchableHighlight>
 
-                <OrderWarning visible={isWarningVisible} onClose={handleWarningClose} />
+                <OrderWarning visible={isWarningVisible} title={"Total Order Amount is less than"} buttonText={"+ Add More"}
+                    message={"Total Order amount can not be less than {'\n'}            ₹400, Add more to continue"}
+                    amount={" ₹400"}
+                    onClose={handleWarningClose} />
+
+                <InfoModal isVisible={isModalVisible} onClose={toggleModal}>
+                    <View >
+
+                        <Text style={{ marginTop: 15, marginStart: 22, color: "#9252AA", fontWeight: '500', fontSize: 10 }}>Important</Text>
+                        <Text style={{ marginTop: 7, marginStart: 17, fontWeight: '400', color: "rgba(11, 11, 11, 0.74);", fontSize: 10, lineHeight: 15 }}>1. Order can be placed at least 24 hours in advance.</Text>
+                        <Text style={{ marginTop: 7, marginStart: 17, fontWeight: '400', color: "rgba(11, 11, 11, 0.74);", fontSize: 10, lineHeight: 15 }}>2. Chef arrival team is between 7 AM to 10 PM</Text>
+                        <Text style={{ marginTop: 7, marginStart: 17, fontWeight: '400', color: "rgba(11, 11, 11, 0.74);", fontSize: 10, lineHeight: 15 }}>3. If the count of host is more than 50, contact support</Text>
+                    </View>
+                </InfoModal>
 
             </View>
 
