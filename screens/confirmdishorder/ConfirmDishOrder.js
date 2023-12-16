@@ -228,6 +228,12 @@ const ConfirmDishOrder = ({ navigation, route }) => {
     const addMore = () => {
         navigation.navigate('CreateOrder')
     }
+    const navigateToSelectDish = () => {
+        navigation.navigate("CreateOrder")
+    }
+    const navigateToSelectDate = () => {
+        navigation.navigate("SelectDate")
+    }
 
     const changeLocation = () => {
         openBottomSheet()
@@ -246,13 +252,19 @@ const ConfirmDishOrder = ({ navigation, route }) => {
             </View>
             <View style={styles.view2}>
                 <View>
+                    
+                <TouchableOpacity activeOpacity={1} onPress={navigateToSelectDish}>
                     <Image style={styles.dish} source={require('../../assets/SelectDishUnselected.png')} />
                     <Text style={{ fontSize: 10, fontFamily: '600', color: '#F46C5B' }}>Select Dishes</Text>
+                    </TouchableOpacity>
                 </View>
                 <Image style={styles.separator1} source={require('../../assets/horizontalSeparator.png')} />
                 <View>
+                    <TouchableOpacity activeOpacity={1} onPress={navigateToSelectDate}>
                     <Image style={styles.time} source={require('../../assets/SelectDateAndTimeTick.png')} />
                     <Text style={{ fontSize: 10, fontFamily: '600', color: '#F46C5B' }}>Select Date & Time</Text>
+                    
+                    </TouchableOpacity>
                 </View>
                 <Image style={styles.separator2} source={require('../../assets/horizontalSeparator.png')} />
                 <View>
@@ -315,10 +327,6 @@ const ConfirmDishOrder = ({ navigation, route }) => {
                     <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
                         <Text style={{ color: "#525252", fontWeight: '500', fontSize: 12, lineHeight: 20 }}>Price for Number of people</Text>
                         <Text style={{ color: "#525252", fontWeight: '500', fontSize: 12, lineHeight: 20 }}>₹ {priceForPeople}</Text>
-                    </View>
-                    <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginTop: 7 }}>
-                        <Text style={{ color: "#A3A3A3", fontWeight: '400', fontSize: 12, lineHeight: 20 }}>Other Charges</Text>
-                        <Text style={{ color: "#A3A3A3", fontWeight: '400', fontSize: 12, lineHeight: 20 }}>Free</Text>
                     </View>
                     <Image style={{ width: 316, height: 1, marginTop: 3 }} source={require('../../assets/Rectangleline.png')}></Image>
                     <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginTop: 3 }}>

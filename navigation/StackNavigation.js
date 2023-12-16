@@ -25,12 +25,12 @@ const StackNavigation = () => {
         return <CustomHeader title={route.name} />;
       },
     }}
-    initialRouteName='Login'
+    initialRouteName='Home'
   >
     <Stack.Screen name="MyAccount" component={MyAccount} options={{headerShown:true}}/>
       <Stack.Screen name="Splash" component={Splash} options={{headerShown:true}} />
       <Stack.Screen name="Login" component={Login} options={{headerShown:false}}/>
-      <Stack.Screen name="Home" component={Home} options={{headerShown:true}} />
+      <Stack.Screen name="Home" component={Home} options={{headerShown:false}} />
       <Stack.Screen name="OrderHistory" component={OrderHistory} options={{headerShown:true}} />
       <Stack.Screen name="CreateOrder" component={CreateOrder} options={{headerShown:true}} />
       <Stack.Screen name="ConfirmOrder" component={ConfirmOrder} options={{headerShown:true}} />
@@ -39,11 +39,6 @@ const StackNavigation = () => {
       <Stack.Screen name="ConfirmDishOrder" component={ConfirmDishOrder} options={{headerShown:true}} />
       <Stack.Screen name="Onboarding" component={Onboarding} options={{headerShown:true}} />
       <Stack.Screen name="Contact" component={Onboarding} options={{headerShown:true}} />
-
-      {/* <Stack.Screen name="Refer" component={Refer} options={{headerShown:true}} /> */}
-
-
-    {/* Add other screens here */}
   </Stack.Navigator>
 );
 };

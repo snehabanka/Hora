@@ -4,7 +4,7 @@ const styles = StyleSheet.create({
     image: {
         height: 72,
         width: 132,
-        marginTop:200,
+        marginTop:175,
         alignItems:'center'
     },
     text1: {
@@ -125,7 +125,7 @@ const styles = StyleSheet.create({
         textAlign:'center'
       },
       backgroundImage:{
-        height: Dimensions.get('window').height,
+        height: 800,
         width: Dimensions.get('window').width
       },
       bottomContainer: {
