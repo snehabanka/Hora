@@ -11,6 +11,9 @@ import Profile from '../screens/profile/Profile';
 import Orderlist from '../screens/orderlist/Orderlist';
 import OrderDetails from '../screens/orderdetails/OrderDetails';
 import { NavigationContainer } from '@react-navigation/native';
+import { useNavigation } from '@react-navigation/native';
+import Home from '../screens/home/Home';
+import Login from '../screens/login/Login';
 
 const Drawer = createDrawerNavigator();
 
@@ -67,8 +70,10 @@ const CustomDrawerContent = (props) => {
 const DrawerNavigation = () => {
   return (
     <Drawer.Navigator
+      initialRouteName="Home"
       drawerPosition="right"
       drawerType="slide"
+      headerMode = "none"
       screenOptions={{
         drawerStyle: {
           backgroundColor: '#fff',
@@ -99,6 +104,15 @@ const DrawerNavigation = () => {
       drawerContent={(props) => <CustomDrawerContent {...props} />}
     >
       <Drawer.Screen
+        name="Home"
+        component={Home}
+        options={
+          {
+            headerShown:false
+          }
+        }
+      />
+      <Drawer.Screen
         name="Profile"
         component={Profile}
         options={{
@@ -108,6 +122,7 @@ const DrawerNavigation = () => {
               style={{ height: 24, width: 24 }}
             />
           ),
+          headerShown:false
         }}
       />
       <Drawer.Screen
@@ -120,6 +135,7 @@ const DrawerNavigation = () => {
               style={{ height: 20, width: 20 }}
             />
           ),
+          headerShown:false
         }}
       />
       <Drawer.Screen
@@ -132,11 +148,14 @@ const DrawerNavigation = () => {
               style={{ height: 24, width: 24 }}
             />
           ),
-        }}
+          headerShown:false
+        }
+      }
       />
+       
       <Drawer.Screen
         name="Order Details"
-        component={OrderDetails}
+        component={'OrderDetails'}
         options={{
           drawerIcon: ({ focused, size }) => (
             <Image
@@ -144,6 +163,7 @@ const DrawerNavigation = () => {
               style={{ height: 24, width: 24 }}
             />
           ),
+          headerShown:false
         }}
       />
     </Drawer.Navigator>

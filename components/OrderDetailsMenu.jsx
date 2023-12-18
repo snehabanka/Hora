@@ -2,53 +2,22 @@ import * as React from 'react';
 import { StyleSheet, Text, View, Image, Dimensions } from 'react-native';
 
 const OrderDetailsMenu = ({ OrderDetailMenu }) => {
-  console.log("orderdetailsmenu")
-  const uniqueCurNames = new Set();
-  // Populate the set with unique cur.name values
-  const curNameCounts = {};
+  //console.log("orderdetailsmenu" , OrderDetailMenu)
+  var Appetizer = [];
   OrderDetailMenu.forEach((item) => {
-    Object.values(item.mealId).forEach((cur) => {
-      uniqueCurNames.add(cur.name);
-      const curName = cur.name;
-      curNameCounts[curName] = (curNameCounts[curName] || 0) + 1;
-    });
+    if(item.mealId[0].name == 'Appetizer'){
+      Appetizer.push(item.name)
+    }
   });
+  console.log("Appetizer" + Appetizer);
 
   return (
-    <View>
-      <Text>testst</Text>
-    </View>
-    // <View style={styles.container}>
-    //   <Text>"textt menu"</Text>
-      
-    //   {Array.from(uniqueCurNames).map((curName, curIndex) => (
-    //     <View key={curIndex} style={styles.foodCatContainer}>
-    //       <Text style={styles.foodCat}>{curName}  ({curNameCounts[curName]} dishes)</Text>
-    //       <View style={styles.foodCatSec}>
-    //         {OrderDetailMenu.map((item, itemIndex) => (
-    //           <View key={itemIndex} style={styles.foodItem}>
-    //               <View style={styles.imageContainer}>
-    //             <Image
-    //               source={require('../assets/daal.png')}
-    //               style={styles.foodItemImage}
-    //             />
-    //             </View>
-    //             <View style={styles.foodItemDetails}>
-    //               <Text numberOfLines={10} ellipsizeMode="tail" style={styles.foodItemName}>
-    //                 {item.name.length > 5 ? item.name.slice(0, 15) + '..' : item.name}
-    //                 {/* {item.name} */}
-    //               </Text>
-    //               <Text style={styles.foodItemPrice}>₹ {item.price}</Text>
-    //             </View>
-    //           </View>
-    //         ))}
-    //       </View>
-    //     </View>
-    //   ))}
-
-
-
-    // </View>
+      <View>
+        {console.log("aaa")}
+        {Appetizer.map((item, index) => (
+          <Text key={index} >{console.log(item)}{'inside app'}</Text>
+        ))}
+      </View>
   );
 };
 

@@ -7,6 +7,9 @@ import OrderDetailsTabs from '../../components/OrderDetailsTabs';
 import { ScrollView, TextInput, TouchableHighlight, ImageBackground, KeyboardAvoidingView } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+import OrderDetailsMenu from '../../components/OrderDetailsMenu';
+import OrderDetailsIngre from '../../components/OrderDetailsIngre';
+import CustomHeader from '../../components/CustomeHeader';
 
 const Tab = createBottomTabNavigator();
 
@@ -68,18 +71,31 @@ const OrderDetails = ({ navigation }) => {
     }
 
     return (
-        <View style={styles.container}>
-            <OrderDetailsSection OrderDetail={orderDetail} />
-            <OrderDetailsTabs OrderMenu={orderMenu} />
-            <View style={styles.innercontainer}>
+
+        <View>
+            <CustomHeader title={"Order Details"} navigation={navigation} />
+
+            <View style={styles.container}>
+
+                {/* <OrderDetailsTabs OrderMenu={orderMenu} /> */}
+                <Tab.Navigator>
+                    <Tab.Screen name="Home" component={OrderDetailsMenu} OrderMenu={orderMenu} />
+                    <Tab.Screen name="Profile" component={OrderDetailsIngre} OrderMenu={orderMenu} />
+                </Tab.Navigator>
+
+                <OrderDetailsSection OrderDetail={orderDetail} />
+
+                {/* <View style={styles.innercontainer}>
                 {
                     orderDetail.order_status == '4' ?
                         <OrderDetailsChef OrderDetail={orderDetail} />
                         : null
                 }
+
                 <OrderDetailsTabs OrderMenu={orderMenu} />
-            </View>
-            <View>
+
+            </View> */}
+                {/* <View>
                 {
                     orderDetail.order_status == '4' ?
                         <View>
@@ -111,10 +127,10 @@ const OrderDetails = ({ navigation }) => {
                         </Text>
                     </View>
                 }
+            </View> */}
+
+
             </View>
-
-
-
         </View>
     )
 

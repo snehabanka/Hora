@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { StyleSheet, Text, View, Image, Button } from 'react-native';
 import { BASE_URL, USER_DETAILS_ENDPOINT } from '../../utils/ApiConstants';
+import CustomHeader from '../../components/CustomeHeader';
 
 
 const Contact = ({ navigation }) => {
@@ -27,11 +28,14 @@ const Contact = ({ navigation }) => {
 
     return (
         <View>
+            <CustomHeader title={"Contact"} navigation={navigation} />
+
             <View style={styles.container}>
+
                 <View>
                     <Image source={require('../../assets/contactus.png')} style={{
-                        width:339,
-                        height:345
+                        width: 339,
+                        height: 345
                     }} />
                 </View>
                 <View style={{
@@ -79,7 +83,7 @@ const Contact = ({ navigation }) => {
                                 fontSize: 16,
                                 marginLeft: 30,
                                 borderColor: '#9252AA',
-                                fontWeight:700
+                                fontWeight: 700
                             }}>
                                 {mobileNumber}
                             </Text>
@@ -107,7 +111,7 @@ const Contact = ({ navigation }) => {
                                 shadowOpacity: 1,
                                 shadowRadius: 20,
                                 elevation: 2,
-                               // boxShadow: "rgba(100, 100, 111, 0.2) 0px 7px 29px 0px"
+                                // boxShadow: "rgba(100, 100, 111, 0.2) 0px 7px 29px 0px"
                             }}>
 
                                 <Image source={require('../../assets/email-icon.png')}
@@ -128,7 +132,7 @@ const Contact = ({ navigation }) => {
                                     marginRight: 5,
                                     fontSize: 16,
                                     marginLeft: 30,
-                                    fontWeight:700
+                                    fontWeight: 700
                                 }}>
                                     {email}
                                 </Text>
@@ -146,7 +150,7 @@ const styles = StyleSheet.create({
         paddingLeft: 10,
         paddingRight: 10,
         backgroundColor: 'white',
-        paddingTop:20
+        paddingTop: 20
     },
     contactnumber: {
         marginTop: 14

@@ -25,12 +25,11 @@ export default function OrderDetailsTabs({ OrderDetail, OrderMenu }) {
       case 'first':
         console.log("renderScene1")
         return <OrderDetailsMenu OrderDetailMenu={OrderMenu} />;
+        break;
       case 'second':
         return <OrderDetailsAppli OrderDetailMenu={OrderMenu} />;
       case 'third':
         return <OrderDetailsIngre OrderDetailMenu={OrderMenu} /> ;
-      default:
-        return null;
     }
   };
 

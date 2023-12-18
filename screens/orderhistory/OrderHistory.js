@@ -5,6 +5,8 @@ import axios from 'axios';
 import { useState, useRef, useEffect } from 'react';
 import { TouchableHighlight } from "react-native-gesture-handler";
 import { BASE_URL, GET_ORDER_HISTORY_ENDPOINT } from "../../utils/ApiConstants";
+import CustomHeader from '../../components/CustomeHeader';
+
 
 const OrderHistory = () => {
 
@@ -54,6 +56,8 @@ const OrderHistory = () => {
     const renderItem = (data) => {
         return (
             <View style={styles.screenContainer}>
+                   <CustomHeader title={"Order history"} navigation={navigation} />
+
                 <ImageBackground source={require('../../assets/orderHistoryRectangle.png')} style={styles.imageBackground}>
                     <View style={styles.container}>
                         <View style={styles.textContainer}>

@@ -2,7 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { ScrollView, Linking, View, StyleSheet, Text, Image, TextInput, TouchableHighlight, Button, ImageBackground, KeyboardAvoidingView } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { BASE_URL, ORDERLIST_ENDPOINT } from '../../utils/ApiConstants';
-// import Share from 'react-native-share';
+import CustomHeader from '../../components/CustomeHeader';
+
 
 const Orderlist = ({ navigation }) => {
     const [orderData, setorderData] = useState({})
@@ -94,6 +95,8 @@ const Orderlist = ({ navigation }) => {
     }
 
     return (
+        <View>
+          <CustomHeader title={"Order History"} navigation={navigation} />
         <View style={styles.container}>
             {
                 Object.keys(orderData).map((item, index) => {
@@ -218,6 +221,7 @@ const Orderlist = ({ navigation }) => {
                     )
                 })
             }
+        </View>
         </View>
     )
 }

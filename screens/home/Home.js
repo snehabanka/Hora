@@ -5,7 +5,9 @@ import Login from '../login/Login';
 import styles from '../home/styles';
 import CustomStatusBar from '../../components/CustomStatusBar';
 import { Dimensions } from 'react-native';
-// import CardSlider from '../dialog/CardSlider';
+import CustomHeader from '../../components/CustomeHeader';
+
+
 
 const Home = ({ navigation }) => {
 
@@ -38,7 +40,7 @@ const Home = ({ navigation }) => {
   return (
 
     <View style={{ flex: 1, flexDirection: 'column' }}>
-
+   <CustomHeader title={"Home"} navigation={navigation} />
       <View style={{ alignContent: 'center', justifyContent: 'center' }}>
 
         <Text style={{ paddingTop: 4, color: 'black', fontWeight: '800', fontSize: 16 }}>

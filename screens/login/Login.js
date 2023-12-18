@@ -113,7 +113,7 @@ const Login = ({ navigation }) => {
                 AsyncStorage.setItem("mobileNumber", mobileNumber)
                 AsyncStorage.setItem('token', response.data.token)
                     .then(() => {
-                        navigation.navigate('CreateOrder');
+                        navigation.navigate('DrawerNavigator');
                     })
                     .catch((error) => {
                         console.log('Error storing token:', error.message);

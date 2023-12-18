@@ -2,6 +2,7 @@ import React from 'react';
 import { useState, useEffect } from 'react';
 import { Dimensions, View, StyleSheet, Text, Image, TextInput, TouchableHighlight, Button, ImageBackground, KeyboardAvoidingView } from 'react-native';
 import { BASE_URL, USER_DETAILS_ENDPOINT , USER_MYACCOUNT_ENDPOINT} from '../../utils/ApiConstants';
+import CustomHeader from '../../components/CustomeHeader';
 
 const Profile = ({ navigation }) => {
     const [name, setName] = useState('');
@@ -54,6 +55,8 @@ const Profile = ({ navigation }) => {
     };
 
     return (
+        <View>
+          <CustomHeader title={"Profile"} navigation={navigation} />
         <View style={styles.container}>
             <View style={styles.detailsec}>
                 <Image source={require('../../assets/profile.png')} style={styles.profileimage} />
@@ -105,6 +108,7 @@ const Profile = ({ navigation }) => {
                     </View>
                 </TouchableHighlight>
             </View>
+        </View>
         </View>
     );
 };
