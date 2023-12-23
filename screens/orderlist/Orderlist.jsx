@@ -10,8 +10,8 @@ const Orderlist = ({ navigation }) => {
     const [invitedate, setInviteDate] = useState('')
 
     const handleOrderDetails = (e) => {
-        alert("target value" + e)
-        navigation.navigate('OrderDetails')
+        alert("OrderDetails redirection" + e)
+        navigation.navigate('OrderDetails');
     }
 
     useEffect(() => {
@@ -95,8 +95,8 @@ const Orderlist = ({ navigation }) => {
     }
 
     return (
-        <View>
-          <CustomHeader title={"Order History"} navigation={navigation} />
+        <ScrollView contentContainerStyle={styles.scrollContainer}>
+        <CustomHeader title={"Order History"} navigation={navigation} />
         <View style={styles.container}>
             {
                 Object.keys(orderData).map((item, index) => {
@@ -222,7 +222,7 @@ const Orderlist = ({ navigation }) => {
                 })
             }
         </View>
-        </View>
+        </ScrollView>
     )
 }
 

@@ -114,11 +114,10 @@ const OrderDetails = ({ navigation }) => {
 
     return (
 
-        <View>
+        <ScrollView contentContainerStyle={styles.scrollContainer}>
             <CustomHeader title={"Order Details"} navigation={navigation} />
             <View style={styles.container}>
                 <OrderDetailsSection OrderDetail={orderDetail} />
-
                 {/* {
                         orderDetail.order_status == '4' ?
                             <OrderDetailsChef OrderDetail={orderDetail} />
@@ -155,23 +154,28 @@ const OrderDetails = ({ navigation }) => {
                 <View>
                     {orderDetail.order_status == '4' ? '' :
                         <View style={styles.cancelorderbox}>
-                            <Text>
-                                <Text style={styles.cancelorderboxtext1}>We Regret to inform you that your order has been canceled! we are working hard to make your experience better and hustle free
+                            <View>
+                            <Text style={styles.cancelorderboxtext1}>We Regret to inform you that your order has been canceled! we are working hard to make your experience better and hustle free
                                 </Text>
-                                <Text style={styles.cancelorderboxtext2}>Contact us for more help!</Text>
-                            </Text>
+                            </View>
+                            <View>
+                            <Text style={styles.cancelorderboxtext2}>Contact us for more help!</Text>
+                                </View>
                         </View>
                     }
                 </View>
 
 
             </View>
-        </View>
+            </ScrollView>
     )
 
 }
 
 const styles = StyleSheet.create({
+    scrollContainer: {
+        flexGrow: 1,
+    },
     container: {
         backgroundColor: '#F2F2F2',
     },
@@ -202,15 +206,16 @@ const styles = StyleSheet.create({
     cancelbutton: {
         height: 47,
         backgroundColor: '#fff',
-        border: '1px solid #9252AA',
+        borderWidth: 1,
+        borderColor: '#9252AA',
         marginHorizontal: 31,
         justifyContent: 'center',
         alignItems: 'center',
         borderRadius: 15,
-        marginBottom: "10px",
+        marginBottom: 10,
         width: "88%",
-        marginTop: "1px",
-        marginBottom: "20px",
+        marginTop: 1,
+        marginBottom: 20,
         marginLeft: "auto",
         marginRight: "auto"
     },
@@ -226,19 +231,17 @@ const styles = StyleSheet.create({
         fontSize: 18,
         fontWeight: "500"
     },
+
     cancelorderbox: {
-        border: "1px solid #F15252",
-        backgroundColor: "#FFA4A4",
-        width: "87%",
-        marginTop: 0,
-        marginBottom: 0,
+        borderWidth: 1,
+        borderColor: '#FFA4A4',
+        marginBottom: 40,
         marginLeft: 'auto',
+        width:"85%",
         marginRight: 'auto',
-        paddingTop: 0,
-        paddingBottom: 0,
-        paddingLeft: "20px",
-        paddingRight: "20px",
-        marginBottom: "20px"
+        padding: 20, // Use 'padding' instead of separate properties
+        borderRadius: 5, // Adjust the value based on your preference
+        backgroundColor: 'rgba(255, 164, 164, 0.2)', // Adjust the alpha value as needed
     },
     cancelorderboxtext1: {
         fontWeight: "500",
