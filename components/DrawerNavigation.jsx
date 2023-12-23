@@ -26,6 +26,8 @@ const UserInfo = () => {
     fetchContactDetail();
   }, []);
 
+  
+
   async function fetchContactDetail() {
     try {
       const response = await fetch(base_url + '/api/setting/details');
@@ -155,7 +157,7 @@ const DrawerNavigation = () => {
        
       <Drawer.Screen
         name="Order Details"
-        component={'OrderDetails'}
+        component={OrderDetails}
         options={{
           drawerIcon: ({ focused, size }) => (
             <Image

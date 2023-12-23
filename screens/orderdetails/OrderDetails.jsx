@@ -3,23 +3,21 @@ import { StyleSheet, Text, View, Image, Button } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import OrderDetailsSection from '../../components/orderDetailsSection';
 import OrderDetailsChef from '../../components/OrderDetailsChef';
-import OrderDetailsTabs from '../../components/OrderDetailsTabs';
-import { ScrollView, TextInput, TouchableHighlight, ImageBackground, KeyboardAvoidingView } from 'react-native';
-import { NavigationContainer } from '@react-navigation/native';
-import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+import { ScrollView, TextInput, TouchableOpacity, TouchableHighlight, ImageBackground, KeyboardAvoidingView } from 'react-native';
 import OrderDetailsMenu from '../../components/OrderDetailsMenu';
 import OrderDetailsIngre from '../../components/OrderDetailsIngre';
 import CustomHeader from '../../components/CustomeHeader';
+import OrderDetailsAppli from '../../components/OrderDetailsAppli';
+import { BASE_URL, ORDER_DETAILS_ENDPOINT, ORDER_CANCEL } from '../../utils/ApiConstants';
 
-const Tab = createBottomTabNavigator();
 
 const OrderDetails = ({ navigation }) => {
-
-    let base_url = 'https://horaservices.com:3000'
     const [orderDetail, setOrderDetail] = useState({})
     const [orderMenu, setOrderMenu] = useState([]);
+    const [OrderAppl, setOrderAppl] = useState([]);
     const [orderIngredients, setOrderIngredients] = useState([]);
     const [orderId, setorderId] = useState({})
+    const [selectedTab, setSelectedTab] = useState(1);
     const getOrderId = async () => {
         const orderIdupdate = await AsyncStorage.getItem("orderId")
         setorderId(orderIdupdate)
@@ -28,6 +26,48 @@ const OrderDetails = ({ navigation }) => {
         console.log("handleRating")
     }
 
+    const Tabs = ({ onSelectTab }) => (
+        <View style={{ flexDirection: 'row' }}>
+            <TouchableOpacity
+                onPress={() => onSelectTab(1)}
+                style={[
+                    styles.tab,
+                    selectedTab === 1 ? styles.activeTab : styles.inactiveTab,
+                ]}
+            >
+                <Text style={[styles.tabText, selectedTab === 1 ? styles.activeTabText : styles.inactiveTabText]}>
+                    Tab 1
+                </Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+                onPress={() => onSelectTab(2)}
+                style={[
+                    styles.tab,
+                    selectedTab === 2 ? styles.activeTab : styles.inactiveTab,
+                ]}
+            >
+                <Text style={[styles.tabText, selectedTab === 2 ? styles.activeTabText : styles.inactiveTabText]}>
+                    Tab 2
+                </Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+                onPress={() => onSelectTab(3)}
+                style={[
+                    styles.tab,
+                    selectedTab === 3 ? styles.activeTab : styles.inactiveTab,
+                ]}
+            >
+                <Text style={[styles.tabText, selectedTab === 3 ? styles.activeTabText : styles.inactiveTabText]}>
+                    Tab 3
+                </Text>
+            </TouchableOpacity>
+        </View>
+    );
+
+    const handleTabChange = (tabNumber) => {
+        setSelectedTab(tabNumber);
+    };
+
     useEffect(() => {
         fetchOrderDetails()
         getOrderId()
@@ -35,13 +75,15 @@ const OrderDetails = ({ navigation }) => {
 
     async function fetchOrderDetails() {
         try {
-            const response = await fetch(base_url + '/api/order/order_details/v1/645e2485cda2cca13ca86464');
+            // const response = await fetch(BASE_URL + '/api/order/order_details/v1/645e2485cda2cca13ca86464');
+            const response = await fetch(BASE_URL + ORDER_DETAILS_ENDPOINT + '/v1/645e2485cda2cca13ca86464');
             const responseData = await response.json();
-            console.log("orderDetail" + responseData)
             setOrderDetail(responseData.data)
             setOrderMenu(responseData.data.selecteditems)
+            setOrderAppl(responseData.data.orderApplianceIds)
+            setOrderIngredients(responseData.data.ingredientUsed)
             console.log("orderDetail1111" + orderDetail)
-            // console.log("orderDetail22222" + JSON.stringify(orderIngredients))
+            console.log("orderIngredients" + orderIngredients)
         }
         catch (error) {
             console.log(error)
@@ -50,7 +92,7 @@ const OrderDetails = ({ navigation }) => {
 
     async function cancelOrder() {
         try {
-            const response = await fetch(base_url + '/api/order/cancelOrder', {
+            const response = await fetch(BASE_URL + ORDER_CANCEL, {
                 method: 'POST',
                 headers: {
                     'Accept': 'application/json, text/plain, */*',
@@ -74,60 +116,53 @@ const OrderDetails = ({ navigation }) => {
 
         <View>
             <CustomHeader title={"Order Details"} navigation={navigation} />
-
             <View style={styles.container}>
-
-                {/* <OrderDetailsTabs OrderMenu={orderMenu} /> */}
-                <Tab.Navigator>
-                    <Tab.Screen name="Home" component={OrderDetailsMenu} OrderMenu={orderMenu} />
-                    <Tab.Screen name="Profile" component={OrderDetailsIngre} OrderMenu={orderMenu} />
-                </Tab.Navigator>
-
                 <OrderDetailsSection OrderDetail={orderDetail} />
 
-                {/* <View style={styles.innercontainer}>
-                {
-                    orderDetail.order_status == '4' ?
-                        <OrderDetailsChef OrderDetail={orderDetail} />
-                        : null
-                }
+                {/* {
+                        orderDetail.order_status == '4' ?
+                            <OrderDetailsChef OrderDetail={orderDetail} />
+                            : null
+                    } */}
+                <View  style={styles.tabSec}>
+                <Tabs onSelectTab={handleTabChange} />
+                {selectedTab === 1 ? <OrderDetailsMenu OrderMenu={orderMenu} /> : selectedTab === 2 ? <OrderDetailsAppli OrderAppl={OrderAppl} /> : <OrderDetailsIngre OrderMenu={orderMenu} />}
 
-                <OrderDetailsTabs OrderMenu={orderMenu} />
-
-            </View> */}
-                {/* <View>
-                {
-                    orderDetail.order_status == '4' ?
+                </View>
+               
+                <View>
+                    {
+                        orderDetail.order_status == '4' ?
+                            <View>
+                                <TouchableHighlight style={styles.ratingbutton} onPress={handleRating} underlayColor='#E56352'>
+                                    <Text style={styles.ratingbuttonText}>{'Rate Us'}</Text>
+                                </TouchableHighlight>
+                            </View> : null
+                    }
+                </View>
+                <View>
+                    {orderDetail.order_status == '4' ? '' :
                         <View>
                             <TouchableHighlight style={styles.ratingbutton} onPress={handleRating} underlayColor='#E56352'>
-                                <Text style={styles.ratingbuttonText}>Rate Us</Text>
+                                <Text style={styles.ratingbuttonText}>{'Share Menu with Guest'}</Text>
                             </TouchableHighlight>
-                        </View> : null
-                }
-            </View>
-            <View>
-                {orderDetail.order_status == '4' ? '' :
-                    <View>
-                        <TouchableHighlight style={styles.ratingbutton} onPress={handleRating} underlayColor='#E56352'>
-                            <Text style={styles.ratingbuttonText}>Share Menu with Guest</Text>
-                        </TouchableHighlight>
-                        <TouchableHighlight style={styles.cancelbutton} onPress={cancelOrder} underlayColor='#E56352'>
-                            <Text style={styles.cancelbuttonText}>Cancel Order</Text>
-                        </TouchableHighlight>
-                    </View>
-                }
-            </View>
-            <View>
-                {orderDetail.order_status == '4' ? '' :
-                    <View style={styles.cancelorderbox}>
-                        <Text>
-                            <Text style={styles.cancelorderboxtext1}>We Regret to inform you that your order has been canceled! we are working hard to make your experience better and hustle free
+                            <TouchableHighlight style={styles.cancelbutton} onPress={cancelOrder} underlayColor='#E56352'>
+                                <Text style={styles.cancelbuttonText}>Cancel Order</Text>
+                            </TouchableHighlight>
+                        </View>
+                    }
+                </View>
+                <View>
+                    {orderDetail.order_status == '4' ? '' :
+                        <View style={styles.cancelorderbox}>
+                            <Text>
+                                <Text style={styles.cancelorderboxtext1}>We Regret to inform you that your order has been canceled! we are working hard to make your experience better and hustle free
+                                </Text>
+                                <Text style={styles.cancelorderboxtext2}>Contact us for more help!</Text>
                             </Text>
-                            <Text style={styles.cancelorderboxtext2}>Contact us for more help!</Text>
-                        </Text>
-                    </View>
-                }
-            </View> */}
+                        </View>
+                    }
+                </View>
 
 
             </View>
@@ -143,6 +178,12 @@ const styles = StyleSheet.create({
     innercontainer: {
         paddingLeft: 15,
         paddingRight: 15
+    },
+    tabSec:{
+        marginLeft:10,
+        marginRight:10,
+        marginTop:15,
+        borderRadius: 20,
     },
     ratingbutton: {
         height: 47,
@@ -209,7 +250,27 @@ const styles = StyleSheet.create({
         textAlign: "center",
         marginTop: 0,
         marginBottom: 11
-    }
+    },
+    tab: {
+        flex: 1,
+        padding: 10,
+    },
+    tabText: {
+        textAlign: 'center',
+        fontWeight: 'bold',
+    },
+    activeTab: {
+        backgroundColor: 'white',
+    },
+    activeTabText: {
+        color: "#B16BCB",
+    },
+    inactiveTab: {
+        backgroundColor: '#B8B8B8',
+    },
+    inactiveTabText: {
+        color: '#efefef',
+    },
 })
 
 

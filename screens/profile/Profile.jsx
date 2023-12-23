@@ -10,7 +10,6 @@ const Profile = ({ navigation }) => {
     const [email, setEmail] = useState('');
     const [customerType, setCustomerType] = useState('Male');
    
-
     useEffect(() => {
         fetchUserAccount(); // Fetch user profile data on component mount
     }, []);

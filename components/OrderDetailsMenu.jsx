@@ -1,99 +1,90 @@
-import * as React from 'react';
+import React from 'react';
 import { StyleSheet, Text, View, Image, Dimensions } from 'react-native';
 
-const OrderDetailsMenu = ({ OrderDetailMenu }) => {
-  //console.log("orderdetailsmenu" , OrderDetailMenu)
+const OrderDetailsMenu = ({ OrderMenu }) => {
+
+  console.log("orderdetailsmenu", OrderMenu);
   var Appetizer = [];
-  OrderDetailMenu.forEach((item) => {
-    if(item.mealId[0].name == 'Appetizer'){
-      Appetizer.push(item.name)
+  OrderMenu.forEach((item) => {
+    if (item.mealId[0].name === 'Appetizer') {
+      Appetizer.push({ name: item.name, image: item.image, price: item.price });
     }
   });
-  console.log("Appetizer" + Appetizer);
+  console.log("Appetizer", Appetizer);
+
 
   return (
-      <View>
-        {console.log("aaa")}
-        {Appetizer.map((item, index) => (
-          <Text key={index} >{console.log(item)}{'inside app'}</Text>
-        ))}
-      </View>
+    <View>
+      {Appetizer.length > 0 && (
+        <View style={styles.foodItemsContainer}>
+          <View>
+            <Text style={styles.menuCat}>{'Appetizer'} {"(" + Appetizer.length + ")"}</Text>
+          </View>
+          <View>
+            {Appetizer.map((item, index) => (
+
+              <View key={index} style={styles.foodItem}>
+                <View style={styles.foodItemImageContainer}>
+                  <Image source={{ uri: `https://horaservices.com/api/uploads/${item.image}` }} style={styles.foodItemImage} />
+                </View>
+                <View style={styles.foodItemDetails}>
+                  <Text style={styles.foodItemName}>{item.name}</Text>
+                </View>
+              </View>
+
+            ))}
+          </View>
+
+        </View>
+      )}
+    </View>
   );
 };
+const windowWidth = Dimensions.get('window').width;
 
 const styles = StyleSheet.create({
-  container:{
-    height:500,
-    width:Dimensions.get('window').width*0.5
+  menuCat: {
+    color: "#000",
+    fontSize: 16,
+    fontWeight: "bold"
   },
-  imageContainer: {
-    backgroundColor: '#EAEAEA', // Grey background color
-    paddingVertical: 5,
-    paddingLeft:4,
-    marginLeft:6,
-    marginRight:6
-  },
-  foodCatContainer: {
-    display: 'flex',
-    flexWrap: 'wrap',
-    flexDirection: 'column', // Display foodCat and foodCatSec in a column
-    marginTop: 0,
+  foodItemsContainer:{
     backgroundColor:"#fff",
-    paddingHorizontal:5
-  },
-  foodCat: {
-    fontSize: 13,
-    fontWeight: "600",
-    marginBottom:15,
-    marginTop:13,
-    paddingLeft:6
-  },
-  foodCatSec: {
-    display: 'flex',
-    flexDirection: 'row', // Display foodItem elements in a row
-    flexWrap: 'wrap', // Allow foodItem elements to wrap to the next row
-    justifyContent: 'space-between',
+    paddingTop:20,
+    paddingLeft:20,
   },
   foodItem: {
     flexDirection: 'row',
     alignItems: 'center',
+    justifyContent: 'space-between',
+    marginBottom: 20,
+    marginRight: 5, // Add margin between food items
+    display: 'flex',
     borderWidth: 1,
-    borderColor: 'rgba(184, 184, 184, 1)',
-    borderRadius: 18,
-    paddingTop: 4,
-    paddingBottom: 8,
-    paddingLeft: 0,
-    paddingRight: 10,
-    color: 'rgba(65, 65, 65, 1)',
-    maxHeight:55,
-    fontSize: 12,
-    fontWeight: "600",
-    marginBottom: 5, // Add margin between foodItem elements
-    marginRight: 5, // Add margin between foodItem elements
-    maxWidth: '31.3%', // Limit each foodItem to occupy a maximum of 30% of the container width
+    borderColor: '#ccc', // Specify the border color
+    borderRadius: 10, // Add border radius for rounded corners
+    width: windowWidth * 0.33,
+    paddingTop: 10,
+    paddingBottom: 10
+  },
+  foodItemImageContainer: {
+    width: 30,
+    height: 30,
+    borderRadius: 10,
   },
   foodItemImage: {
-    height: 27,
-    width: 27,
-    resizeMode: 'contain', // Ensure that the image fits within its container
-    marginRight: 4,
+    flex: 1,
+    width: '100%',
+    height: '100%',
+    borderRadius: 10,
   },
   foodItemDetails: {
-    flex: 1, // Allow details to occupy remaining space
+    flex: 1,
+    marginLeft: 10,
   },
   foodItemName: {
-    flex: 1,
-    marginRight: 8,
-    fontSize:11,
-    textAlign:"right",
-    marginRight:0,
-    fontWeight:"600"
-  },
-  foodItemPrice: {
-    color: 'rgba(146, 82, 170, 1)',
-    textAlign: 'right',
     fontSize: 12,
-    fontWeight: "600",
+    color: '#333',
   },
 });
 
