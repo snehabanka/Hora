@@ -3,9 +3,6 @@ import { StyleSheet, Text, View, Image, Button } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const OrderDetailsSection = ({ OrderDetail }) => {
-    // console.log("OrderDetailsec1" + JSON.stringify(OrderDetail))
-    // console.log("OrderDetail.order_time" + OrderDetail.order_time)
-    // console.log("OrderDetail.order_date" + OrderDetail.order_date)
     const [orderId, setorderId] = useState('')
     const [orderDate , setOrderDate] = useState('')
     const getOrderId = async () => {
@@ -36,20 +33,30 @@ const OrderDetailsSection = ({ OrderDetail }) => {
             return "6"
         }
     }
-//    useEffect(()=>{
-//     getOrderD();
-//    }, [orderDate])
-    // const getOrderD = (OrderDetail) => {
-    //     const dateValue = OrderDetail.order_date
-    //     console.log("dateValue" + dateValue)
-    //     var str = dateValue;
-    //     var str = str.split("T");
-    //     var d1 = new Date(str[0])
-    //     var months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
-    //     var month = months[d1.getMonth()];
-    //     var dateValueUpdate = d1.getDate() + " " + month + " , " + d1.getFullYear()
-    //     setOrderDate(dateValueUpdate)
-    // }
+  
+    const getOrderD = (e) => {
+        try {
+          if (!e || typeof e !== 'string') {
+            throw new Error('Invalid date format');
+          }
+      
+          const str = e.split("T");
+          if (str.length < 2) {
+            throw new Error('Invalid date format');
+          }
+      
+          const d1 = new Date(str[0]);
+          const months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+          const month = months[d1.getMonth()];
+          const dateValueUpdate = d1.getDate() + " " + month + " , " + d1.getFullYear();
+          return dateValueUpdate;
+        } catch (error) {
+          console.error('Error processing date:', error.message);
+          return null; // or handle the error in a way that makes sense for your application
+        }
+      };
+      
+   
   
 
     return (
@@ -74,10 +81,11 @@ const OrderDetailsSection = ({ OrderDetail }) => {
                     }} />
               
                 </Text>
-               
-             {/* <Text style={styles.orderheadings}>{getOrderD(OrderDetail.order_date)}</Text> */}
-              {/* <Text style={styles.orderheadings}>{orderDate}</Text>   */}
-              <Text style={styles.orderheadings}>{'05 feb , 2023'}</Text>  
+
+           
+             <Text style={styles.orderheadings}>{getOrderD(OrderDetail.order_date)}</Text> 
+              {/* <Text style={styles.orderheadings}>{orderDate}</Text>  
+              {/* <Text style={styles.orderheadings}>{'05 feb , 2023'}</Text>   */}
 
             </View>
             <View style={{ paddingTop: 12, paddingBottom: 12, paddingLeft: 12, paddingRight: 12}}>
