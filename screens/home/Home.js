@@ -1,22 +1,80 @@
 import React from 'react';
 import { useEffect,useState } from 'react';
-import { View, Text, StyleSheet, Image, BackHandler, Button,TouchableOpacity } from 'react-native';
-import Login from '../login/Login';
-import styles from '../home/styles';
-import CustomStatusBar from '../../components/CustomStatusBar';
+import { ScrollView,View, Text, StyleSheet, Image, BackHandler, Button,TouchableOpacity } from 'react-native';
 import { Dimensions } from 'react-native';
 import CustomHeader from '../../components/CustomeHeader';
-
-
+import CarouselComponent from '../dialog/CarouselComponent';
+import Geocoder from 'react-native-geocoding';
+import { RESULTS,request,PERMISSIONS ,check} from 'react-native-permissions';
+import Geolocation from '@react-native-community/geolocation';
+import { BASE_URL, API_SUCCESS_CODE, LATEST_ORDER_DETAILS } from '../../utils/ApiConstants';
+import { ActivityIndicator } from 'react-native';
+import axios from 'axios';
 
 const Home = ({ navigation }) => {
 
-  const [showTrackOrder, setShowTrackOrder] = useState(true);
+  const [currentAddress, setCurrentAddress] = useState(null);
+  const title = currentAddress ? currentAddress : 'Home';
+  const [apiData, setApiData] = useState(null);
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    fetchOrderData();
+    Geocoder.init(GOOGLE_MAP_KEY);
+    checkAndRequestLocationPermission();
+  }, []);
+
+  const fetchOrderData = async () => {
+    try {
+        const url = BASE_URL + LATEST_ORDER_DETAILS;
+        const response = await axios.post(url, {
+            headers: {
+                'Content-Type': 'application/json',
+            },
+        });
+        if (response.status == API_SUCCESS_CODE) {
+          setApiData(response.data.data.order);
+          console.log('length:',response.data.data.order.length);
+          console.log('data:',response.data.data.order);
+         setIsLoading(false);
+        }
+    } catch (error) {
+      setIsLoading(false);
+      console.log('Error Fetching Data:', error.message);
+    }
+}
+
+  const bookNowData = [
+    { id: '1', image: require('../../assets/bookNow.png') },
+    { id: '2', image: require('../../assets/bookNow.png') },
+    { id: '3', image: require('../../assets/bookNow.png') }
+  ];
+
+  const popularDishes = [
+    { id: '1', image: require('../../assets/bookNow.png') },
+    { id: '2', image: require('../../assets/bookNow.png') },
+    { id: '3', image: require('../../assets/bookNow.png') }
+  ];
+
+  const desertsData = [
+    { id: '1', image: require('../../assets/bookNow.png') },
+    { id: '2', image: require('../../assets/bookNow.png') },
+    { id: '3', image: require('../../assets/bookNow.png') }
+  ];
+
+  const reviewData = [
+    { id: '1', image: require('../../assets/bookNow.png') },
+    { id: '2', image: require('../../assets/bookNow.png') },
+    { id: '3', image: require('../../assets/bookNow.png') }
+  ];
+
+  const GOOGLE_MAP_KEY = "AIzaSyBmHupwMPDVmKEryBTT9LlIeQITS3olFeY"
+
 
   useEffect(() => {
     const backAction = () => {
-      BackHandler.exitApp(); // Close the app
-      return true; // Prevent default back button behavior
+      BackHandler.exitApp();
+      return true;
     };
 
     const backHandler = BackHandler.addEventListener('hardwareBackPress', backAction);
@@ -26,94 +84,171 @@ const Home = ({ navigation }) => {
     };
   }, []);
 
-  const cardData = [
-    require('../../assets/minus.png'),
-    require('../../assets/minus.png'),
-    require('../../assets/minus.png'),
-  ];
+  const checkAndRequestLocationPermission = async () => {
+    try {
+      const permissionResult = await check(
+        Platform.OS === 'ios'
+          ? PERMISSIONS.IOS.LOCATION_WHEN_IN_USE
+          : PERMISSIONS.ANDROID.ACCESS_FINE_LOCATION
+      );
 
-  const toggleTrackOrderVisibility = () => {
-    setShowTrackOrder(!showTrackOrder);
-};
+      if (permissionResult === RESULTS.GRANTED) {
+        getCurrentLocation();
+      } else {
+        requestLocationPermission();
+      }
+    } catch (error) {
+      console.error('Error checking location permission:', error);
+    }
+  };
+
+  const navigateToBookNow = () => {
+    navigation.navigate('CreateOrder');
+  }
+
+  const requestLocationPermission = async () => {
+    try {
+      const permissionResult = await request(
+        Platform.OS === 'ios'
+          ? PERMISSIONS.IOS.LOCATION_WHEN_IN_USE
+          : PERMISSIONS.ANDROID.ACCESS_FINE_LOCATION
+      );
+
+      if (permissionResult === RESULTS.GRANTED) {
+        getCurrentLocation();
+      } else {
+        console.warn('Location permission denied');
+      }
+    } catch (error) {
+      console.error('Error requesting location permission:', error);
+    }
+  };
 
 
+  const getCurrentLocation = () => {
+    Geolocation.getCurrentPosition(
+      (position) => {
+        const { latitude, longitude } = position.coords;
+        Geocoder.from(latitude, longitude)
+          .then((response) => {
+            const address = response.results[0].formatted_address;
+            setCurrentAddress(address);
+          })
+          .catch((error) => console.warn('Error fetching location address:', error));
+      },
+      (error) => console.log('Error getting current location:', error),
+      { enableHighAccuracy: true, timeout: 20000, maximumAge: 1000 }
+    );
+  };
+  
   return (
+    <ScrollView style={styles.container}>
+      <CustomHeader title={title} navigation={navigation} />
 
     <View style={{ flex: 1, flexDirection: 'column' }}>
-   <CustomHeader title={"Home"} navigation={navigation} />
-      <View style={{ alignContent: 'center', justifyContent: 'center' }}>
+      <View style={{}}>
+      <Image 
+        source={require('../../assets/gradient.png')} 
+        style={styles.backgroundImage} 
+        resizeMode="cover" 
+      />
+      <CarouselComponent data={popularDishes} />
 
-        <Text style={{ paddingTop: 4, color: 'black', fontWeight: '800', fontSize: 16 }}>
-          <Text style={{ color: '#9252AA' }}>personal chef</Text> is in different color and rest is in different color
+      </View>
+
+
+      {isLoading ? (
+        <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+          <ActivityIndicator size="large" color="#9252AA" />
+        </View>
+      ) : (
+        <View style={{ flex: 1, flexDirection: 'column' }}>
+          {apiData && apiData.length > 1 && (
+            <View style={{ marginHorizontal:16}}>
+              <Image source={require('../../assets/orderDetailBackground.png')}
+          style={{ height: 258, width:  Dimensions.get('window').width*.9, marginTop: 10 }}>
+              </Image>
+              <Text>{apiData[0].total_amount}</Text>
+            </View>
+          )}
+          </View>)}
+
+
+      <View style={styles.buttonContainer}>
+        <TouchableOpacity onPress={navigateToBookNow} style={styles.customButton} activeOpacity={1}>
+          <Text style={styles.buttonText}> Book Now</Text>
+        </TouchableOpacity>
+
+        <Image
+          source={require('../../assets/bulb.png')}
+          style={{ height: 48, width: 54, marginTop: 10 }}
+        />
+
+        <Text style={{ marginTop: 9 }}>
+          <Text style={styles.normalText}>{currentAddress} </Text>
+          <Text style={styles.dishesText}>it Works?</Text>
+        </Text>
+
+      </View>
+
+      <View>
+        {/* <Text style={{ marginStart:16,paddingTop: 4, color: 'black', fontWeight: '800', fontSize: 16 }}>
+          <Text style={{ color: '#9252AA' }}>Most Popular</Text> Dishes
         </Text>
 
         <Text style={{ fontSize: 12, fontWeight: '400', color: '#8C8C8C' }}>
           HORA makes your parties easier and effortless as we provide magical cooks
-        </Text>
+        </Text> */}
       </View>
-      <Image source={require('../../assets/cook.png')} style={{ marginTop: 12,justifyContent:'center', height: 66, width:66 }} />
 
-      <Text style={{ paddingTop: 4, color: 'black', fontWeight: '800', fontSize: 16 }}>
-          <Text style={{ color: '#9252AA' }}>Most Served</Text> Dishes?
-        </Text>
+      <CarouselComponent data={desertsData} />
 
-        <View style={{justifyContent:'center',width:138,alignItems:'center'}}>
+      <Image
+          source={require('../../assets/celebrate.png')}
+          style={{ height: 496, width:  Dimensions.get('window').width, marginTop: 10 }}
+        />
 
-        <TouchableOpacity style={{backgroundColor:'#9252AA',borderRadius:8,paddingHorizontal:18,paddingVertical:9}}>
-
-          <Text style={{fontSize:16,fontWeight:'400',color:'white'}}>See All Dishes</Text>
-
-        </TouchableOpacity>
-
+      <CarouselComponent data={reviewData} />
+      <Image
+          source={require('../../assets/whyHora.png')}
+          style={{ height: 534, width: Dimensions.get('window').width, marginTop: 10 }}
+        />
         </View>
-{/* 
-        <CardSlider data={cardData} /> */}
-        {showTrackOrder && 
+    </ScrollView>
+  );
+};
 
-        <View style={{ borderColor: "#F39200", borderWidth: 0.5, borderRadius: 5, backgroundColor: "#FFE3B9", marginHorizontal: 16, flexDirection: 'row', alignItems: 'center', marginTop: 5 }}>
-                        <Image source={require('../../assets/orderIcon.png')} style={{ height: 28, width: 30, marginStart: 5, marginTop: 5, marginBottom: 7 }} />
-                        <Text style={{ marginStart: 9, color: '#606060', fontSize: 13, fontWeight: '400' }} >Expected cooking time of your food</Text>
-
-                        <View style={{ marginStart: 5, backgroundColor: "#FFD1B7", borderRadius: 7, justifyContent: 'center', padding: 6 }}>
-                            <Text style={{ color: '#5F5C59', fontWeight: '700', fontSize: 13 }}>
-                               Hrs
-                            </Text>
-                        </View>
-
-                        <TouchableOpacity style={{ marginStart: 3 }} onPress={toggleTrackOrderVisibility} activeOpacity={1}>
-                            <Image source={require('../../assets/icCross.png')} style={{ height: 12, width: 12 }} />
-                        </TouchableOpacity>
-                    </View>
-}
-
-    </View>
-
-
-    // <View style={{flex:1,flexDirection:'column',borderColor:"rgba(228, 231, 255, 0.10)",borderRadius:5,height:363,width:Dimensions.get("window").width*0.9}}>
-
-    //   <View style={{backgroundColor:'#9252AA',width:20,flexDirection:'row'}}>
-    //     <Text>mkmk</Text>
-
-    //   </View>
-
-
-
-    //     <View style={{flexDirection:'row'}}>
-
-    //       <Text style={{fontSize:9,fontWeight:'300',color:'black'}}>Items to procure</Text>
-    //       <TouchableOpacity style={{backgroundColor:'#9252AA'}}>
-
-    //         <Text style={{color:'white'}}>See List</Text>
-
-    //       </TouchableOpacity>
-
-    //     </View>
-
-    // </View>
-
-
-
-  )
-}
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+  },
+  normalText: { color: '#323643', fontSize: 14, fontWeight: '600' },
+  dishesText: { color: '#9252AA', fontSize: 14, fontWeight: '600' },
+  customButton: {
+    height: 34,
+    width: 138,
+    marginTop: 10,
+    backgroundColor: '#9252AA',
+    marginHorizontal: 32,
+    alignItems: 'center',
+    justifyContent: 'center',
+    borderRadius: 8,
+  },
+  buttonText: {
+    color: 'white',
+    fontWeight: '400',
+    fontSize: 16,
+  },
+  buttonContainer: {
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  backgroundImage: {
+    width: '100%',
+    height: 101,
+    position: 'absolute',
+  },
+});
 
 export default Home;
+

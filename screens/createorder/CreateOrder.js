@@ -7,6 +7,7 @@ import CustomStatusBar from '../../components/CustomStatusBar';
 import RBSheet from 'react-native-raw-bottom-sheet';
 import { BASE_URL, GET_CUISINE_ENDPOINT, API_SUCCESS_CODE, GET_MEAL_DISH_ENDPOINT } from '../../utils/ApiConstants';
 import OrderWarning from '../dialog/OrderWarning';
+import CustomHeader from '../../components/CustomeHeader';
 
 const CreateOrder = ({ navigation }) => {
     const [selected, setSelected] = useState('veg');
@@ -374,6 +375,7 @@ const renderItem = ({ item }) => {
 
 return (
     <View style={styles.screenContainer}>
+           <CustomHeader title={"Create Order"} navigation={navigation} />
         <View style={styles.view1}>
             <Image style={styles.image1} source={require('../../assets/info.png')} />
             <Text style={styles.text1}>Bill value depends upon Dish selected + Number of people</Text>
