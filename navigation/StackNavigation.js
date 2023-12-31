@@ -31,7 +31,7 @@ const StackNavigation = () => {
     screenOptions={{
       header: ({ route }) => {},
     }}
-    initialRouteName='DrawerNavigator'
+    initialRouteName='Login'
   >
     <Stack.Screen name="DrawerNavigator" component={DrawerNavigation} />
     <Stack.Screen name="MyAccount" component={MyAccount} options={{headerShown:true}}/>
