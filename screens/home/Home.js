@@ -54,6 +54,7 @@ const Home = ({ navigation }) => {
 
   useEffect(() => {
     Geocoder.init(GOOGLE_MAP_KEY);
+    initPaymentSdk()
     checkAndRequestLocationPermission();
   }, []);
 
@@ -115,13 +116,46 @@ const Home = ({ navigation }) => {
     PhonePePaymentSDK.init(
       "PRODUCTION",
       "HORAONLINE",
-      appId,
+      "appId",
       true
       ).then(result => {
         console.warn("Payment Sdk $result")
     })
   }
+
+
+  const startPayment = () => {
+    const request = {
+      "merchantId": "PRODUCTION",
+      "merchantTransactionId": "MT7850590068188104",
+      "merchantUserId": "MUID123",
+      "amount": 1,
+      "callbackUrl": "https://webhook.site/1995bfbd-46d5-418b-a1ba-82bd39db1bdb",
+      "mobileNumber": "9999999999",
+      "paymentInstrument": {
+        "type": "PAY_PAGE"
+      }
+    }
+    const apiEndPoint = "/pg/v1/pay";
+    const jsonString = JSON.stringify(jsonObject);
+    const base64Request = Buffer.from(jsonString).toString('base64');
+    const saltKey ="c2881f25-dc78-4aaa-a08d-d0f5c913b40d";
+    const checksum = sha256(base64Request + apiEndPoint + saltKey) + "###" + 1;
+    
+  }
+
+
   
+  PhonePePaymentSDK.startPGTransaction(
+    requestBody,
+    checksum,
+    dropDownValue,
+    headers,
+    packageName,
+    callbackURL
+  ).then( a => {
+    console.log(a)
+  })
 
   return (
     <ScrollView style={styles.container}>
