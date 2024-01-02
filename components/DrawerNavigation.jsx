@@ -47,7 +47,7 @@ const UserInfo = () => {
         source={require('../assets/profile.png')}
         style={styles.profileimage}
       />
-      <Text style={styles.profileText}>{'User - 91233333000'}</Text>
+      <Text style={styles.profileText1}>{'User - '}{mobileNumber}</Text>
       <Text style={styles.profileText}>{email}</Text>
       <Text style={styles.profileText}>{mobileNumber}</Text>
     </View>
@@ -72,75 +72,83 @@ const CustomDrawerContent = (props) => {
 const DrawerNavigation = () => {
   return (
     <Drawer.Navigator
-      initialRouteName="Home"
-      drawerPosition="right"
-      drawerType="slide"
-      headerMode = "none"
-      screenOptions={{
-        drawerStyle: {
-          backgroundColor: '#fff',
-          width: 230,
-          paddingTop:10,
-          paddingLeft:10,
-          paddingRight:10
-        },
-        drawerActiveTintColor: '#fff',
-        drawerActiveBackgroundColor: '#9252AA',
-        headerTintColor: '#000',
-        headerTitleStyle: {
-          fontWeight: '600',
-        },
-        drawerItemStyle: {
-          marginLeft: 0,
-          paddingLeft: 0,
-          fontWeight: '900',
-          color: 'red',
-        },
-        drawerLabelStyle: {
-          color: '#000',
-          fontSize: 16,
-          fontWeight: '600',
-          marginLeft: 0,
-        },
+    initialRouteName="Home"
+    drawerPosition="right"
+    drawerType="slide"
+    headerMode="none"
+    screenOptions={{
+      drawerStyle: {
+        backgroundColor: '#fff',
+        width: 320,
+        paddingTop: 30,
+        paddingLeft: 7,
+        paddingRight: 10,
+      },
+      drawerActiveTintColor: '#9252AA',
+      drawerActiveBackgroundColor: '#fff',
+      headerTintColor: '#9252AA',
+      headerTitleStyle: {
+        fontWeight: '700',
+      },
+    }}
+    tabBarOptions={{
+      activeTintColor: '#9252AA', // Active tab text color
+      style: {
+        marginBottom: -5, // Adjust space at the bottom of each tab
+        paddingBottom: 0,
+      },
+      labelStyle: {
+        fontWeight: '800',
+        fontSize: 37, // Set font size to 30px
+        marginLeft: -5, // Adjust space between icon and label
+        color: "#000",
+      },
+    }}
+    drawerContent={(props) => <CustomDrawerContent {...props} />}
+  >
+    <Drawer.Screen
+      name="Home"
+      component={Home}
+      options={{
+        drawerIcon: ({ focused, size }) => (
+          <Image
+            source={require('../assets/Profilemenu.png')}
+            style={{ height: 24, width: 24 }}
+          />
+        ),
+        headerShown: false,
+        tabBarLabel: 'Home',
       }}
-      drawerContent={(props) => <CustomDrawerContent {...props} />}
-    >
-      <Drawer.Screen
-        name="Home"
-        component={Home}
-        options={
-          {
-            headerShown:false
-          }
-        }
-      />
-      <Drawer.Screen
-        name="Profile"
-        component={Profile}
-        options={{
-          drawerIcon: ({ focused, size }) => (
-            <Image
-              source={require('../assets/Profilemenu.png')}
-              style={{ height: 24, width: 24 }}
-            />
-          ),
-          headerShown:false
-        }}
-      />
-      <Drawer.Screen
-        name="My Order"
-        component={Orderlist}
-        options={{
-          drawerIcon: ({ focused, size }) => (
-            <Image
-              source={require('../assets/Document.png')}
-              style={{ height: 20, width: 20 }}
-            />
-          ),
-          headerShown:false
-        }}
-      />
-      <Drawer.Screen
+    />
+    <Drawer.Screen
+      name="Profile"
+      component={Profile}
+      options={{
+        drawerIcon: ({ focused, size }) => (
+          <Image
+            source={require('../assets/Message.png')}
+            style={{ height: 24, width: 24 }}
+          />
+        ),
+        headerShown: false,
+        tabBarLabel: 'Profile',
+      }}
+    />
+    <Drawer.Screen
+      name="My Order"
+      component={Orderlist}
+      options={{
+        drawerIcon: ({ focused, size }) => (
+          <Image
+            source={require('../assets/Document.png')}
+            style={{ height: 20, width: 20 }}
+          />
+        ),
+        headerShown:false,
+        tabBarLabel: 'My Order',
+      }}
+    />
+     <Drawer.Screen
         name="Contact"
         component={Contact}
         options={{
@@ -150,12 +158,13 @@ const DrawerNavigation = () => {
               style={{ height: 24, width: 24 }}
             />
           ),
-          headerShown:false
+          headerShown:false,
+          tabBarLabel: 'Contact',
+
         }
       }
       />
-       
-      <Drawer.Screen
+       <Drawer.Screen
         name="Order Details"
         component={OrderDetails}
         options={{
@@ -165,10 +174,12 @@ const DrawerNavigation = () => {
               style={{ height: 24, width: 24 }}
             />
           ),
-          headerShown:false
+          headerShown:false,
+          tabBarLabel: 'Order Details',
         }}
       />
-    </Drawer.Navigator>
+    {/* Add other Drawer.Screen components with similar options */}
+  </Drawer.Navigator>
   );
 };
 
@@ -177,14 +188,15 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   profileimagesec: {
-    padding: 16,
-    borderBottomWidth: 1,
-    borderBottomColor: '#9252AA',
+    padding: 10,
   },
   profileimage: {
     width: 100,
     height: 100,
     marginBottom: 15,
+    borderWidth:2,
+    borderColor:"#9252AA",
+    // borderRadius: 200,
   },
   profileText: {
     color: '#9EA1B1',
@@ -192,17 +204,11 @@ const styles = StyleSheet.create({
     fontWeight: '500',
     marginBottom: 5,
   },
-  drawerItem: {
-    marginLeft: 0,
-    paddingLeft: 0,
-    fontWeight: '900',
-    color: 'red',
-  },
-  drawerLabel: {
-    color: '#000',
-    fontSize: 16,
-    fontWeight: '600',
-    marginLeft: 0,
+  profileText1: {
+    color: '#9252AA',
+    fontSize: 20,
+    fontWeight: '700',
+    marginBottom: 5,
   },
 });
 

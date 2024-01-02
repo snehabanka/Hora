@@ -22,8 +22,8 @@ const OrderDetails = ({ navigation }) => {
         const orderIdupdate = await AsyncStorage.getItem("orderId")
         setorderId(orderIdupdate)
     }
-    const handleRating = () => {
-        console.log("handleRating")
+    const handleShareMenu = () => {
+        console.log("ShareMenuWithGuest")
     }
 
     const Tabs = ({ onSelectTab }) => (
@@ -32,33 +32,36 @@ const OrderDetails = ({ navigation }) => {
                 onPress={() => onSelectTab(1)}
                 style={[
                     styles.tab,
+                    styles.leftTab,
                     selectedTab === 1 ? styles.activeTab : styles.inactiveTab,
                 ]}
             >
                 <Text style={[styles.tabText, selectedTab === 1 ? styles.activeTabText : styles.inactiveTabText]}>
-                    Tab 1
+                    Menu
                 </Text>
             </TouchableOpacity>
             <TouchableOpacity
                 onPress={() => onSelectTab(2)}
                 style={[
                     styles.tab,
+                    styles.centerTab,
                     selectedTab === 2 ? styles.activeTab : styles.inactiveTab,
                 ]}
             >
                 <Text style={[styles.tabText, selectedTab === 2 ? styles.activeTabText : styles.inactiveTabText]}>
-                    Tab 2
+                    Appliances
                 </Text>
             </TouchableOpacity>
             <TouchableOpacity
                 onPress={() => onSelectTab(3)}
                 style={[
                     styles.tab,
+                    styles.rightTab,
                     selectedTab === 3 ? styles.activeTab : styles.inactiveTab,
                 ]}
             >
                 <Text style={[styles.tabText, selectedTab === 3 ? styles.activeTabText : styles.inactiveTabText]}>
-                    Tab 3
+                    Ingredient
                 </Text>
             </TouchableOpacity>
         </View>
@@ -68,22 +71,24 @@ const OrderDetails = ({ navigation }) => {
         setSelectedTab(tabNumber);
     };
 
+    const handleRating = () => {
+        alert("rate us")
+    }
+
     useEffect(() => {
         fetchOrderDetails()
         getOrderId()
     }, [])
 
+    
     async function fetchOrderDetails() {
         try {
-            // const response = await fetch(BASE_URL + '/api/order/order_details/v1/645e2485cda2cca13ca86464');
             const response = await fetch(BASE_URL + ORDER_DETAILS_ENDPOINT + '/v1/645e2485cda2cca13ca86464');
             const responseData = await response.json();
             setOrderDetail(responseData.data)
             setOrderMenu(responseData.data.selecteditems)
             setOrderAppl(responseData.data.orderApplianceIds)
             setOrderIngredients(responseData.data.ingredientUsed)
-            console.log("orderDetail1111" + orderDetail)
-            console.log("orderIngredients" + orderIngredients)
         }
         catch (error) {
             console.log(error)
@@ -118,20 +123,13 @@ const OrderDetails = ({ navigation }) => {
             <CustomHeader title={"Order Details"} navigation={navigation} />
             <View style={styles.container}>
                 <OrderDetailsSection OrderDetail={orderDetail} />
-                {/* {
-                        orderDetail.order_status == '4' ?
-                            <OrderDetailsChef OrderDetail={orderDetail} />
-                            : null
-                    } */}
-                <View  style={styles.tabSec}>
-                <Tabs onSelectTab={handleTabChange} />
-                {selectedTab === 1 ? <OrderDetailsMenu OrderMenu={orderMenu} /> : selectedTab === 2 ? <OrderDetailsAppli OrderAppl={OrderAppl} /> : <OrderDetailsIngre OrderMenu={orderMenu} />}
-
+                <View style={styles.tabSec}>
+                    <Tabs onSelectTab={handleTabChange} />
+                    {selectedTab === 1 ? <OrderDetailsMenu OrderMenu={orderMenu} /> : selectedTab === 2 ? <OrderDetailsAppli OrderAppl={OrderAppl} /> : <OrderDetailsIngre OrderMenu={orderMenu} />}
                 </View>
-               
                 <View>
                     {
-                        orderDetail.order_status == '4' ?
+                        orderDetail.order_status == '3' ?
                             <View>
                                 <TouchableHighlight style={styles.ratingbutton} onPress={handleRating} underlayColor='#E56352'>
                                     <Text style={styles.ratingbuttonText}>{'Rate Us'}</Text>
@@ -140,9 +138,9 @@ const OrderDetails = ({ navigation }) => {
                     }
                 </View>
                 <View>
-                    {orderDetail.order_status == '4' ? '' :
+                    {orderDetail.order_status == '3' ? '' :
                         <View>
-                            <TouchableHighlight style={styles.ratingbutton} onPress={handleRating} underlayColor='#E56352'>
+                            <TouchableHighlight style={styles.ratingbutton} onPress={handleShareMenu} underlayColor='#E56352'>
                                 <Text style={styles.ratingbuttonText}>{'Share Menu with Guest'}</Text>
                             </TouchableHighlight>
                             <TouchableHighlight style={styles.cancelbutton} onPress={cancelOrder} underlayColor='#E56352'>
@@ -152,22 +150,22 @@ const OrderDetails = ({ navigation }) => {
                     }
                 </View>
                 <View>
-                    {orderDetail.order_status == '4' ? '' :
+                    {orderDetail.order_status == '4' ?
                         <View style={styles.cancelorderbox}>
                             <View>
-                            <Text style={styles.cancelorderboxtext1}>We Regret to inform you that your order has been canceled! we are working hard to make your experience better and hustle free
+                                <Text style={styles.cancelorderboxtext1}>We Regret to inform you that your order has been canceled! we are working hard to make your experience better and hustle free
                                 </Text>
                             </View>
                             <View>
-                            <Text style={styles.cancelorderboxtext2}>Contact us for more help!</Text>
-                                </View>
+                                <Text style={styles.cancelorderboxtext2}>Contact us for more help!</Text>
+                            </View>
                         </View>
+                        :
+                        ''
                     }
                 </View>
-
-
             </View>
-            </ScrollView>
+        </ScrollView>
     )
 
 }
@@ -183,10 +181,10 @@ const styles = StyleSheet.create({
         paddingLeft: 15,
         paddingRight: 15
     },
-    tabSec:{
-        marginLeft:10,
-        marginRight:10,
-        marginTop:15,
+    tabSec: {
+        marginLeft: 10,
+        marginRight: 10,
+        marginTop: 15,
         borderRadius: 20,
     },
     ratingbutton: {
@@ -237,7 +235,7 @@ const styles = StyleSheet.create({
         borderColor: '#FFA4A4',
         marginBottom: 40,
         marginLeft: 'auto',
-        width:"85%",
+        width: "85%",
         marginRight: 'auto',
         padding: 20, // Use 'padding' instead of separate properties
         borderRadius: 5, // Adjust the value based on your preference
@@ -260,7 +258,20 @@ const styles = StyleSheet.create({
     },
     tabText: {
         textAlign: 'center',
-        fontWeight: 'bold',
+        fontWeight: '500',
+        fontSize: 14,
+    },
+    leftTab: {
+        borderTopLeftRadius: 10,
+        borderTopRightRadius: 10,
+    },
+    rightTab: {
+        borderTopLeftRadius: 10,
+        borderTopRightRadius: 10,
+    },
+    centerTab: {
+        borderTopLeftRadius: 10,
+        borderTopRightRadius: 10,
     },
     activeTab: {
         backgroundColor: 'white',
@@ -269,10 +280,10 @@ const styles = StyleSheet.create({
         color: "#B16BCB",
     },
     inactiveTab: {
-        backgroundColor: '#B8B8B8',
+        backgroundColor: '#D9D9D9',
     },
     inactiveTabText: {
-        color: '#efefef',
+        color: '#969696',
     },
 })
 

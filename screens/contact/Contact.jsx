@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { StyleSheet, Text, View, Image, Button } from 'react-native';
+import { StyleSheet, ScrollView ,Text, View, Image, Button } from 'react-native';
 import { BASE_URL, USER_DETAILS_ENDPOINT } from '../../utils/ApiConstants';
 import CustomHeader from '../../components/CustomeHeader';
 
@@ -27,13 +27,13 @@ const Contact = ({ navigation }) => {
     }
 
     return (
-        <View>
+        <ScrollView>
             <CustomHeader title={"Contact"} navigation={navigation} />
 
             <View style={styles.container}>
 
                 <View>
-                    <Image source={require('../../assets/contactus.png')} style={{
+                    <Image source={require('../../assets/contausimage.png')} style={{
                         width: 339,
                         height: 345
                     }} />
@@ -141,7 +141,7 @@ const Contact = ({ navigation }) => {
                     </View>
                 </View>
             </View>
-        </View>
+        </ScrollView>
     )
 }
 

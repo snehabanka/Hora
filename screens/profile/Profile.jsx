@@ -58,7 +58,7 @@ const Profile = ({ navigation }) => {
           <CustomHeader title={"Profile"} navigation={navigation} />
         <View style={styles.container}>
             <View style={styles.detailsec}>
-                <Image source={require('../../assets/profile.png')} style={styles.profileimage} />
+                <Image source={require('../../assets/profileimage.png')} style={styles.profileimage} />
                 <View style={styles.contentContainer0} >
                     <Image source={require('../../assets/mdi_user-outline.png')} style={styles.iconimage} />
                     <TextInput

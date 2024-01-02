@@ -49,7 +49,7 @@ const OrderDetailsAppli = ({ OrderAppl }) => {
                 <Image source={{ uri: `https://horaservices.com/api/uploads/${item.image}` }} style={styles.foodItemImage} />
               </View>
               <View style={styles.foodItemDetails}>
-                <Text style={styles.foodItemName}>{item.name}</Text>
+              <Text style={styles.foodItemName}>{item.name.length > 14 ? `${item.name.substring(0, 16)}...` : item.name}</Text>
               </View>
             </View>
 
@@ -68,24 +68,41 @@ const styles = StyleSheet.create({
     paddingTop:20,
     paddingLeft:20,
   },
+ 
+  foodItemImageContainer: {
+    width: 30,
+    height: 30,
+    borderRadius: 10,
+  },
+  foodItemsContainer: {
+    display: 'flex',
+    flexDirection: 'row',
+    alignItems: 'flex-start', // Align items at the start of the cross axis
+    justifyContent: 'flex-start',
+    marginTop: 0,
+    paddingBottom: 20,
+    flexWrap: 'wrap', // Allow items to wrap into the next row
+    backgroundColor: "#fff",
+    paddingTop: 20,
+    paddingLeft: 0,
+    paddingRight: 0,
+  },
   foodItem: {
+    display: 'flex',
     flexDirection: 'row',
     alignItems: 'center',
-    justifyContent: 'space-between',
-    marginBottom: 20,
-    marginRight: 5, // Add margin between food items
-    display: 'flex',
+    justifyContent:"space-between",
+    marginBottom: 5,
+    marginRight: 3, // Add margin between food items
     borderWidth: 1,
     borderColor: '#ccc', // Specify the border color
     borderRadius: 10, // Add border radius for rounded corners
-    width: windowWidth * 0.5,
-    paddingTop: 10,
-    paddingBottom: 10
-  },
-  foodItemImageContainer: {
-    width: 100,
-    height: 60,
-    borderRadius: 10,
+    paddingTop: 5,
+    paddingBottom: 5,
+    paddingRight: 5,
+    paddingLeft: 5,
+    minHeight: 70,
+    width: '30%', // Set width to 30% for three items in a row
   },
   foodItemImage: {
     flex: 1,

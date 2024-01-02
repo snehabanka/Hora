@@ -84,8 +84,6 @@ const OrderDetailsSection = ({ OrderDetail }) => {
 
            
              <Text style={styles.orderheadings}>{getOrderD(OrderDetail.order_date)}</Text> 
-              {/* <Text style={styles.orderheadings}>{orderDate}</Text>  
-              {/* <Text style={styles.orderheadings}>{'05 feb , 2023'}</Text>   */}
 
             </View>
             <View style={{ paddingTop: 12, paddingBottom: 12, paddingLeft: 12, paddingRight: 12}}>
@@ -144,14 +142,16 @@ const styles = StyleSheet.create({
         fontSize: 10,
         color: "#fff",
         textTransform: "capitalize",
+        textAlign:"center",
         marginTop: 4,
         marginLeft: 0,
         marginRight: 0,
         marginBottom: 0, // Typo: should be "marginBottom"
         paddingTop: 1,
         paddingBottom: 4, // Typo: should be "paddingBottom"
-        paddingLeft: 12,
-        paddingRight: 12
+        paddingLeft: 0,
+        width: "90%",
+        display:"inline-block",
       }
 })
 

@@ -17,6 +17,7 @@ export const USER_MYACCOUNT_ENDPOINT = "/api/users/my_account"
 export const ORDERLIST_ENDPOINT = "/api/order/user_order_list"
 export const ORDER_DETAILS_ENDPOINT = "/api/order/order_details"
 export const ORDER_CANCEL = "/api/order/cancelOrder"
+export const ORDER_INGREDIENTS = "/api/order/getIngredientByOrder"
 
 
 

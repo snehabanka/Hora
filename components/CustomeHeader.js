@@ -30,8 +30,8 @@ const CustomHeader = ({ title,navigation }) => {
       {route.name === 'Home' ? (
         <Pressable onPress={handleDrawerPress}>
           <Image
-            source={require('../assets/back_arrow.png')}
-            style={styles.image}
+            source={require('../assets/menu-icon.png')}
+            style={styles.menuimage}
           />
         </Pressable>
       ) : (
@@ -65,6 +65,12 @@ const styles = StyleSheet.create({
     width: 60,
     marginLeft: 8,
     marginTop: 15,
+  },
+  menuimage: {
+    height: 80,
+    width: 80,
+    marginLeft: 0,
+    marginTop: 20,
   },
 });
 

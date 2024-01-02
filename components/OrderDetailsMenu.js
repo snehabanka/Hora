@@ -2,17 +2,12 @@ import React from 'react';
 import { StyleSheet, Text, View, Image, Dimensions } from 'react-native';
 
 const OrderDetailsMenu = ({ OrderMenu }) => {
-
-  console.log("orderdetailsmenu", OrderMenu);
   var Appetizer = [];
   OrderMenu.forEach((item) => {
     if (item.mealId[0].name === 'Appetizer') {
       Appetizer.push({ name: item.name, image: item.image, price: item.price });
     }
   });
-  console.log("Appetizer", Appetizer);
-
-
   return (
     <View>
       {Appetizer.length > 0 && (
@@ -20,18 +15,17 @@ const OrderDetailsMenu = ({ OrderMenu }) => {
           <View>
             <Text style={styles.menuCat}>{'Appetizer'} {"(" + Appetizer.length + ")"}</Text>
           </View>
-          <View>
+          <View style={styles.foodItemsSecContainer}>
             {Appetizer.map((item, index) => (
-
               <View key={index} style={styles.foodItem}>
                 <View style={styles.foodItemImageContainer}>
                   <Image source={{ uri: `https://horaservices.com/api/uploads/${item.image}` }} style={styles.foodItemImage} />
                 </View>
                 <View style={styles.foodItemDetails}>
-                  <Text style={styles.foodItemName}>{item.name}</Text>
+                <Text style={styles.foodItemName}>{item.name.length > 14 ? `${item.name.substring(0, 16)}...` : item.name}</Text>
+
                 </View>
               </View>
-
             ))}
           </View>
 
@@ -51,26 +45,38 @@ const styles = StyleSheet.create({
   foodItemsContainer:{
     backgroundColor:"#fff",
     paddingTop:20,
-    paddingLeft:20,
+    paddingLeft:10,
+    paddingRight:10,
   },
-  foodItem: {
+  foodItemsSecContainer: {
+    display: 'flex',
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    marginBottom: 20,
-    marginRight: 5, // Add margin between food items
+    marginTop: 10,
+    paddingBottom:20,
+    flexWrap: 'wrap', // Allow items to wrap into the next row
+  },
+  foodItem: {
     display: 'flex',
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    marginBottom: 5,
+    marginRight: 3, // Add margin between food items
     borderWidth: 1,
     borderColor: '#ccc', // Specify the border color
     borderRadius: 10, // Add border radius for rounded corners
-    width: windowWidth * 0.33,
-    paddingTop: 10,
-    paddingBottom: 10
+    width: '32%', // Adjust width based on available space
+    paddingTop: 5,
+    paddingBottom: 5,
+    paddingRight:5,
+    paddingLeft:5,
+    minHeight:70,
   },
   foodItemImageContainer: {
-    width: 30,
-    height: 30,
-    borderRadius: 10,
+    width: 40,
+    height: 35,
   },
   foodItemImage: {
     flex: 1,
