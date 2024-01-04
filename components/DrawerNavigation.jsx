@@ -178,6 +178,7 @@ const DrawerNavigation = () => {
           tabBarLabel: 'Order Details',
         }}
       />
+      
     {/* Add other Drawer.Screen components with similar options */}
   </Drawer.Navigator>
   );

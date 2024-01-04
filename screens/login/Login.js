@@ -86,6 +86,7 @@ const Login = ({ navigation }) => {
             });
             if (response.data.status === API_SUCCESS_CODE) {
                 setFetchedOtp(response.data.otp);
+                console.log("OTP send succeefuly")
             } else {
                 console.log('OTP sending failed');
             }

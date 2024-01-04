@@ -15,12 +15,9 @@ import ConfirmLocation from '../screens/confirmlocation/ConfirmLocation';
 import SelectDate from '../screens/SelectDate/SelectDate';
 import ConfirmDishOrder from '../screens/confirmdishorder/ConfirmDishOrder';
 import Onboarding from '../screens/Onboarding/Onboarding';
-import Orderlist from '../screens/orderlist/Orderlist';
-import OrderDetails from '../screens/orderdetails/OrderDetails';
-import Profile from '../screens/profile/Profile';
+import DecorationCatCollection from '../screens/Decoration/DecorationCatCollection';
 import DrawerNavigation from '../components/DrawerNavigation';
 import { useNavigation } from '@react-navigation/native';
-
 const Stack = createNativeStackNavigator();
 
 
@@ -31,7 +28,7 @@ const StackNavigation = () => {
     screenOptions={{
       header: ({ route }) => {},
     }}
-    initialRouteName='Login'
+    initialRouteName='DrawerNavigator'
   >
     <Stack.Screen name="DrawerNavigator" component={DrawerNavigation} />
     <Stack.Screen name="MyAccount" component={MyAccount} options={{headerShown:true}}/>
@@ -44,6 +41,8 @@ const StackNavigation = () => {
       <Stack.Screen name="SelectDate" component={SelectDate} options={{headerShown:true}} />
       <Stack.Screen name="ConfirmDishOrder" component={ConfirmDishOrder} options={{headerShown:true}} />
       <Stack.Screen name="Onboarding" component={Onboarding} options={{headerShown:true}} />
+      <Stack.Screen name="DecorationCatCollection" component={DecorationCatCollection} options={{headerShown:true}} />
+
       {/* <Stack.Screen name="Contact" component={Onboarding} options={{headerShown:true}} /> 
      <Stack.Screen name="Orderlist" component={Orderlist} options={{headerShown:true}} />
      <Stack.Screen name="OrderDetails" component={OrderDetails} options={{headerShown:true}} />
