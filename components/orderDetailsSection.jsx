@@ -2,35 +2,37 @@ import React, { useState, useEffect } from 'react';
 import { StyleSheet, Text, View, Image, Button } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
-const OrderDetailsSection = ({ OrderDetail }) => {
-    const [orderId, setorderId] = useState('')
+const OrderDetailsSection = ({ OrderDetail , apiOrderId , orderId }) => {
     const [orderDate , setOrderDate] = useState('')
-    const getOrderId = async () => {
-        setorderId(await AsyncStorage.getItem("orderId"))
-        console.log("orderId3" , orderId)
+    
+    const getOrderId = (e) => {
+        console.log("e==" , e)
+        const orderId1 = 10800 + e
+        const updateOrderId = "#" + orderId1
+        return updateOrderId;
     }
-    useEffect(() => {
-        getOrderId()
-    }, [])
+
     const getOrderStatus = (orderStatusValue) => {
-        // console.log("orderStatusValue2" + orderStatusValue)
-        if (orderStatusValue === 1) {
-            return "1"
+        if (orderStatusValue === 0) {
+            return "Booked"
         }
-        if (orderStatusValue == 2) {
-            return "2"
+        if (orderStatusValue == 1) {
+            return "Accepted"
+        }
+        if (orderStatusValue === 2) {
+            return "In-progress"
         }
         if (orderStatusValue === 3) {
-            return "completed"
+            return "Completed"
         }
         if (orderStatusValue === 4) {
-            return "4"
+            return "Cancelled"
         }
         if (orderStatusValue === 5) {
-            return "5"
+            return ""
         }
         if (orderStatusValue === 6) {
-            return "6"
+            return "expire"
         }
     }
   
@@ -63,7 +65,7 @@ const OrderDetailsSection = ({ OrderDetail }) => {
         <View style={styles.container}>
             <View style={{ backgroundColor: "#9252AA", paddingTop: 12, paddingBottom: 12, paddingLeft: 12, paddingRight: 12 }}>
                 <Text style={{ color: "#fff", fontWeight: "500" , fontSize:13}}>
-                    {"OrderId:"}{" "}{orderId}
+                    {"OrderId:"}{'  '}{getOrderId(orderId)}
                 </Text>
                 <Text style={styles.orderstausclass}>{getOrderStatus(OrderDetail.order_status)}</Text>
             </View>

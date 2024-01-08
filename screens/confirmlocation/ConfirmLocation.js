@@ -75,57 +75,57 @@ const ConfirmLocation = ({ navigation, route }) => {
     }
   };
 
-  useEffect(() => {
-    Geocoder.init(GOOGLE_MAP_KEY);
-    if (data != null) {
-      handleSetLocation()
-    }
-    const checkLocationPermission = async () => {
-      if (Platform.OS === 'android') {
-        const granted = await PermissionsAndroid.check(
-          PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION
-        );
-        setLocationPermissionStatus(granted ? 'granted' : 'denied');
-        if (granted) {
-          getCurrentLocation();
-        }
-      } else if (Platform.OS === 'ios') {
-        const status = await Permissions.request(Permissions.PERMISSIONS.IOS.LOCATION_WHEN_IN_USE);
-        setLocationPermissionStatus(status);
-        if (status === Permissions.RESULTS.GRANTED) {
-          getCurrentLocation();
-        }
-      }
-    };
+  // useEffect(() => {
+  //   Geocoder.init(GOOGLE_MAP_KEY);
+  //   if (data != null) {
+  //     handleSetLocation()
+  //   }
+  //   const checkLocationPermission = async () => {
+  //     if (Platform.OS === 'android') {
+  //       const granted = await PermissionsAndroid.check(
+  //         PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION
+  //       );
+  //       setLocationPermissionStatus(granted ? 'granted' : 'denied');
+  //       if (granted) {
+  //         getCurrentLocation();
+  //       }
+  //     } else if (Platform.OS === 'ios') {
+  //       const status = await Permissions.request(Permissions.PERMISSIONS.IOS.LOCATION_WHEN_IN_USE);
+  //       setLocationPermissionStatus(status);
+  //       if (status === Permissions.RESULTS.GRANTED) {
+  //         getCurrentLocation();
+  //       }
+  //     }
+  //   };
 
-    // const requestLocationPermissionAndroid = async () => {
-    //   try {
-    //     const granted = await PermissionsAndroid.request(
-    //       PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION
-    //     );
-    //     setLocationPermissionStatus(granted ? 'granted' : 'denied');
-    //     if (granted) {
-    //       getCurrentLocation();
-    //     }
-    //   } catch (error) {
-    //     console.warn('Error requesting location permission:', error);
-    //   }
-    // };
+  //   // const requestLocationPermissionAndroid = async () => {
+  //   //   try {
+  //   //     const granted = await PermissionsAndroid.request(
+  //   //       PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION
+  //   //     );
+  //   //     setLocationPermissionStatus(granted ? 'granted' : 'denied');
+  //   //     if (granted) {
+  //   //       getCurrentLocation();
+  //   //     }
+  //   //   } catch (error) {
+  //   //     console.warn('Error requesting location permission:', error);
+  //   //   }
+  //   // };
 
-    // const requestLocationPermissionIOS = async () => {
-    //   try {
-    //     const status = await Permissions.request(Permissions.PERMISSIONS.IOS.LOCATION_WHEN_IN_USE);
-    //     setLocationPermissionStatus(status);
-    //     if (status === Permissions.RESULTS.GRANTED) {
-    //       getCurrentLocation();
-    //     }
-    //   } catch (error) {
-    //     console.warn('Error requesting location permission:', error);
-    //   }
-    // };
+  //   // const requestLocationPermissionIOS = async () => {
+  //   //   try {
+  //   //     const status = await Permissions.request(Permissions.PERMISSIONS.IOS.LOCATION_WHEN_IN_USE);
+  //   //     setLocationPermissionStatus(status);
+  //   //     if (status === Permissions.RESULTS.GRANTED) {
+  //   //       getCurrentLocation();
+  //   //     }
+  //   //   } catch (error) {
+  //   //     console.warn('Error requesting location permission:', error);
+  //   //   }
+  //   // };
 
-    checkLocationPermission();
-  }, []);
+  //   checkLocationPermission();
+  // }, []);
 
   const focusOnCurrentLocation = () => {
     if (locationPermissionStatus === 'granted') {

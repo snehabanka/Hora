@@ -10,8 +10,7 @@ const CustomHeader = ({ title,navigation }) => {
     if (title === "Profile" || title === "Contact" || title === "Order History") {
       navigation.navigate('Home');
     }
-    
-    else  {
+    else{
       navigation.goBack();
     }
   };
@@ -51,7 +50,6 @@ const styles = StyleSheet.create({
   headerContainer: {
     flexDirection: 'row',
     alignItems: 'center',
-    marginTop: 36,
     height: 64,
   },
   headerTitle: {

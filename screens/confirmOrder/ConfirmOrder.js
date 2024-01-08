@@ -20,10 +20,6 @@ const ConfirmOrder = ({navigation}) => {
       Your chef will contact 5 hours before the schedules time. Have a great fest!
       </Text>
 
-      <TouchableOpacity onPress={() => trackorder()} style={styles.clickableText}>
-        <Text style={styles.clickableText}>Track Order</Text>
-      </TouchableOpacity>
-
       <Text style={styles.normalText}>Need help? Call us.</Text>
      <View style={{flex: 1,
     justifyContent: 'center',

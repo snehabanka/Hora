@@ -1,12 +1,9 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, StyleSheet, Dimensions, Pressable, Image, BackHandler, TouchableOpacity, ScrollView } from 'react-native';
+import { View, Text, StyleSheet, Dimensions, TouchableHighlight ,Pressable, Image, BackHandler, TouchableOpacity, ScrollView } from 'react-native';
 import CarouselComponent from '../dialog/CarouselComponent';
 import CustomHeader from '../../components/CustomeHeader';
 import Geolocation from '@react-native-community/geolocation';
-import { check, request, PERMISSIONS, RESULTS } from 'react-native-permissions';
-import Geocoder from 'react-native-geocoding';
-import PhonePePaymentSDK from 'react-native-phonepe-pg'
-
+import CreateOrder from '../createorder/CreateOrder';
 
 const Home = ({ navigation }) => {
   const [decCat, setDecCat] = useState([
@@ -19,7 +16,6 @@ const Home = ({ navigation }) => {
   ]);
 
   const openCatItems = (category) => {
-    // Replace spaces with dashes in the category name
     // const categoryNameWithDashes = category.name.replace(/\s+/g, '-');
     navigation.navigate('DecorationCatCollection', { category });
 
@@ -28,16 +24,18 @@ const Home = ({ navigation }) => {
   const [currentAddress, setCurrentAddress] = useState(null);
 
   const bookNowData = [
-    { id: '1', image: require('../../assets/burner.png') },
-    { id: '2', image: require('../../assets/burner.png') },
-    { id: '3', image: require('../../assets/burner.png') }
+    { id: '1', image: require('../../assets/home-slider.png') },
+    { id: '2', image: require('../../assets/home-slider.png') },
+    { id: '3', image: require('../../assets/home-slider.png') }
   ];
 
   const popularDishes = [
-    { id: '1', image: require('../../assets/burner.png') },
-    { id: '2', image: require('../../assets/burner.png') },
-    { id: '3', image: require('../../assets/burner.png') }
+    { id: '1', image: require('../../assets/homeslider2-firstimg.png') },
+    { id: '2', image: require('../../assets/homeslider2-secondimg.png') },
+    { id: '3', image: require('../../assets/homeslider2-thirdimg.png') }
   ];
+
+
 
   const desertsData = [
     { id: '1', image: require('../../assets/burner.png') },
@@ -46,141 +44,25 @@ const Home = ({ navigation }) => {
   ];
 
   const reviewData = [
-    { id: '1', image: require('../../assets/burner.png') },
-    { id: '2', image: require('../../assets/burner.png') },
-    { id: '3', image: require('../../assets/burner.png') }
+    { id: '1', image: require('../../assets/happycustomers.png') },
+    { id: '2', image: require('../../assets/happycustomers.png') },
+    { id: '3', image: require('../../assets/happycustomers.png') }
   ];
 
-  const openCreateOrder = () =>{
-        navigation.navigate('DecorationCatCollection', { category });
+  const openCreateOrder = () => {
+    navigation.navigate('CreateOrder');
   }
-
-  // const GOOGLE_MAP_KEY = "AIzaSyBmHupwMPDVmKEryBTT9LlIeQITS3olFeY"
-
-
-  // useEffect(() => {
-  //   const backAction = () => {
-  //     BackHandler.exitApp();
-  //     return true;
-  //   };
-
-  //   const backHandler = BackHandler.addEventListener('hardwareBackPress', backAction);
-
-  //   return () => {
-  //     backHandler.remove();
-  //   };
-  // }, []);
-
-  // useEffect(() => {
-  //   Geocoder.init(GOOGLE_MAP_KEY);
-  //   initPaymentSdk()
-  //   checkAndRequestLocationPermission();
-  // }, []);
-
-  // const checkAndRequestLocationPermission = async () => {
-  //   try {
-  //     const permissionResult = await check(
-  //       Platform.OS === 'ios'
-  //         ? PERMISSIONS.IOS.LOCATION_WHEN_IN_USE
-  //         : PERMISSIONS.ANDROID.ACCESS_FINE_LOCATION
-  //     );
-
-  //     if (permissionResult === RESULTS.GRANTED) {
-  //       getCurrentLocation();
-  //     } else {
-  //       requestLocationPermission();
-  //     }
-  //   } catch (error) {
-  //     console.error('Error checking location permission:', error);
-  //   }
-  // };
-
-  // const requestLocationPermission = async () => {
-  //   try {
-  //     const permissionResult = await request(
-  //       Platform.OS === 'ios'
-  //         ? PERMISSIONS.IOS.LOCATION_WHEN_IN_USE
-  //         : PERMISSIONS.ANDROID.ACCESS_FINE_LOCATION
-  //     );
-
-  //     if (permissionResult === RESULTS.GRANTED) {
-  //       getCurrentLocation();
-  //     } else {
-  //       console.warn('Location permission denied');
-  //     }
-  //   } catch (error) {
-  //     console.error('Error requesting location permission:', error);
-  //   }
-  // };
-
-
-  // const getCurrentLocation = () => {
-  //   Geolocation.getCurrentPosition(
-  //     (position) => {
-  //       const { latitude, longitude } = position.coords;
-  //       Geocoder.from(latitude, longitude)
-  //         .then((response) => {
-  //           const address = response.results[0].formatted_address;
-  //           setCurrentAddress(address);
-  //         })
-  //         .catch((error) => console.warn('Error fetching location address:', error));
-  //     },
-  //     (error) => console.log('Error getting current location:', error),
-  //     { enableHighAccuracy: true, timeout: 20000, maximumAge: 1000 }
-  //   );
-  // };
-
-
-  // const initPaymentSdk = () => {
-  //   PhonePePaymentSDK.init(
-  //     "PRODUCTION",
-  //     "HORAONLINE",
-  //     "appId",
-  //     true
-  //     ).then(result => {
-  //       console.warn("Payment Sdk $result")
-  //   })
-  // }
-
-
-  // const startPayment = () => {
-  //   const request = {
-  //     "merchantId": "PRODUCTION",
-  //     "merchantTransactionId": "MT7850590068188104",
-  //     "merchantUserId": "MUID123",
-  //     "amount": 1,
-  //     "callbackUrl": "https://webhook.site/1995bfbd-46d5-418b-a1ba-82bd39db1bdb",
-  //     "mobileNumber": "9999999999",
-  //     "paymentInstrument": {
-  //       "type": "PAY_PAGE"
-  //     }
-  //   }
-  //   const apiEndPoint = "/pg/v1/pay";
-  //   const jsonString = JSON.stringify(jsonObject);
-  //   const base64Request = Buffer.from(jsonString).toString('base64');
-  //   const saltKey ="c2881f25-dc78-4aaa-a08d-d0f5c913b40d";
-  //   const checksum = sha256(base64Request + apiEndPoint + saltKey) + "###" + 1;
-
-  // }
-
-
-
-  // PhonePePaymentSDK.startPGTransaction(
-  //   requestBody,
-  //   checksum,
-  //   dropDownValue,
-  //   headers,
-  //   packageName,
-  //   callbackURL
-  // ).then( a => {
-  //   console.log(a)
-  // })
 
   return (
     <ScrollView style={styles.container}>
       <CustomHeader title={"Home"} navigation={navigation} />
       <CarouselComponent data={bookNowData} />
-
+      <View style={{ marginStart: 16, marginTop: 16 }}>
+        <Text>
+          <Text style={styles.normalText}>Book Your  </Text>
+          <Text style={styles.dishesText}>Decoration</Text>
+        </Text>
+      </View>
       <View style={styles.decContainer}>
         {decCat.map(({ image, name }, index) => (
           <Pressable key={index} onPress={() => openCatItems(name)} style={styles.decImageContainer}>
@@ -189,46 +71,50 @@ const Home = ({ navigation }) => {
         ))}
       </View>
 
-      <View style={{ marginStart: 16, marginTop: 16 }}>
+      {/* celebrate section */}
+      <View>
+        <Image
+          source={require('../../assets/celebrate.png')}
+          style={{ height: 496, width: Dimensions.get('window').width, marginTop: 10 }}
+        />
+        <View style={styles.buttonContainer}>
+          <TouchableOpacity style={styles.customButton} activeOpacity={1} onPress={openCreateOrder}>
+            <Text style={styles.buttonText}> Book Now</Text>
+          </TouchableOpacity>
+        </View>
+      </View>
+
+      {/* happy customers */}
+      <View style={{ marginTop: 30  , marginBottom:40}}>
+        <CarouselComponent data={reviewData} reviewData={reviewData} />
+      </View>
+
+      {/* popular dishes section */}
+      {/* <View style={{ marginStart: 16, marginTop: 16 }}>
         <Text>
           <Text style={styles.normalText}>Most Popular </Text>
           <Text style={styles.dishesText}>Dishes</Text>
         </Text>
-      </View>
-      {/* popular dishes section */}
-      <CarouselComponent data={popularDishes} />
-      <View style={styles.buttonContainer}>
-        <TouchableOpacity style={styles.customButton} activeOpacity={1} onPress={openCreateOrder}>
-          <Text style={styles.buttonText}> Book Now</Text>
-        </TouchableOpacity>
-
-        {/*How does it works section */}
-        <Image
-          source={require('../../assets/burner.png')}
-          style={{ height: 48, width: 54, marginTop: 10 }}
-        />
-        <Text style={{ marginTop: 9 }}>
-          <Text style={styles.normalText}>{currentAddress} </Text>
-          <Text style={styles.dishesText}>it Works?</Text>
-        </Text>
-      </View>
-          {/* desiset section */}
-      <CarouselComponent data={desertsData} />
+      </View> */}
+      {/* <CarouselComponent data={popularDishes} /> */}
       <View>
       </View>
-          {/* celebrate section */}
-      <Image
-        source={require('../../assets/celebrate.png')}
-        style={{ height: 496, width: Dimensions.get('window').width, marginTop: 10 }}
-      />
-      <CarouselComponent data={reviewData} />
+
       {/* why hora */}
+     
+      <TouchableHighlight onPress={openCreateOrder}>
       <Image
         source={require('../../assets/whyHora.png')}
-        style={{ height: 534, width: Dimensions.get('window').width, marginTop: 10 }}
+        style={{
+          height: 500,
+          width: Dimensions.get('window').width - 1,
+          marginLeft: 'auto',
+          marginRight: 'auto',
+        }}
       />
-
-
+    </TouchableHighlight>
+        
+     
     </ScrollView>
   );
 };

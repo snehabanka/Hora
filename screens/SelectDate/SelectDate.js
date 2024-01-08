@@ -7,10 +7,9 @@ import { BASE_URL, GET_CUISINE_ENDPOINT, API_SUCCESS_CODE, GET_MEAL_DISH_ENDPOIN
 import DateTimePicker from '@react-native-community/datetimepicker';
 import OrderWarning from '../dialog/OrderWarning';
 import InfoModal from '../dialog/info';
-
+import CustomHeader from '../../components/CustomeHeader';
 
 const SelectDate = ({ navigation, route }) => {
-
     const [selectedDate, setSelectedDate] = useState(new Date());
     const [selectedTime, setSelectedTime] = useState(new Date());
     const [showDatePicker, setShowDatePicker] = useState(false);
@@ -18,7 +17,7 @@ const SelectDate = ({ navigation, route }) => {
     const [peopleCount, setPeopleCount] = useState(0);
     const [activeTab, setActiveTab] = useState('left');
     const data = route.params.selectedDishDictionary;
-    const [dishPrice, setDishPrice] = useState(route.params.price);
+    const [dishPrice, setDishPrice] = useState(route.params.selectedDishPrice);
     const [showAll, setShowAll] = useState(false);
     const [burnerCount, setBurnerCount] = useState(0)
     const [isWarningVisible, setWarningVisible] = useState(false);
@@ -394,6 +393,7 @@ const SelectDate = ({ navigation, route }) => {
             setWarningVisible(true);
         }
         else {
+            console.log("Inside")
             navigation.navigate("ConfirmDishOrder", {
                 "selectedDate": selectedDate, "selectedTime": selectedTime, "peopleCount": peopleCount,
                 "burnerCount": burnerCount,
@@ -440,6 +440,7 @@ const SelectDate = ({ navigation, route }) => {
 
     return (
         <View style={styles.screenContainer}>
+            <CustomHeader title={"Create Order"} navigation={navigation} />
             <View style={styles.view1}>
                 <Image style={styles.image1} source={require('../../assets/info.png')} />
                 <Text style={styles.text1}>Bill value depends upon Dish selected + Number of people</Text>
@@ -535,7 +536,7 @@ const SelectDate = ({ navigation, route }) => {
                             <TouchableOpacity onPress={decreasePeopleCount} activeOpacity={1}>
                                 <Image source={require('../../assets/ic_minus.png')} style={{ height: 25, width: 25, marginLeft: 5 }} />
                             </TouchableOpacity>
-                            <Text style={{ marginLeft: 5, lineHeight: 23, fontSize: 18, marginTop: 2, width: 22, textAlign: 'center' }}>{peopleCount}</Text>
+                            <Text style={{ marginLeft: 5, lineHeight: 23, fontSize: 18, marginTop: 2, width: 22, textAlign: 'center', color:'black' }}>{peopleCount}</Text>
                             <TouchableOpacity onPress={increasePeopleCount} activeOpacity={1}>
                                 <Image source={require('../../assets/plus.png')} style={{ height: 25, width: 25, marginLeft: 5 }} />
                             </TouchableOpacity>
@@ -616,8 +617,8 @@ const SelectDate = ({ navigation, route }) => {
                     style={[
                         styles.continueButton,
                         {
-                            backgroundColor: isOrderValid ? '#9252AA' : '#CFCFCF',
-                            borderColor: isOrderValid ? '#9252AA' : '#CFCFCF',
+                            backgroundColor: isOrderValid?'#9252AA':'#F9E9FF',
+                            borderColor:  isOrderValid?'#9252AA':'#F9E9FF',
                         },
                     ]}
                     underlayColor="#9252AA"
@@ -628,7 +629,7 @@ const SelectDate = ({ navigation, route }) => {
                         <Text
                             style={[
                                 styles.continueButtonLeftText,
-                                { color: isOrderValid ? 'white' : '#343333' },
+                                { color: isOrderValid ? 'white' : '#343333'},
                             ]}
                         >
                             Continue
@@ -646,7 +647,7 @@ const SelectDate = ({ navigation, route }) => {
                 </TouchableHighlight>
 
                 <OrderWarning visible={isWarningVisible} title={"Total Order Amount is less than"} buttonText={"+ Add More"}
-                    message={"Total Order amount can not be less than {'\n'}            ₹400, Add more to continue"}
+                    message={"Total Order amount can not be less than ₹400, Add more to continue"}
                     amount={" ₹400"}
                     onClose={handleWarningClose} />
 

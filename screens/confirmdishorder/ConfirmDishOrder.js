@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { StyleSheet, Dimensions, ImageBackground, FlatList, ScrollView, StatusBar, View, Text, TextInput, Image, TouchableOpacity, TouchableHighlight, BackHandler } from 'react-native';
+import { StyleSheet, Dimensions, ImageBackground, FlatList, ScrollView, StatusBar, View, Linking, Text, TextInput, Image, TouchableOpacity, TouchableHighlight, BackHandler } from 'react-native';
 import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import CustomStatusBar from '../../components/CustomStatusBar';
@@ -7,6 +7,8 @@ import RBSheet from 'react-native-raw-bottom-sheet';
 import { BASE_URL, GET_CUISINE_ENDPOINT, GET_ADDRESS_LIST, API_SUCCESS_CODE, GET_MEAL_DISH_ENDPOINT, CONFIRM_ORDER_ENDPOINT } from '../../utils/ApiConstants';
 import Geocoder from 'react-native-geocoding';
 import Geolocation from 'react-native-geolocation-service';
+import CustomHeader from '../../components/CustomeHeader';
+import {PAYMENT } from '../../utils/ApiConstants';
 
 const ConfirmDishOrder = ({ navigation, route }) => {
 
@@ -116,27 +118,29 @@ const ConfirmDishOrder = ({ navigation, route }) => {
 
     );
 
-    useEffect(() => {
+    // useEffect(() => {
 
-        Geocoder.init('AIzaSyBmHupwMPDVmKEryBTT9LlIeQITS3olFeY');
+    //     Geocoder.init('AIzaSyBmHupwMPDVmKEryBTT9LlIeQITS3olFeY');
+    //     getCurrentLocation();
+        
+    // }, []);
+
+    const getCurrentLocation = () => {
         Geolocation.getCurrentPosition(
-            position => {
-                const { latitude, longitude } = position.coords;
-                Geocoder.from(latitude, longitude)
-                    .then(response => {
-                        const address = response.results[0].formatted_address;
-                        setCurrentAddress(address);
-                    })
-                    .catch(error => {
-                        console.error('Error fetching address:', error);
-                    });
-            },
-            error => {
-                console.error('Error getting current location:', error);
-            }
+          (position) => {
+            const { latitude, longitude } = position.coords;
+            Geocoder.from(latitude, longitude)
+              .then((response) => {
+                const address = response.results[0].formatted_address;
+                setCurrentAddress(address);
+              })
+              .catch((error) => console.warn('Error fetching location address:', error));
+          },
+          (error) => console.log('Error getting current location:', error),
+          { enableHighAccuracy: true, timeout: 10000000, maximumAge: 10000000000000 }
         );
-    }, []);
-
+      };
+    
     const fetchAddressesFromAPI = async () => {
         try {
             const url = BASE_URL + GET_ADDRESS_LIST;
@@ -219,11 +223,49 @@ const ConfirmDishOrder = ({ navigation, route }) => {
                 },
             });
             if (response.status == API_SUCCESS_CODE) {
+                const apiUrl = BASE_URL + PAYMENT;
+    
+    const requestData = {
+      user_id: '64a58d475fcdc03e14bfc136',
+      price: totalPrice,
+      phone: 9120202020,
+      name: 'vishal',
+    };
+
+    try {
+      // Make the API call using Axios
+      const response = await axios.post(apiUrl, requestData, {
+        headers: {
+          'Content-Type': 'application/json',
+          // Add any other headers if needed
+        },
+      });
+
+      // Handle the API response
+      console.log('API response:', response.request.responseURL);
+
+      let url = response.request.responseURL;
+
+      Linking.openURL(url)
+      .then((supported) => {
+        if (!supported) {
+          console.log(`Cannot handle URL: ${url}`);
+        } else {
+          console.log(`Opened URL: ${url}`);
+        }
+      })
+
+    } catch (error) {
+      // Handle errors
+      console.error('API error:', error);
+    }
                 navigation.navigate('ConfirmOrder')
             }
         } catch (error) {
             console.log('Error Fetching Data:', error.message);
         }
+
+        
     }
 
     const addMore = () => {
@@ -247,6 +289,7 @@ const ConfirmDishOrder = ({ navigation, route }) => {
 
     return (
         <View style={styles.screenContainer}>
+            <CustomHeader title={"Create Order"} navigation={navigation} />
             <View style={styles.view1}>
                 <Image style={styles.image1} source={require('../../assets/info.png')} />
                 <Text style={styles.text1}>Bill value depends upon Dish selected + Number of people</Text>

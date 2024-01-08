@@ -6,7 +6,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import CustomStatusBar from '../../components/CustomStatusBar';
 import { BASE_URL, OTP_GENERATE_END_POINT, API_SUCCESS_CODE, OTP_VERIFY_ENDPOINT } from '../../utils/ApiConstants';
 
-const Login = ({ navigation }) => {
+const Login = ({ navigation, route }) => {
 
     const [mobileNumber, setMobileNumber] = useState('');
     const [isPressed, setIsPressed] = useState(false);
@@ -176,6 +176,7 @@ const Login = ({ navigation }) => {
                 <Image source={require('../../assets/hora.png')} style={styles.image} />
             </View>
 
+         
 
             <View style={{ justifyContent: 'center', flexDirection: 'column', alignItems: 'center', marginTop: 8, marginHorizontal: 45 }}>
                 <Text style={{ fontWeight: '500', fontSize: 14, color: "#BEBEBE" }}> Get Restaurant like food cooked at{'\n'}            your home and parties</Text>

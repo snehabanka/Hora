@@ -11,17 +11,13 @@ import OrderDetailsAppli from '../../components/OrderDetailsAppli';
 import { BASE_URL, ORDER_DETAILS_ENDPOINT, ORDER_CANCEL } from '../../utils/ApiConstants';
 
 
-const OrderDetails = ({ navigation }) => {
+const OrderDetails = ({ navigation, route }) => {
+    const [orderId, setOrderId] = useState('')
     const [orderDetail, setOrderDetail] = useState({})
     const [orderMenu, setOrderMenu] = useState([]);
     const [OrderAppl, setOrderAppl] = useState([]);
     const [orderIngredients, setOrderIngredients] = useState([]);
-    const [orderId, setorderId] = useState({})
     const [selectedTab, setSelectedTab] = useState(1);
-    const getOrderId = async () => {
-        const orderIdupdate = await AsyncStorage.getItem("orderId")
-        setorderId(orderIdupdate)
-    }
     const handleShareMenu = () => {
         console.log("ShareMenuWithGuest")
     }
@@ -76,24 +72,28 @@ const OrderDetails = ({ navigation }) => {
     }
 
     useEffect(() => {
+        async function fetchOrderDetails() {
+            try {
+                console.log(BASE_URL + ORDER_DETAILS_ENDPOINT + '/v1/' + route.params?.apiOrderId)
+                const response = await fetch(BASE_URL + ORDER_DETAILS_ENDPOINT + '/v1/' + route.params?.apiOrderId);
+                const responseData = await response.json();
+                console.log("responseData===", responseData)
+                setOrderDetail(responseData.data)
+                setOrderMenu(responseData.data.selecteditems)
+                setOrderAppl(responseData.data.orderApplianceIds)
+                setOrderIngredients(responseData.data.ingredientUsed)
+            }
+            catch (error) {
+                console.log(error)
+            }
+        }
         fetchOrderDetails()
-        getOrderId()
     }, [])
 
-    
-    async function fetchOrderDetails() {
-        try {
-            const response = await fetch(BASE_URL + ORDER_DETAILS_ENDPOINT + '/v1/645e2485cda2cca13ca86464');
-            const responseData = await response.json();
-            setOrderDetail(responseData.data)
-            setOrderMenu(responseData.data.selecteditems)
-            setOrderAppl(responseData.data.orderApplianceIds)
-            setOrderIngredients(responseData.data.ingredientUsed)
-        }
-        catch (error) {
-            console.log(error)
-        }
-    }
+
+
+
+
 
     async function cancelOrder() {
         try {
@@ -122,32 +122,21 @@ const OrderDetails = ({ navigation }) => {
         <ScrollView contentContainerStyle={styles.scrollContainer}>
             <CustomHeader title={"Order Details"} navigation={navigation} />
             <View style={styles.container}>
-                <OrderDetailsSection OrderDetail={orderDetail} />
+                <OrderDetailsSection OrderDetail={orderDetail} orderId={route.params?.orderId} />
                 <View style={styles.tabSec}>
                     <Tabs onSelectTab={handleTabChange} />
                     {selectedTab === 1 ? <OrderDetailsMenu OrderMenu={orderMenu} /> : selectedTab === 2 ? <OrderDetailsAppli OrderAppl={OrderAppl} /> : <OrderDetailsIngre OrderMenu={orderMenu} />}
                 </View>
                 <View>
-                    {
-                        orderDetail.order_status == '3' ?
-                            <View>
-                                <TouchableHighlight style={styles.ratingbutton} onPress={handleRating} underlayColor='#E56352'>
-                                    <Text style={styles.ratingbuttonText}>{'Rate Us'}</Text>
-                                </TouchableHighlight>
-                            </View> : null
-                    }
-                </View>
-                <View>
-                    {orderDetail.order_status == '3' ? '' :
-                        <View>
-                            <TouchableHighlight style={styles.ratingbutton} onPress={handleShareMenu} underlayColor='#E56352'>
-                                <Text style={styles.ratingbuttonText}>{'Share Menu with Guest'}</Text>
-                            </TouchableHighlight>
-                            <TouchableHighlight style={styles.cancelbutton} onPress={cancelOrder} underlayColor='#E56352'>
-                                <Text style={styles.cancelbuttonText}>Cancel Order</Text>
-                            </TouchableHighlight>
-                        </View>
-                    }
+                    {(orderDetail.order_status === 0 || orderDetail.order_status === 2) &&
+                        orderDetail.order_status !== "Completed" ? (
+                        <TouchableHighlight style={styles.ratingbutton} underlayColor="#E56352" onPress={sendInvite}>
+                            <View style={{ display: "flex", flexDirection: "row", justifyContent: "center", alignItems: "center" }}>
+                                <View><Text style={styles.ratingbuttonText}>Send Invite</Text></View>
+                            </View>
+                        </TouchableHighlight>
+                    ) : null}
+
                 </View>
                 <View>
                     {orderDetail.order_status == '4' ?

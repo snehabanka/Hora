@@ -164,20 +164,7 @@ const DrawerNavigation = () => {
         }
       }
       />
-       <Drawer.Screen
-        name="Order Details"
-        component={OrderDetails}
-        options={{
-          drawerIcon: ({ focused, size }) => (
-            <Image
-              source={require('../assets/Helps.png')}
-              style={{ height: 24, width: 24 }}
-            />
-          ),
-          headerShown:false,
-          tabBarLabel: 'Order Details',
-        }}
-      />
+     
       
     {/* Add other Drawer.Screen components with similar options */}
   </Drawer.Navigator>

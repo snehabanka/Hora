@@ -1,23 +1,94 @@
 import React, { useState, useEffect } from 'react';
 import { ScrollView, Linking, View, StyleSheet, Text, Image, TextInput, TouchableHighlight, Button, ImageBackground, KeyboardAvoidingView } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { BASE_URL, ORDERLIST_ENDPOINT } from '../../utils/ApiConstants';
+import { BASE_URL, ORDERLIST_ENDPOINT, GET_USER_DETAIL_ENDPOINT } from '../../utils/ApiConstants';
 import CustomHeader from '../../components/CustomeHeader';
 
 
-const Orderlist = ({ navigation }) => {
-    const [orderData, setorderData] = useState({})
+const Orderlist = ({ navigation  }) => {
+    const [orderData, setOrderData] = useState({})
+    const [userId, setUserId] = useState('')
     const [invitedate, setInviteDate] = useState('')
+    const [token, setToken] = useState('');
 
-    const handleOrderDetails = (e) => {
-        alert("OrderDetails redirection" + e)
-        navigation.navigate('OrderDetails');
+    const handleOrderDetails = (e , a) => {
+        console.log("OrderDetails Page order Id" + e + a)
+         navigation.navigate('OrderDetails' , {'apiOrderId': e , 'orderId':a} )
     }
 
-    useEffect(() => {
-        fetchOrderList();
-    }, [])
+    AsyncStorage.getItem('token')
+        .then((storedToken) => {
+            if (storedToken) {
+                setToken(storedToken)
+                console.log("token===", token)
+                // Do something with the token
+            } else {
+                console.log('Token not found in AsyncStorage');
+            }
+        })
+        .catch((error) => {
+            console.error('Error retrieving token:', error);
+        });
 
+
+    useEffect(() => {
+        const fetchUserAccount = async () => {
+            try {
+                const storedToken = await AsyncStorage.getItem('token');
+                if (storedToken) {
+                    setToken(storedToken);
+                    const response = await fetch(BASE_URL + GET_USER_DETAIL_ENDPOINT, {
+                        headers: {
+                            'Accept': 'application/json',
+                            'Content-Type': 'application/json',
+                            'authorization': token,
+                        },
+                    });
+
+                    if (response.ok) {
+                        const userData = await response.json();
+                        setUserId(userData.data._id);
+                        fetchOrderList();
+                    } else {
+                        const errorData = await response.json();
+                        console.log(`Error fetching user account: ${errorData.message}`);
+                    }
+                } else {
+                    console.log('Token not found in AsyncStorage');
+                }
+            } catch (error) {
+                console.error('Error fetching user account:', error);
+                console.log('Error fetching user account. Please try again.');
+            }
+        };
+
+        const fetchOrderList = async () => {
+            try {
+                const response = await fetch(BASE_URL + ORDERLIST_ENDPOINT, {
+                    method: 'POST',
+                    headers: {
+                        'Accept': 'application/json',
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        "page": "1",
+                        "_id": userId,
+                    }),
+                });
+
+                const responseData = await response.json();
+                if (responseData.data.order) {
+                    setOrderData(responseData.data.order);
+                } else {
+                    console.log("No orders found");
+                }
+            } catch (error) {
+                console.log("Error fetching orders:", error);
+            }
+        };
+
+        fetchUserAccount();
+    }, [userId, token]);
 
 
     const sendInvite = () => {
@@ -34,194 +105,172 @@ const Orderlist = ({ navigation }) => {
         // }
     }
 
-    async function fetchOrderList() {
-        try {
-            const response = await fetch(BASE_URL + ORDERLIST_ENDPOINT, {
-                method: 'POST',
-                headers: {
-                    'Accept': 'application/json',
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({
-                    "page": "1",
-                    "_id": "640f67154466b415970be664"
-                })
-            });
-            const responseData = await response.json();
-            setorderData(responseData.data.order)
-        }
-        catch (error) {
-            console.log("error" + error)
-        }
-    }
 
     const getOrderStatus = (orderStatusValue) => {
-        if (orderStatusValue === 1) {
-            return "Booked1"
+        if (orderStatusValue === 0) {
+            return "Booked"
         }
-        if (orderStatusValue == 2) {
+        if (orderStatusValue == 1) {
             return "Accepted"
+        }
+        if (orderStatusValue === 2) {
+            return "In-progress"
         }
         if (orderStatusValue === 3) {
             return "Completed"
         }
         if (orderStatusValue === 4) {
-            return "Cancel"
+            return "Cancelled"
         }
         if (orderStatusValue === 5) {
-            return "In Progress"
+            return ""
         }
         if (orderStatusValue === 6) {
-            return "Booked"
+            return "expire"
         }
     }
 
     const getOrderId = (e) => {
         const orderId1 = 10800 + e
         const updateOrderId = "#" + orderId1
-        console.log("updateOrderId" + updateOrderId)
         AsyncStorage.setItem("orderId", updateOrderId)
         return updateOrderId;
     }
 
     const getorderDate = (dateValue) => {
         var str = dateValue;
-        var str = str.split("T");
-        var d1 = new Date(str[0])
+        var strArray = str.split("T");
+        var d1 = new Date(strArray[0])
         var months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
-        var month = months[d1.getMonth()];
+        var month = months[d1.getMonth()]; // No need to subtract 1 here
         var dateValueUpdate = d1.getDate() + " " + month + " , " + d1.getFullYear()
         return dateValueUpdate;
     }
 
+
     return (
         <ScrollView contentContainerStyle={styles.scrollContainer}>
-        <CustomHeader title={"Order History"} navigation={navigation} />
-        <View style={styles.container}>
-            {
-                Object.keys(orderData).map((item, index) => {
-                    return (
-                        <View key={index}
-                            style={{
-                                marginBottom: 10,
-                                shadowColor: '#9f9e9e',
-                                shadowOffset: { width: 0, height: 4 },
-                                shadowOpacity: 3,
-                                shadowRadius: 2,
-                                elevation: 1,
-                                borderTopLeftRadius: 20,
-                                borderTopRightRadius: 20,
-                                borderBottomLeftRadius: 10,
-                                borderBottomRightRadius: 20
-                            }}
-                        >
-                            <View style={styles.sec1}>
-                                <View style={{ display: "flex", flexDirection: "row" }}>
-                                    <Text style={{ paddingLeft: 10, color: "rgba(146, 82, 170, 1)", fontWeight: '700', fontSize: 11 }}>Order Id</Text>
-                                    <Text style={{ paddingLeft: 9, color: "rgba(146, 82, 170, 1)", fontWeight: '700', fontSize: 11 }}>
-                                        {getOrderId(orderData[item].order_id)}
-                                    </Text>
-                                </View>
-                                <View>
-                                    {
-                                        orderData[item].order_status == "3" ?
-                                            <Text style={styles.orderstatus3}>
-                                                {getOrderStatus(orderData[item].order_status)}
-                                            </Text> :
-                                            <Text style={styles.orderstatus}>
-                                                {getOrderStatus(orderData[item].order_status)}
-                                            </Text>
-                                    }
-                                </View>
-                            </View>
-                            <View style={styles.sec}>
-                                <View>
-                                    <View style={styles.ulclass1}>
-                                        <View style={{ display: "flex", flexDirection: "row", justifyContent: "flex-start", alignItems: "center", listStyle: "none" }}>
-                                            <Image source={require('../../assets/date-time-icon.png')} style={{
-                                                height: 13,
-                                                width: 13
-                                            }} />
-
-                                            <Text style={{
-                                                marginLeft: 8,
-                                                color: 'rgba(65, 65, 65, 1)',
-                                                fontWeight: '600'
-                                            }}>
-                                                {getorderDate(orderData[item].order_date)}</Text>
-                                        </View>
-                                        <View style={{ display: "flex", flexDirection: "row", justifyContent: "flex-start", alignItems: "center", listStyle: "none", paddingTop: 6, paddingBottom: 6 }}>
-
-                                            <Image source={require('../../assets/Time-Circle.png')} style={{
-                                                height: 13,
-                                                width: 13
-                                            }} />
-
-                                            <Text style={{
-                                                marginLeft: 8,
-                                                color: 'rgba(65, 65, 65, 1)',
-                                                fontWeight: '600'
-                                            }}>
-                                                {orderData[item].order_time}</Text>
-                                        </View>
-                                        <View style={{ display: "flex", flexDirection: "row", justifyContent: "flex-start", alignItems: "center", listStyle: "none" }}>
-
-                                            <Image source={require('../../assets/User.png')} style={{
-                                                height: 13,
-                                                width: 13
-                                            }} />
-
-                                            <Text style={{
-                                                marginLeft: 8,
-                                                color: 'rgba(65, 65, 65, 1)',
-                                                fontWeight: '600'
-                                            }}>
-                                                {orderData[item].no_of_people} People</Text>
-                                        </View>
+            <CustomHeader title={"Order History"} navigation={navigation} />
+            <View style={styles.container}>
+                {
+                    Object.keys(orderData).map((item, index) => {
+                        return (
+                            <View key={index}
+                                style={{
+                                    marginBottom: 10,
+                                    shadowColor: '#9f9e9e',
+                                    shadowOffset: { width: 0, height: 4 },
+                                    shadowOpacity: 3,
+                                    shadowRadius: 2,
+                                    elevation: 1,
+                                    borderTopLeftRadius: 20,
+                                    borderTopRightRadius: 20,
+                                    borderBottomLeftRadius: 10,
+                                    borderBottomRightRadius: 20
+                                }}
+                            >
+                                <View style={styles.sec1}>
+                                    <View style={{ display: "flex", flexDirection: "row" }}>
+                                        <Text style={{ paddingLeft: 10, color: "rgba(146, 82, 170, 1)", fontWeight: '700', fontSize: 11 }}>Order Id</Text>
+                                        <Text style={{ paddingLeft: 9, color: "rgba(146, 82, 170, 1)", fontWeight: '700', fontSize: 11 }}>
+                                            {getOrderId(orderData[item].order_id)}
+                                        </Text>
+                                    </View>
+                                    <View>
+                                        {
+                                            orderData[item].order_status == "3" ?
+                                                <Text style={styles.orderstatus3}>
+                                                    {getOrderStatus(orderData[item].order_status)}
+                                                </Text> :
+                                                <Text style={styles.orderstatus}>
+                                                    {getOrderStatus(orderData[item].order_status)}
+                                                </Text>
+                                        }
                                     </View>
                                 </View>
-                                <View >
-                                    <View style={styles.ulclass}>
-                                        <View style={{ textAlign: "right", listStyle: "none" }}>
-                                            <Text style={{ color: "rgba(146, 82, 170, 1)", fontSize: 16, fontWeight: "600" }}>Total Payment</Text>
+                                <View style={styles.sec}>
+                                    <View>
+                                        <View style={styles.ulclass1}>
+                                            <View style={{ display: "flex", flexDirection: "row", justifyContent: "flex-start", alignItems: "center", listStyle: "none" }}>
+                                                <Image source={require('../../assets/date-time-icon.png')} style={{
+                                                    height: 13,
+                                                    width: 13
+                                                }} />
+
+                                                <Text style={{
+                                                    marginLeft: 8,
+                                                    color: 'rgba(65, 65, 65, 1)',
+                                                    fontWeight: '600'
+                                                }}>
+                                                    {getorderDate(orderData[item].order_date)}</Text>
+                                            </View>
+                                            <View style={{ display: "flex", flexDirection: "row", justifyContent: "flex-start", alignItems: "center", listStyle: "none", paddingTop: 6, paddingBottom: 6 }}>
+
+                                                <Image source={require('../../assets/Time-Circle.png')} style={{
+                                                    height: 13,
+                                                    width: 13
+                                                }} />
+
+                                                <Text style={{
+                                                    marginLeft: 8,
+                                                    color: 'rgba(65, 65, 65, 1)',
+                                                    fontWeight: '600'
+                                                }}>
+                                                    {orderData[item].order_time}</Text>
+                                            </View>
+                                            <View style={{ display: "flex", flexDirection: "row", justifyContent: "flex-start", alignItems: "center", listStyle: "none" }}>
+
+                                                <Image source={require('../../assets/User.png')} style={{
+                                                    height: 13,
+                                                    width: 13
+                                                }} />
+
+                                                <Text style={{
+                                                    marginLeft: 8,
+                                                    color: 'rgba(65, 65, 65, 1)',
+                                                    fontWeight: '600'
+                                                }}>
+                                                    {orderData[item].no_of_people} People</Text>
+                                            </View>
                                         </View>
-                                        <View style={{ textAlign: "right", listStyle: "none", paddingTop: 24 }}>
-                                            <Text style={{ color: "rgba(146, 82, 170, 1)", fontSize: 16, fontWeight: "600", textAlign: "right" }}>
-                                                {"₹" + "" + orderData[item].payable_amount + ".00"}</Text>
+                                    </View>
+                                    <View >
+                                        <View style={styles.ulclass}>
+                                            <View style={{ textAlign: "right", listStyle: "none" }}>
+                                                <Text style={{ color: "rgba(146, 82, 170, 1)", fontSize: 16, fontWeight: "600" }}>Total Payment</Text>
+                                            </View>
+                                            <View style={{ textAlign: "right", listStyle: "none", paddingTop: 24 }}>
+                                                <Text style={{ color: "rgba(146, 82, 170, 1)", fontSize: 16, fontWeight: "600", textAlign: "right" }}>
+                                                    {"₹" + "" + orderData[item].payable_amount + ".00"}</Text>
+                                            </View>
                                         </View>
+
+                                    </View>
+                                </View>
+                                <View style={styles.sec2}>
+                                    <View>
+                                        <TouchableHighlight style={styles.button} underlayColor="#E56352" onPress={() => handleOrderDetails(orderData[item]._id , orderData[item].order_id)}>
+                                            <View><Text style={styles.buttonText}>View Details</Text></View>
+                                        </TouchableHighlight>
+                                    </View>
+
+                                    <View>
+                                        {(getOrderStatus(orderData[item].order_status) === 0 || getOrderStatus(orderData[item].order_status) === 2) &&
+                                            getOrderStatus(orderData[item].order_status) !== "Completed" ? (
+                                            <TouchableHighlight style={styles.ratingbutton} underlayColor="#E56352" onPress={sendInvite}>
+                                                <View style={{ display: "flex", flexDirection: "row", justifyContent: "center", alignItems: "center" }}>
+                                                    <View><Text style={styles.ratingbuttonText}>Send Invite</Text></View>
+                                                </View>
+                                            </TouchableHighlight>
+                                        ) : null}
                                     </View>
 
                                 </View>
                             </View>
-                            <View style={styles.sec2}>
-                                <View>
-                                    <TouchableHighlight style={styles.button} underlayColor="#E56352" onPress={handleOrderDetails}>
-                                        <View><Text style={styles.buttonText}>View Details</Text></View>
-                                    </TouchableHighlight>
-                                </View>
-
-                                <View>
-                                    {getOrderStatus(orderData[item].order_status) == "Completed" ?
-                                        <TouchableHighlight style={styles.ratingbutton} underlayColor="#E56352" onPress={sendInvite}>
-                                            <View style={{ display: "flex", flexDirection: "row", justifyContent: "center", alignItems: "center" }}>
-                                                <View><Text style={styles.ratingbuttonText}>Send Invite</Text></View>
-                                            </View>
-                                        </TouchableHighlight>
-                                        :
-                                        <TouchableHighlight style={styles.ratingbutton} underlayColor="#E56352">
-                                            <View style={{ display: "flex", flexDirection: "row", justifyContent: "center", alignItems: "center" }}>
-                                                <View><Image source={require('../../assets/Star-6.png')} style={styles.ratingimage} /></View>
-                                                <View><Text style={styles.ratingbuttonText}>Rate Us</Text></View>
-                                            </View>
-                                        </TouchableHighlight>
-                                    }
-                                </View>
-                            </View>
-                        </View>
-                    )
-                })
-            }
-        </View>
+                        )
+                    })
+                }
+            </View>
         </ScrollView>
     )
 }

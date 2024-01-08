@@ -10,11 +10,42 @@ const styles = StyleSheet.create({
     view1: { flexDirection: 'row', backgroundColor: '#EFF0F3',elevation:2,width:Dimensions.get('window').width},
     text1: { color: '#676767', fontSize: 12, fontWeight: '400', paddingVertical:5 ,marginStart:8},
     image1: { width: 16, height: 16, marginLeft: 16, marginTop: 5,marginBottom:5},
-    view2: { flexDirection: 'row',marginEnd:21,marginStart:16 ,marginTop:15},
+    view2: { flexDirection: 'row',marginEnd:21,marginStart:16 ,marginTop:15 , justifyContent:"space-around"},
     image2: { height: 36, width: 47},
     image3: { height: 2, width: 80, marginLeft: 20, marginTop:15 },
-    image4: {},
-    image5: {},
+    image4: {height:25,width:25,marginLeft:16},
+    image5: {height: 40, width: 70},
+    vegNonVegContainer:{
+      display:"flex",
+      flexDirection:"row",
+      justifyContent:"flex-start",
+      alignContent:"center",
+      paddingLeft:20,
+      paddingTop:20,
+      width:"100%"
+    },
+    boxvegContainer:{
+      marginRight:20,
+      flexDirection:"row",
+      borderColor:"#00FF00",
+      borderWidth:1,
+      justifyContent:"space-around",
+      alignItems:"center",
+      padding:5,
+    },
+    boxnonvegContainer:{
+      marginRight:20,
+      flexDirection:"row",
+      borderColor:"red",
+      borderWidth:1,
+      justifyContent:"space-around",
+      alignItems:"center",
+      paddingTop:5,
+      paddingBottom:5,
+      paddingRight:8,
+      paddingLeft:8
+      
+    },
     container: {
         flexDirection: 'row',
         justifyContent: 'flex-end',
@@ -22,18 +53,21 @@ const styles = StyleSheet.create({
         marginTop:15,
       },
       button: {
-        paddingHorizontal: 20,
-        paddingVertical: 10,
+        paddingHorizontal: 12,
+        paddingVertical: 8,
         backgroundColor: 'white',
-        borderRadius: 24,
+        borderRadius: 15,
         borderWidth:1,
-        borderColor:'#A0A5B'
+        borderColor:'#A0A5B',
       },
       selectedButton: {
-        backgroundColor: '#9252AA', // Change to the desired highlight color
+        backgroundColor: '#9252AA',
+        borderColor:'#9252AA',
+        borderWidth:1 // Change to the desired highlight color
       },
       buttonText: {
         fontSize: 16,
+        color:'black'
       },
       selectedButtonText: {
         color: 'white', // Change to the desired highlight text color
@@ -119,8 +153,9 @@ const styles = StyleSheet.create({
         marginTop:9
       },
       cuisineContainer: {
-        padding: 2,
-        marginTop:10
+        marginTop:9,
+        marginBottom:9,
+        color:"#000",
       },
       cuisineColumnWrapper: {
         justifyContent: 'space-between', // Adds spacing between columns
@@ -143,14 +178,33 @@ const styles = StyleSheet.create({
         alignItems: 'center',
     },
     continueButton: {
-      width:Dimensions.get('window').width * 0.9,
-      backgroundColor: '#9252AA',
-      justifyContent:'center',
-      paddingLeft:5,
+      marginTop: 10,
+      backgroundColor: 'gray',
+      marginBottom:15,
+      flexDirection: 'row',
+      justifyContent: 'space-between',
+      alignItems: 'center',
+      paddingLeft:21,
+      paddingEnd:20,
       paddingVertical:17,
       borderRadius: 20,
-      marginBottom:15
-    },
+  },
+    buttonContent: {
+      flexDirection: 'row',
+      justifyContent: 'space-between',
+      alignItems: 'center',
+      width: '100%',
+  },
+  continueButtonLeftText: {
+    color: 'white',
+    fontSize: 19,
+    fontWeight: '500',
+},
+continueButtonRightText: {
+  color: '#FFF',
+  fontSize: 16,
+  fontWeight: '400',
+}
 
 })
 
